@@ -1,12 +1,10 @@
-module Tests exposing (..)
+module TakeOneTests exposing (..)
 import Array
 import Expect
 import Test exposing (Test, describe, test)
-import Main exposing (..)
-
+import TakeOne exposing (..)
 
 prep list = List.sortBy (\a -> cellToInt a) (List.filterMap (\a -> a) (Array.toList list))
-
 
 example = Array.fromList
         (List.map Array.fromList 
@@ -14,8 +12,6 @@ example = Array.fromList
            [Alive, Alive, Dead, Dead],
            [Alive, Alive, Alive, Dead],
            [Alive, Alive, Alive, Dead]])
-
-
 
 suite : Test
 suite =
