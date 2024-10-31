@@ -10,6 +10,8 @@ import Html.Events exposing (onClick)
 import List exposing (range)
 import Random
 import TakeOne exposing (Cell(..), columns, rows)
+import Array
+import Html.Attributes exposing (default)
 
 
 
@@ -46,7 +48,9 @@ type alias Grid =
     , columns : Int
     }
 
-type alias Colorway = Int -> Cell -> String
+type alias Colorway = 
+   { name: String, 
+     display: Int -> Cell -> String }
 
 type alias Model =
     { grid : Grid
@@ -65,6 +69,7 @@ type Msg
     | MkNewGrid
     | Stop
     | Go
+    | TryNextColorway
     | PickRandomColorway
     | NewColorway Colorway
 
@@ -211,7 +216,7 @@ init _ =
     ( { grid = smallGrid
       , timeInCycle = 0
       , animation = Just defaultTiming
-      , colorway = glowyPop
+      , colorway = defaultColorway
       }
     , makeGrid
     )
@@ -315,10 +320,12 @@ update msg model =
         NewColorway colorway ->
             ( { grid = model.grid, timeInCycle = model.timeInCycle, animation = model.animation, colorway = colorway }, Cmd.none )
 
+        TryNextColorway ->
+            ( { grid = model.grid, timeInCycle = model.timeInCycle, animation = model.animation, colorway = nextColorWay (model.colorway) }, Cmd.none )
 
 
 redAndBlack : Int -> Cell -> String
-redAndBlack n cell =
+redAndBlack _ cell =
     if cell.state == Alive then
         "red"
 
@@ -326,7 +333,7 @@ redAndBlack n cell =
         "black"
 
 glowyPop : Int -> Cell -> String
-glowyPop n cell =
+glowyPop time cell =
     let
         min =
             25
@@ -335,23 +342,41 @@ glowyPop n cell =
             75
 
         p =
-            min + round ((toFloat n / 100) * (max - min))
+            min + round ((toFloat time / 100) * (max - min))
     in
     if cell.state == Alive then
-        "hsl(150 " ++ Debug.toString p ++ "% " ++ Debug.toString p ++ "%)"
+        "hsl(150 " ++ String.fromInt p ++ "% " ++ String.fromInt p ++ "%)"
 
     else
         "#333333"
 
-colorways = [glowyPop, redAndBlack]
+defaultColorway = { name = "glowyPop", display = glowyPop}
+
+otherColorways : List Colorway
+otherColorways = [ {name = "redAndBlack", display = redAndBlack}]
+
+allColorways = defaultColorway :: otherColorways
+
+getColorwayIndex : String -> Maybe Int
+getColorwayIndex name = 
+  List.head (List.filterMap (\a -> a) (List.indexedMap (\i c -> if c.name == name then Just i else Nothing) allColorways))
+
+
+nextColorWay : Colorway -> Colorway
+nextColorWay currentColorway = 
+  let maybeIndex = getColorwayIndex currentColorway.name
+      maybeColorway = Maybe.andThen (\i -> Array.get (i+1) (Array.fromList allColorways)) maybeIndex in
+  Maybe.withDefault defaultColorway maybeColorway
+
 
 pickRandomColorway : Cmd Msg
 pickRandomColorway =
-    Random.generate NewColorway (Random.uniform (glowyPop) [redAndBlack])
+    Random.generate NewColorway (Random.uniform (defaultColorway) otherColorways)
+
 
 showCell model cell =
     td
-        [ style "background" (model.colorway model.timeInCycle cell)
+        [ style "background" (model.colorway.display model.timeInCycle cell)
         , style "width" "1em"
         , style "height" "1em"
         ]
@@ -377,7 +402,7 @@ view model =
         , button [ onClick Go ] [ text "Go" ]
         , button [ onClick Stop ] [ text "Stop" ]
         , button [ onClick MkNewGrid ] [ text "Generate!" ]
-        , button [ onClick PickRandomColorway ] [ text "Change colors!" ]
+        , button [ onClick TryNextColorway ] [ text "Change colors!" ]
         ]
 
 
