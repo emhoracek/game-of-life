@@ -328,13 +328,10 @@ suite =
         , describe "isAlive"
             [ test "an Alive cell is Alive" <|
                 \_ ->
-                    Expect.equal (isAlive (Just (Cell ( 0, 0 ) Alive))) True
+                    Expect.equal (isAlive (Cell ( 0, 0 ) Alive)) True
             , test "a Dead cell is not Alive" <|
                 \_ ->
-                    Expect.equal (isAlive (Just (Cell ( 0, 0 ) Dead))) False
-            , test "an Nothing cell is Dead" <|
-                \_ ->
-                    Expect.equal (isAlive Nothing) False
+                    Expect.equal (isAlive (Cell ( 0, 0 ) Dead)) False
             ]
         , describe "getCell"
             [ test "upper left" <|
@@ -350,23 +347,23 @@ suite =
         , describe "willBeAlive"
             [ test "upper left" <|
                 \_ ->
-                    Expect.equal (willBeAlive ( 0, 0 ) exampleGridWithMix) False
+                    Expect.equal (willBeAlive (Cell ( 0, 0 ) Dead) 2) False
             , test "second row, second column" <|
                 \_ ->
-                    Expect.equal (willBeAlive ( 1, 1 ) exampleGridWithMix) False
+                    Expect.equal (willBeAlive (Cell ( 1, 1 ) Alive) 4) False
             , test "second row, third column" <|
                 \_ ->
-                    Expect.equal (willBeAlive ( 1, 2 ) exampleGridWithMix) True
+                    Expect.equal (willBeAlive (Cell ( 1, 2 ) Alive) 3) True
             , test "out of bounds" <|
                 \_ ->
-                    Expect.equal (willBeAlive ( 454, 1234 ) exampleGridWithMix) False
+                    Expect.equal (willBeAlive (Cell ( 454, 1234 ) Alive) 0) False
             ]
         , describe "getNeighbors"
             [ test "row 2, column 3" <|
                 \_ ->
                     Expect.equal
-                        (prep (getNeighbors ( 1, 2 ) exampleGridWithMix))
-                        (prep [ Just (Cell ( 0, 1 ) Dead), Just (Cell ( 0, 2 ) Dead), Just (Cell ( 0, 3 ) Dead), Just (Cell ( 1, 1 ) Alive), Just (Cell ( 1, 3 ) Dead), Just (Cell ( 2, 1 ) Alive), Just (Cell ( 2, 2 ) Alive), Just (Cell ( 2, 3 ) Dead) ])
+                        (prep (getNeighbors (Cell ( 1, 2 ) Alive) exampleGridWithMix))
+                        (prep [ Cell ( 0, 1 ) Dead, Cell ( 0, 2 ) Dead, Cell ( 0, 3 ) Dead, Cell ( 1, 1 ) Alive, Cell ( 1, 3 ) Dead, Cell ( 2, 1 ) Alive, Cell ( 2, 2 ) Alive, Cell ( 2, 3 ) Dead ])
             ]
         , describe "toRows"
             [ test "converts grid to rows for display" <|
@@ -390,6 +387,6 @@ suite =
         ]
 
 
-prep : List (Maybe Cell) -> List Cell
+prep : List Cell -> List Cell
 prep list =
-    List.sortBy (\a -> a.coords) (List.filterMap (\a -> a) list)
+    List.sortBy (\a -> a.coords) list

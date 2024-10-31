@@ -1,19 +1,15 @@
 module TakeTwo exposing (..)
 
-import Array exposing (Array, fromList, toList)
 import Browser
 import Browser.Events
 import Debug
 import Dict exposing (Dict)
-import Html exposing (Html, button, div, li, table, td, text, tr, ul)
+import Html exposing (Html, button, div, table, td, text, tr)
 import Html.Attributes exposing (style)
 import Html.Events exposing (onClick)
 import List exposing (range)
-import Maybe
 import Random
 import TakeOne exposing (Cell(..), columns, rows)
-import Test.Html.Query exposing (index)
-import Time
 
 
 
@@ -50,11 +46,27 @@ type alias Grid =
     , columns : Int
     }
 
+type alias Colorway = Int -> Cell -> String
 
 type alias Model =
     { grid : Grid
-    , liveliness : Int
+    , timeInCycle : Int
+    , animation: Maybe Int
+    , colorway: Colorway
     }
+
+
+
+type Msg
+    = NoOp
+    | Increment
+    | Decrement
+    | NewGrid Grid
+    | MkNewGrid
+    | Stop
+    | Go
+    | PickRandomColorway
+    | NewColorway Colorway
 
 
 smallGrid : Grid
@@ -197,90 +209,61 @@ makeGrid =
 init : () -> ( Model, Cmd Msg )
 init _ =
     ( { grid = smallGrid
-      , liveliness = 0
+      , timeInCycle = 0
+      , animation = Just defaultTiming
+      , colorway = glowyPop
       }
     , makeGrid
     )
-
-
-type Msg
-    = Increment
-    | NewGrid Grid
-    | MkNewGrid
-    | Decrement
-
 
 getCell : CellCoords -> Grid -> Maybe Cell
 getCell c grid =
     Dict.get c grid.cells
 
 
-getNeighbors : CellCoords -> Grid -> List (Maybe Cell)
-getNeighbors coords grid =
-    List.map (\c -> getCell c grid) (findNeighboringCoords coords)
+getNeighbors : Cell -> Grid -> List Cell
+getNeighbors cell grid =
+    List.filterMap (\c -> getCell c grid) (findNeighboringCoords cell.coords)
 
 
-isAlive : Maybe Cell -> Bool
+isAlive : Cell -> Bool
 isAlive cell =
-    if Maybe.map .state cell == Just Alive then
+    if cell.state == Alive then
         True
 
     else
         False
 
 
-aliveNeighbors : CellCoords -> Grid -> Int
-aliveNeighbors coords grid =
-    List.length (List.filter isAlive (getNeighbors coords grid))
+aliveNeighbors : Cell -> Grid -> Int
+aliveNeighbors cell grid =
+    List.length (List.filter isAlive (getNeighbors cell grid))
 
 
-willBeAlive : CellCoords -> Grid -> Bool
-willBeAlive c grid =
-    if isAlive (getCell c grid) then
-        aliveNeighbors c grid
+willBeAlive : Cell -> Int -> Bool
+willBeAlive c liveNeighbors =
+    if isAlive c then
+        liveNeighbors
             == 2
-            || aliveNeighbors c grid
+            || liveNeighbors
             == 3
 
     else
-        aliveNeighbors c grid == 3
+        liveNeighbors == 3
 
 
-updateAlive : CellCoords -> Grid -> Cell
-updateAlive loc grid =
-    if
-        aliveNeighbors loc grid
-            == 2
-            || aliveNeighbors loc grid
-            == 3
-    then
-        Cell loc Alive
+updateCell : Cell -> Grid -> Cell
+updateCell cell grid =
+    if willBeAlive cell (aliveNeighbors cell grid) then
+      Cell cell.coords Alive
 
     else
-        Cell loc Dead
-
-
-updateDead : CellCoords -> Grid -> Cell
-updateDead loc grid =
-    if aliveNeighbors loc grid == 3 then
-        Cell loc Alive
-
-    else
-        Cell loc Dead
-
-
-updateCell : Cell -> CellCoords -> Grid -> Cell
-updateCell cell loc grid =
-    if cell.state == Alive then
-        updateAlive loc grid
-
-    else
-        updateDead loc grid
+      Cell cell.coords Dead
 
 
 updateRows : Grid -> Grid
 updateRows grid =
-    { cells = Dict.foldr (\k c acc -> Dict.insert k (updateCell c c.coords grid) acc) grid.cells grid.cells
+    { cells = Dict.foldr (\k c acc -> Dict.insert k (updateCell c grid) acc) grid.cells grid.cells
     , rows = grid.rows
     , columns = grid.columns
     }
@@ -289,80 +272,112 @@ updateRows grid =
 incrementModel : Model -> Model
 incrementModel model =
     { grid = updateRows model.grid
-    , liveliness = defaultTiming
+    , timeInCycle = defaultTiming
+    , animation = model.animation
+    , colorway = model.colorway
     }
 
 
 decrementModel : Model -> Model
 decrementModel model =
     { grid = model.grid
-    , liveliness = model.liveliness - 1
+    , timeInCycle = model.timeInCycle - 1
+    , animation = model.animation
+    , colorway = model.colorway
     }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        NoOp -> (model, Cmd.none )
         Decrement ->
             ( decrementModel model, Cmd.none )
 
         Increment ->
             ( incrementModel model, Cmd.none )
 
+        PickRandomColorway ->
+            ( model, pickRandomColorway )
+
         MkNewGrid ->
             ( model, makeGrid )
 
         NewGrid newGrid ->
-            ( { grid = newGrid, liveliness = model.liveliness }, Cmd.none )
+            ( { grid = newGrid, timeInCycle = model.timeInCycle, animation = model.animation, colorway = model.colorway}, Cmd.none )
+
+        Stop ->
+            ( { grid = model.grid, timeInCycle = model.timeInCycle, animation = Nothing , colorway = model.colorway}, Cmd.none )
+        
+        Go ->
+            ( { grid = model.grid, timeInCycle = model.timeInCycle, animation = Just defaultTiming, colorway = model.colorway }, Cmd.none )
+
+        NewColorway colorway ->
+            ( { grid = model.grid, timeInCycle = model.timeInCycle, animation = model.animation, colorway = colorway }, Cmd.none )
 
 
-showCell2 color =
-    td
-        [ style "background" color
-        , style "width" "1em"
-        , style "height" "1em"
-        ]
-        [ text " " ]
 
+redAndBlack : Int -> Cell -> String
+redAndBlack n cell =
+    if cell.state == Alive then
+        "red"
 
-showCell n cell =
+    else
+        "black"
+
+glowyPop : Int -> Cell -> String
+glowyPop n cell =
     let
         min =
-            20
+            25
 
         max =
-            100
+            75
 
         p =
             min + round ((toFloat n / 100) * (max - min))
     in
     if cell.state == Alive then
-        showCell2 ("hsl(150 " ++ Debug.toString p ++ "% " ++ Debug.toString p ++ "%)")
+        "hsl(150 " ++ Debug.toString p ++ "% " ++ Debug.toString p ++ "%)"
 
     else
-        showCell2 "#333333"
+        "#333333"
 
+colorways = [glowyPop, redAndBlack]
 
-showRow n row =
-    tr [] (List.map (\c -> showCell n c) row)
+pickRandomColorway : Cmd Msg
+pickRandomColorway =
+    Random.generate NewColorway (Random.uniform (glowyPop) [redAndBlack])
 
+showCell model cell =
+    td
+        [ style "background" (model.colorway model.timeInCycle cell)
+        , style "width" "1em"
+        , style "height" "1em"
+        ]
+        [ text " " ]
 
-showGrid n grid =
-    List.map (showRow n) (toRows grid)
-
+showRow model row =
+    tr [] (List.map (\c -> showCell model c) row)
 
 toRows : Grid -> List (List Cell)
 toRows grid =
-    List.map (\r -> List.filterMap (\c -> getCell ( r, c ) grid) (List.range 0 (grid.columns - 1)))
-        (List.range 0 (grid.rows - 1))
+    List.map 
+        (\r -> List.filterMap (\c -> getCell ( r, c ) grid) (range 0 (grid.columns - 1)))
+        (range 0 (grid.rows - 1))
 
+showGrid model =
+    List.map (showRow model) (toRows model.grid)
 
 view : Model -> Html Msg
 view model =
     div []
-        [ table [] (showGrid model.liveliness model.grid)
-        , button [ onClick Increment ] [ text "GO!" ]
+        [ table [] (showGrid model)
+        , button [ onClick Increment ] [ text "Step" ]
+        , button [ onClick Go ] [ text "Go" ]
+        , button [ onClick Stop ] [ text "Stop" ]
         , button [ onClick MkNewGrid ] [ text "Generate!" ]
+        , button [ onClick PickRandomColorway ] [ text "Change colors!" ]
         ]
 
 
@@ -370,9 +385,10 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Browser.Events.onAnimationFrame
         (\p ->
-            if model.liveliness == 0 then
+          if model.animation /= Nothing then
+            if model.timeInCycle == 0 then
                 Increment
-
             else
                 Decrement
+          else NoOp
         )
