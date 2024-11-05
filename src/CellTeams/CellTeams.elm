@@ -35,11 +35,6 @@ type alias GameSettings =
     { rows : Int, columns : Int }
 
 
-defaultTiming : Int
-defaultTiming =
-    100
-
-
 type alias Colorway =
     { name : String
     , display : Int -> Cell -> String
@@ -56,6 +51,11 @@ type Msg
     | PickRandomColorway
     | NewColorway Colorway
     | GridMsg GridMsg
+
+
+defaultTiming : Int
+defaultTiming =
+    100
 
 
 init : () -> ( Model, Cmd Msg )
@@ -90,6 +90,46 @@ decrementModel model =
     }
 
 
+tryNextColorWay : Model -> Model
+tryNextColorWay model =
+    { grid = model.grid
+    , settings = model.settings
+    , timeInCycle = model.timeInCycle
+    , animation = model.animation
+    , colorway = nextColorWay model.colorway
+    }
+
+
+newColorway : Colorway -> Model -> Model
+newColorway colorway model =
+    { grid = model.grid
+    , settings = model.settings
+    , timeInCycle = model.timeInCycle
+    , animation = model.animation
+    , colorway = colorway
+    }
+
+
+go : Model -> Model
+go model =
+    { grid = model.grid
+    , settings = model.settings
+    , timeInCycle = defaultTiming
+    , animation = Just defaultTiming
+    , colorway = model.colorway
+    }
+
+
+stop : Model -> Model
+stop model =
+    { grid = model.grid
+    , settings = model.settings
+    , timeInCycle = defaultTiming
+    , animation = Just defaultTiming
+    , colorway = model.colorway
+    }
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -106,16 +146,16 @@ update msg model =
             ( model, pickRandomColorway )
 
         Stop ->
-            ( { grid = model.grid, settings = model.settings, timeInCycle = defaultTiming, animation = Nothing, colorway = model.colorway }, Cmd.none )
+            ( stop model, Cmd.none )
 
         Go ->
-            ( { grid = model.grid, settings = model.settings, timeInCycle = defaultTiming, animation = Just defaultTiming, colorway = model.colorway }, Cmd.none )
+            ( go model, Cmd.none )
 
         NewColorway colorway ->
-            ( { grid = model.grid, settings = model.settings, timeInCycle = model.timeInCycle, animation = model.animation, colorway = colorway }, Cmd.none )
+            ( newColorway colorway model, Cmd.none )
 
         TryNextColorway ->
-            ( { grid = model.grid, settings = model.settings, timeInCycle = model.timeInCycle, animation = model.animation, colorway = nextColorWay model.colorway }, Cmd.none )
+            ( tryNextColorWay model, Cmd.none )
 
         GridMsg gridMsg ->
             gridMsgToMsg gridMsg model
