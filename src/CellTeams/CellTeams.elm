@@ -61,7 +61,7 @@ defaultTiming =
 init : () -> ( Model, Cmd Msg )
 init _ =
     ( { grid = deadGrid defaultRows defaultColumns
-      , settings = { rows = 2, columns = 2 }
+      , settings = { rows = defaultRows, columns = defaultColumns }
       , timeInCycle = 0
       , animation = Just defaultTiming
       , colorway = defaultColorway
@@ -125,7 +125,7 @@ stop model =
     { grid = model.grid
     , settings = model.settings
     , timeInCycle = defaultTiming
-    , animation = Just defaultTiming
+    , animation = Nothing
     , colorway = model.colorway
     }
 

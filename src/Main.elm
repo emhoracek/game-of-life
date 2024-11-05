@@ -2,9 +2,10 @@ module Main exposing (..)
 
 -- import TakeOne exposing (takeOneMain)
 -- import TakeTwo exposing (takeTwoMain)
-import TakeThree exposing (takeThreeMain)
+-- import TakeThree exposing (takeThreeMain)
+import CellTeams.CellTeams exposing (cellTeamsMain)
 
 
-main : Program () TakeThree.Model TakeThree.Msg
+main : Program () CellTeams.CellTeams.Model CellTeams.CellTeams.Msg
 main =
-    takeThreeMain
+    cellTeamsMain
