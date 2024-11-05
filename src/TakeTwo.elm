@@ -1,8 +1,8 @@
 module TakeTwo exposing (..)
 
+import Array
 import Browser
 import Browser.Events
-import Debug
 import Dict exposing (Dict)
 import Html exposing (Html, button, div, table, td, text, tr)
 import Html.Attributes exposing (style)
@@ -10,14 +10,10 @@ import Html.Events exposing (onClick)
 import List exposing (range)
 import Random
 import TakeOne exposing (Cell(..), columns, rows)
-import Array
-import Html.Attributes exposing (default)
 
 
 
---takeTwoMain : Program () Model Msg
-
-
+takeTwoMain : Program () Model Msg
 takeTwoMain =
     Browser.element
         { init = init
@@ -48,17 +44,19 @@ type alias Grid =
     , columns : Int
     }
 
-type alias Colorway = 
-   { name: String, 
-     display: Int -> Cell -> String }
+
+type alias Colorway =
+    { name : String
+    , display : Int -> Cell -> String
+    }
+
 
 type alias Model =
     { grid : Grid
     , timeInCycle : Int
-    , animation: Maybe Int
-    , colorway: Colorway
+    , animation : Maybe Int
+    , colorway : Colorway
     }
-
 
 
 type Msg
@@ -72,6 +70,7 @@ type Msg
     | TryNextColorway
     | PickRandomColorway
     | NewColorway Colorway
+    | ToggleCell Cell
 
 
 smallGrid : Grid
@@ -165,18 +164,22 @@ cellToInt cell =
             0
 
 
+defaultRows : Int
 defaultRows =
     20
 
 
+defaultColumns : Int
 defaultColumns =
     20
 
 
+defaultTiming : Int
 defaultTiming =
     100
 
 
+usuallyAliveCell : Random.Generator CellState
 usuallyAliveCell =
     Random.weighted ( 50, Alive ) [ ( 50, Dead ) ]
 
@@ -200,6 +203,7 @@ listToIndexedList cols cells =
         cells
 
 
+usuallyAlive : ( Int, Int ) -> Random.Generator Grid
 usuallyAlive ( rows, columns ) =
     Random.map
         (\l -> Grid (Dict.fromList (listToIndexedList columns l)) rows columns)
@@ -220,6 +224,7 @@ init _ =
       }
     , makeGrid
     )
+
 
 getCell : CellCoords -> Grid -> Maybe Cell
 getCell c grid =
@@ -260,10 +265,10 @@ willBeAlive c liveNeighbors =
 updateCell : Cell -> Grid -> Cell
 updateCell cell grid =
     if willBeAlive cell (aliveNeighbors cell grid) then
-      Cell cell.coords Alive
+        Cell cell.coords Alive
 
     else
-      Cell cell.coords Dead
+        Cell cell.coords Dead
 
 
 updateRows : Grid -> Grid
@@ -274,10 +279,15 @@ updateRows grid =
     }
 
 
+deadGrid : Grid
+deadGrid =
+    createGrid defaultRows defaultColumns Dead
+
+
 incrementModel : Model -> Model
 incrementModel model =
     { grid = updateRows model.grid
-    , timeInCycle = defaultTiming
+    , timeInCycle = Maybe.withDefault defaultTiming model.animation
     , animation = model.animation
     , colorway = model.colorway
     }
@@ -292,10 +302,29 @@ decrementModel model =
     }
 
 
+toggleState : CellState -> CellState
+toggleState state =
+    if state == Alive then
+        Dead
+
+    else
+        Alive
+
+
+toggleCell : Cell -> Grid -> Grid
+toggleCell cell grid =
+    { cells = Dict.insert cell.coords (Cell cell.coords (toggleState cell.state)) grid.cells
+    , rows = grid.rows
+    , columns = grid.columns
+    }
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        NoOp -> (model, Cmd.none )
+        NoOp ->
+            ( model, Cmd.none )
+
         Decrement ->
             ( decrementModel model, Cmd.none )
 
@@ -309,90 +338,148 @@ update msg model =
             ( model, makeGrid )
 
         NewGrid newGrid ->
-            ( { grid = newGrid, timeInCycle = model.timeInCycle, animation = model.animation, colorway = model.colorway}, Cmd.none )
+            ( { grid = newGrid, timeInCycle = model.timeInCycle, animation = model.animation, colorway = model.colorway }, Cmd.none )
 
         Stop ->
-            ( { grid = model.grid, timeInCycle = model.timeInCycle, animation = Nothing , colorway = model.colorway}, Cmd.none )
-        
+            ( { grid = model.grid, timeInCycle = defaultTiming, animation = Nothing, colorway = model.colorway }, Cmd.none )
+
         Go ->
-            ( { grid = model.grid, timeInCycle = model.timeInCycle, animation = Just defaultTiming, colorway = model.colorway }, Cmd.none )
+            ( { grid = model.grid, timeInCycle = defaultTiming, animation = Just defaultTiming, colorway = model.colorway }, Cmd.none )
 
         NewColorway colorway ->
             ( { grid = model.grid, timeInCycle = model.timeInCycle, animation = model.animation, colorway = colorway }, Cmd.none )
 
         TryNextColorway ->
-            ( { grid = model.grid, timeInCycle = model.timeInCycle, animation = model.animation, colorway = nextColorWay (model.colorway) }, Cmd.none )
+            ( { grid = model.grid, timeInCycle = model.timeInCycle, animation = model.animation, colorway = nextColorWay model.colorway }, Cmd.none )
+
+        ToggleCell cell ->
+            ( { grid = toggleCell cell model.grid, timeInCycle = model.timeInCycle, animation = model.animation, colorway = model.colorway }, Cmd.none )
 
 
-redAndBlack : Int -> Cell -> String
-redAndBlack _ cell =
-    if cell.state == Alive then
-        "red"
+greenAndGrey : Colorway
+greenAndGrey =
+    Colorway "greenAndGray"
+        (\_ cell ->
+            if cell.state == Alive then
+                "green"
 
-    else
-        "black"
+            else
+                "#CCC"
+        )
 
-glowyPop : Int -> Cell -> String
-glowyPop time cell =
-    let
-        min =
-            25
 
-        max =
-            75
+redAndBlack : Colorway
+redAndBlack =
+    Colorway "redAndBlack"
+        (\_ cell ->
+            if cell.state == Alive then
+                "red"
 
-        p =
-            min + round ((toFloat time / 100) * (max - min))
-    in
-    if cell.state == Alive then
-        "hsl(150 " ++ String.fromInt p ++ "% " ++ String.fromInt p ++ "%)"
+            else
+                "black"
+        )
 
-    else
-        "#333333"
 
-defaultColorway = { name = "glowyPop", display = glowyPop}
+glowyPop : Colorway
+glowyPop =
+    Colorway "glowyPop"
+        (\time cell ->
+            let
+                min =
+                    25
+
+                max =
+                    75
+
+                p =
+                    min + round ((toFloat time / toFloat defaultTiming) * (max - min))
+            in
+            if cell.state == Alive then
+                "hsl(150 " ++ String.fromInt p ++ "% " ++ String.fromInt p ++ "%)"
+
+            else
+                "#333333"
+        )
+
+
+
+
+defaultColorway : Colorway
+defaultColorway =
+    glowyPop
+
 
 otherColorways : List Colorway
-otherColorways = [ {name = "redAndBlack", display = redAndBlack}]
+otherColorways =
+    [ redAndBlack, greenAndGrey ]
 
-allColorways = defaultColorway :: otherColorways
+
+allColorways : List Colorway
+allColorways =
+    defaultColorway :: otherColorways
+
 
 getColorwayIndex : String -> Maybe Int
-getColorwayIndex name = 
-  List.head (List.filterMap (\a -> a) (List.indexedMap (\i c -> if c.name == name then Just i else Nothing) allColorways))
+getColorwayIndex name =
+    List.head
+        (List.filterMap (\a -> a)
+            (List.indexedMap
+                (\i c ->
+                    if c.name == name then
+                        Just i
+
+                    else
+                        Nothing
+                )
+                allColorways
+            )
+        )
 
 
 nextColorWay : Colorway -> Colorway
-nextColorWay currentColorway = 
-  let maybeIndex = getColorwayIndex currentColorway.name
-      maybeColorway = Maybe.andThen (\i -> Array.get (i+1) (Array.fromList allColorways)) maybeIndex in
-  Maybe.withDefault defaultColorway maybeColorway
+nextColorWay currentColorway =
+    let
+        maybeIndex =
+            getColorwayIndex currentColorway.name
+
+        maybeColorway =
+            Maybe.andThen (\i -> Array.get (i + 1) (Array.fromList allColorways)) maybeIndex
+    in
+    Maybe.withDefault defaultColorway maybeColorway
 
 
 pickRandomColorway : Cmd Msg
 pickRandomColorway =
-    Random.generate NewColorway (Random.uniform (defaultColorway) otherColorways)
+    Random.generate NewColorway (Random.uniform defaultColorway otherColorways)
 
 
+showCell : Model -> Cell -> Html Msg
 showCell model cell =
     td
         [ style "background" (model.colorway.display model.timeInCycle cell)
         , style "width" "1em"
         , style "height" "1em"
+        , onClick (ToggleCell cell)
         ]
         [ text " " ]
 
+
+showRow : Model -> List Cell -> Html Msg
 showRow model row =
     tr [] (List.map (\c -> showCell model c) row)
 
+
 toRows : Grid -> List (List Cell)
 toRows grid =
-    List.map 
+    List.map
         (\r -> List.filterMap (\c -> getCell ( r, c ) grid) (range 0 (grid.columns - 1)))
         (range 0 (grid.rows - 1))
 
+
+showGrid : Model -> List (Html Msg)
 showGrid model =
     List.map (showRow model) (toRows model.grid)
+
 
 view : Model -> Html Msg
 view model =
@@ -401,6 +488,7 @@ view model =
         , button [ onClick Increment ] [ text "Step" ]
         , button [ onClick Go ] [ text "Go" ]
         , button [ onClick Stop ] [ text "Stop" ]
+        , button [ onClick (NewGrid deadGrid) ] [ text "Clear" ]
         , button [ onClick MkNewGrid ] [ text "Generate!" ]
         , button [ onClick TryNextColorway ] [ text "Change colors!" ]
         ]
@@ -409,11 +497,14 @@ view model =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Browser.Events.onAnimationFrame
-        (\p ->
-          if model.animation /= Nothing then
-            if model.timeInCycle == 0 then
-                Increment
+        (\_ ->
+            if model.animation /= Nothing then
+                if model.timeInCycle == 0 then
+                    Increment
+
+                else
+                    Decrement
+
             else
-                Decrement
-          else NoOp
+                NoOp
         )

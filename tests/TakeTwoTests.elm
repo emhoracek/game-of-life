@@ -383,6 +383,37 @@ suite =
                             }
                           ]
                         ]
+            ], 
+            describe "toggleCell"
+            [ test "kills a live cell" <|
+                \_ ->
+                    Expect.equal
+                        (toggleCell (Cell (0,0) Alive) smallerGrid)
+                            ({ cells = Dict.fromList
+                                    [ ( ( 0, 0 )
+                                    , { coords = ( 0, 0 )
+                                        , state = Dead
+                                        }
+                                    )
+                                    , ( ( 0, 1 )
+                                    , { coords = ( 0, 1 )
+                                        , state = Alive
+                                        }
+                                    )
+                                    , ( ( 1, 0 )
+                                    , { coords = ( 1, 0 )
+                                        , state = Alive
+                                        }
+                                    )
+                                    , ( ( 1, 1 )
+                                    , { coords = ( 1, 1 )
+                                        , state = Alive
+                                        }
+                                    )
+                                    ]
+                            , rows = 2
+                            , columns = 2
+                            })
             ]
         ]
 
