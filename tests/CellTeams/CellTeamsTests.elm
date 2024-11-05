@@ -10,26 +10,20 @@ import Test exposing (Test, describe, test)
 
 smallGrid : Grid
 smallGrid =
-    { cells =
-        Dict.fromList
-            [ ( ( 0, 0 )
-              , { state = Alive
-                }
-              )
-            , ( ( 0, 1 )
-              , { state = Alive
-                }
-              )
-            , ( ( 1, 0 )
-              , { state = Alive
-                }
-              )
-            , ( ( 1, 1 )
-              , { state = Alive
-                }
-              )
-            ]
-    }
+    Dict.fromList
+        [ ( ( 0, 0 )
+          , Alive
+          )
+        , ( ( 0, 1 )
+          , Alive
+          )
+        , ( ( 1, 0 )
+          , Alive
+          )
+        , ( ( 1, 1 )
+          , Alive
+          )
+        ]
 
 
 suite : Test
@@ -40,14 +34,9 @@ suite =
                 \_ ->
                     Expect.equal
                         (toRows { rows = 2, columns = 2 } smallGrid)
-                        [ [ { state = Alive }
-                          , { state = Alive
-                            }
-                          ]
-                        , [ { state = Alive
-                            }
-                          , { state = Alive
-                            }
+                        [ [ Alive, Alive ]
+                        , [ Alive
+                          , Alive
                           ]
                         ]
             ]

@@ -15,13 +15,11 @@ type alias CellCoords =
 
 
 type alias Cell =
-    { state : CellState
-    }
+    CellState
 
 
 type alias Grid =
-    { cells : Dict CellCoords Cell
-    }
+    Dict CellCoords Cell
 
 
 toCenter : ( Int, Int ) -> CellCoords
@@ -56,19 +54,18 @@ createCellAndNeighbors ( r, c ) ( a, b ) state cells =
             else
                 acc
         )
-        (Dict.insert ( a, b ) (Cell state) cells)
+        (Dict.insert ( a, b ) state cells)
         (List.filter (\coords -> Dict.get coords cells == Nothing) (findNeighboringCoords ( a, b )))
 
 
 createGrid : Int -> Int -> CellState -> Grid
 createGrid r c state =
-    { cells = createCellAndNeighbors ( r, c ) (toCenter ( r, c )) state Dict.empty
-    }
+    createCellAndNeighbors ( r, c ) (toCenter ( r, c )) state Dict.empty
 
 
 cellToInt : Cell -> Int
 cellToInt cell =
-    case cell.state of
+    case cell of
         Alive ->
             1
 
@@ -95,7 +92,7 @@ listToIndexedList cols cells =
                 coords =
                     ( row, col )
             in
-            ( coords, Cell state )
+            ( coords, state )
         )
         cells
 
@@ -103,13 +100,13 @@ listToIndexedList cols cells =
 usuallyAlive : ( Int, Int ) -> Random.Generator Grid
 usuallyAlive ( rows, columns ) =
     Random.map
-        (\l -> Grid (Dict.fromList (listToIndexedList columns l)))
+        (\l -> Dict.fromList (listToIndexedList columns l))
         (Random.list (rows * columns) usuallyAliveCell)
 
 
 getCell : CellCoords -> Grid -> Maybe Cell
 getCell c grid =
-    Dict.get c grid.cells
+    Dict.get c grid
 
 
 getNeighbors : CellCoords -> Grid -> List Cell
@@ -119,7 +116,7 @@ getNeighbors coords grid =
 
 isAlive : Cell -> Bool
 isAlive cell =
-    if cell.state == Alive then
+    if cell == Alive then
         True
 
     else
@@ -146,16 +143,15 @@ willBeAlive c liveNeighbors =
 updateCell : CellCoords -> Cell -> Grid -> Cell
 updateCell coords cell grid =
     if willBeAlive cell (aliveNeighbors coords grid) then
-        Cell Alive
+        Alive
 
     else
-        Cell Dead
+        Dead
 
 
 stepGrid : Grid -> Grid
 stepGrid grid =
-    { cells = Dict.foldr (\k c acc -> Dict.insert k (updateCell k c grid) acc) grid.cells grid.cells
-    }
+    Dict.foldr (\k c acc -> Dict.insert k (updateCell k c grid) acc) grid grid
 
 
 toggleState : CellState -> CellState
@@ -169,8 +165,7 @@ toggleState state =
 
 toggleCell : CellCoords -> Cell -> Grid -> Grid
 toggleCell coords cell grid =
-    { cells = Dict.insert coords (Cell (toggleState cell.state)) grid.cells
-    }
+    Dict.insert coords (toggleState cell) grid
 
 
 deadGrid : Int -> Int -> Grid

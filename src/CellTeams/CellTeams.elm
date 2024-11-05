@@ -189,7 +189,7 @@ greenAndGrey : Colorway
 greenAndGrey =
     Colorway "greenAndGray"
         (\_ cell ->
-            if cell.state == Alive then
+            if cell == Alive then
                 "green"
 
             else
@@ -201,7 +201,7 @@ redAndBlack : Colorway
 redAndBlack =
     Colorway "redAndBlack"
         (\_ cell ->
-            if cell.state == Alive then
+            if cell == Alive then
                 "red"
 
             else
@@ -223,7 +223,7 @@ glowyPop =
                 p =
                     min + round ((toFloat time / toFloat defaultTiming) * (max - min))
             in
-            if cell.state == Alive then
+            if cell == Alive then
                 "hsl(150 " ++ String.fromInt p ++ "% " ++ String.fromInt p ++ "%)"
 
             else
