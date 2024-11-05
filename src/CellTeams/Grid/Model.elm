@@ -152,8 +152,8 @@ updateCell coords cell grid =
         Cell Dead
 
 
-updateRows : Grid -> Grid
-updateRows grid =
+stepGrid : Grid -> Grid
+stepGrid grid =
     { cells = Dict.foldr (\k c acc -> Dict.insert k (updateCell k c grid) acc) grid.cells grid.cells
     }
 

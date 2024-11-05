@@ -3,7 +3,7 @@ module CellTeams.CellTeams exposing (..)
 import Array
 import Browser
 import Browser.Events
-import CellTeams.Grid.Model exposing (Cell, CellState(..), Grid, deadGrid, getCell, updateRows)
+import CellTeams.Grid.Model exposing (Cell, CellState(..), Grid, deadGrid, getCell, stepGrid)
 import CellTeams.Grid.Update exposing (GridMsg(..), defaultColumns, defaultRows, makeGrid, updateGrid)
 import Html exposing (Html, button, div, table, td, text, tr)
 import Html.Attributes exposing (style)
@@ -72,7 +72,7 @@ init _ =
 
 incrementModel : Model -> Model
 incrementModel model =
-    { grid = updateRows model.grid
+    { grid = stepGrid model.grid
     , settings = model.settings
     , timeInCycle = Maybe.withDefault defaultTiming model.animation
     , animation = model.animation

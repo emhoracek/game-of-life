@@ -12,6 +12,30 @@ smallerGrid =
     { cells =
         Dict.fromList
             [ ( ( 0, 0 )
+              , { state = Dead
+                }
+              )
+            , ( ( 0, 1 )
+              , { state = Alive
+                }
+              )
+            , ( ( 1, 0 )
+              , { state = Alive
+                }
+              )
+            , ( ( 1, 1 )
+              , { state = Alive
+                }
+              )
+            ]
+    }
+
+
+smallerGridNext : Grid
+smallerGridNext =
+    { cells =
+        Dict.fromList
+            [ ( ( 0, 0 )
               , { state = Alive
                 }
               )
@@ -257,9 +281,6 @@ suite =
                     Expect.equal (createCellAndNeighbors ( 1, 2 ) ( 0, 0 ) Alive Dict.empty)
                         (Dict.fromList [ ( ( 0, 0 ), Cell Alive ), ( ( 0, 1 ), Cell Alive ) ])
             ]
-        , test "bigger" <|
-            \_ ->
-                Expect.equal (createCellAndNeighbors ( 2, 2 ) ( 0, 0 ) Alive Dict.empty) smallerGrid.cells
         , describe "creating a grid"
             [ test "with all alive cells" <|
                 \_ ->
@@ -307,6 +328,11 @@ suite =
                     Expect.equal
                         (prep (getNeighbors ( 1, 2 ) exampleGridWithMix))
                         (prep [ Cell Dead, Cell Dead, Cell Dead, Cell Alive, Cell Dead, Cell Alive, Cell Alive, Cell Dead ])
+            ]
+        , describe "stepGrid"
+            [ test "stepping a grid" <|
+                \_ ->
+                    Expect.equal (stepGrid smallerGrid) smallerGridNext
             ]
         , describe "toggleCell"
             [ test "kills a live cell" <|
