@@ -1,0 +1,25 @@
+.globalcommands {
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+    text-align: center;
+    margin: 1em;
+
+}
+
+
+.grids {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-top: 2em;
+}
+
+.gridcommands {
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+    text-align: center;
+    margin: 1em;
+    margin-top: 0.5em;
+}
