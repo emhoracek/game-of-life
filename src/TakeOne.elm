@@ -4,15 +4,15 @@ import Array exposing (Array, fromList, get, toList)
 import Browser
 import Browser.Events
 import Debug
-import Html exposing (Html, button, div, li, table, td, text, tr, ul)
+import Html exposing (Html, button, div, table, td, text, tr)
 import Html.Attributes exposing (style)
 import Html.Events exposing (onClick)
 import List exposing (range)
 import Maybe
 import Random
-import Time
 
 
+takeOneMain : Program () Model Msg
 takeOneMain =
     Browser.element
         { init = init

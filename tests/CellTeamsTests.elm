@@ -1,17 +1,15 @@
 module CellTeamsTests exposing (..)
 
+import CellTeams exposing (..)
 import Dict
 import Expect
 import List exposing ((::))
 import Test exposing (Test, describe, test)
 
-import CellTeams exposing (..)
-
 
 exampleCell : Cell
 exampleCell =
-    { 
-      state = Alive
+    { state = Alive
     }
 
 
@@ -20,23 +18,19 @@ smallerGrid1 =
     { cells =
         Dict.fromList
             [ ( ( 0, 0 )
-            ,   {
-                 state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 0, 1 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 1, 0 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 1, 1 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             ]
@@ -48,48 +42,39 @@ exampleGrid =
     { cells =
         Dict.fromList
             [ ( ( 0, 0 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 0, 1 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 0, 2 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 1, 0 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 1, 1 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 1, 2 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 2, 0 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 2, 1 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 2, 2 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             ]
@@ -101,63 +86,51 @@ largerGrid =
     { cells =
         Dict.fromList
             [ ( ( 0, 0 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 0, 1 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 0, 2 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 0, 3 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 1, 0 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 1, 1 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 1, 2 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 1, 3 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 2, 0 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 2, 1 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 2, 2 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 2, 3 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             ]
@@ -176,83 +149,67 @@ exampleGridWithMix =
     { cells =
         Dict.fromList
             [ ( ( 0, 0 )
-              , { 
-                  state = Dead
+              , { state = Dead
                 }
               )
             , ( ( 0, 1 )
-              , { 
-                  state = Dead
+              , { state = Dead
                 }
               )
             , ( ( 0, 2 )
-              , { 
-                  state = Dead
+              , { state = Dead
                 }
               )
             , ( ( 0, 3 )
-              , { 
-                  state = Dead
+              , { state = Dead
                 }
               )
             , ( ( 1, 0 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 1, 1 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 1, 2 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 1, 3 )
-              , { 
-                  state = Dead
+              , { state = Dead
                 }
               )
             , ( ( 2, 0 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 2, 1 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 2, 2 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 2, 3 )
-              , { 
-                  state = Dead
+              , { state = Dead
                 }
               )
             , ( ( 3, 0 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 3, 1 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 3, 2 )
-              , { 
-                  state = Alive
+              , { state = Alive
                 }
               )
             , ( ( 3, 3 )
-              , { 
-                  state = Dead
+              , { state = Dead
                 }
               )
             ]
@@ -354,7 +311,7 @@ suite =
             [ test "row 2, column 3" <|
                 \_ ->
                     Expect.equal
-                        (prep (getNeighbors (1, 2) exampleGridWithMix))
+                        (prep (getNeighbors ( 1, 2 ) exampleGridWithMix))
                         (prep [ Cell Dead, Cell Dead, Cell Dead, Cell Alive, Cell Dead, Cell Alive, Cell Alive, Cell Dead ])
             ]
         , describe "toRows"
@@ -363,53 +320,48 @@ suite =
                     Expect.equal
                         (toRows { rows = 2, columns = 2 } smallerGrid1)
                         [ [ { state = Alive }
-                          , { 
-                              state = Alive
+                          , { state = Alive
                             }
                           ]
-                        , [ { 
-                              state = Alive
+                        , [ { state = Alive
                             }
-                          , { 
-                              state = Alive
+                          , { state = Alive
                             }
                           ]
                         ]
-            ], 
-            describe "toggleCell"
+            ]
+        , describe "toggleCell"
             [ test "kills a live cell" <|
                 \_ ->
                     Expect.equal
-                        (toggleCell (0,0) (Cell Alive) smallerGrid1)
-                            ({ cells = Dict.fromList
-                                    [ ( ( 0, 0 )
-                                    , { 
-                                          state = Dead
-                                        }
-                                    )
-                                    , ( ( 0, 1 )
-                                    , { 
-                                          state = Alive
-                                        }
-                                    )
-                                    , ( ( 1, 0 )
-                                    , { 
-                                          state = Alive
-                                        }
-                                    )
-                                    , ( ( 1, 1 )
-                                    , { 
-                                          state = Alive
-                                        }
-                                    )
-                                    ]})
+                        (toggleCell ( 0, 0 ) (Cell Alive) smallerGrid1)
+                        { cells =
+                            Dict.fromList
+                                [ ( ( 0, 0 )
+                                  , { state = Dead
+                                    }
+                                  )
+                                , ( ( 0, 1 )
+                                  , { state = Alive
+                                    }
+                                  )
+                                , ( ( 1, 0 )
+                                  , { state = Alive
+                                    }
+                                  )
+                                , ( ( 1, 1 )
+                                  , { state = Alive
+                                    }
+                                  )
+                                ]
+                        }
             ]
         ]
 
 
 prep : List Cell -> List Cell
 prep list =
-    List.sortBy (cellToInt) list
+    List.sortBy cellToInt list
 
 
 cellToInt : Cell -> Int

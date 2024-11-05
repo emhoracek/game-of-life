@@ -46,14 +46,20 @@ type alias Colorway =
     , display : Int -> Cell -> String
     }
 
+
+
 -- Things that can be set at the beginning of the game, then can't be changed
-type alias GameSettings = 
-  { rows: Int
-  , columns: Int }
+
+
+type alias GameSettings =
+    { rows : Int
+    , columns : Int
+    }
+
 
 type alias Model =
     { grid : Grid
-    , settings: GameSettings
+    , settings : GameSettings
     , timeInCycle : Int
     , animation : Maybe Int
     , colorway : Colorway
@@ -204,7 +210,7 @@ makeGrid =
 init : () -> ( Model, Cmd Msg )
 init _ =
     ( { grid = smallGrid
-      , settings = { rows = 2, columns = 2}
+      , settings = { rows = 2, columns = 2 }
       , timeInCycle = 0
       , animation = Just defaultTiming
       , colorway = defaultColorway
@@ -387,8 +393,6 @@ glowyPop =
         )
 
 
-
-
 defaultColorway : Colorway
 defaultColorway =
     glowyPop
@@ -444,7 +448,7 @@ showCell model row col cell =
         [ style "background" (model.colorway.display model.timeInCycle cell)
         , style "width" "1em"
         , style "height" "1em"
-        , onClick (ToggleCell (row, col) cell)
+        , onClick (ToggleCell ( row, col ) cell)
         ]
         [ text " " ]
 
