@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "elm-test": "^0.19.1-revision12"
+  },
+  "dependencies": {
+    "elm-live": "^4.0.2"
   }
 }
