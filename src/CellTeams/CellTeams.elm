@@ -229,12 +229,12 @@ glowyPop =
 
 defaultColorway : Colorway
 defaultColorway =
-    glowyPop
+    redAndBlack
 
 
 otherColorways : List Colorway
 otherColorways =
-    [ redAndBlack, greenAndGrey ]
+    [ glowyPop, greenAndGrey ]
 
 
 allColorways : List Colorway
