@@ -1,17 +1,16 @@
 module CellTeams.CellTeams exposing (..)
 
 import Array
-import Dict exposing (Dict)
 import Browser
 import Browser.Events
 import CellTeams.Grid.Model exposing (Cell, CellState(..), Grid, deadGrid, getCell, stepGrid)
 import CellTeams.Grid.Update exposing (GridMsg(..), defaultColumns, defaultRows, makeGrid, updateGrid)
+import Dict exposing (Dict)
 import Html exposing (Html, button, div, table, td, text, tr)
-import Html.Attributes exposing (style, class)
+import Html.Attributes exposing (class, style)
 import Html.Events exposing (onClick)
 import List exposing (range)
 import Random
-import Dict
 
 
 cellTeamsMain : Program () Model Msg
@@ -32,7 +31,10 @@ type alias Model =
     , colorway : Colorway
     }
 
-type alias GridId = String
+
+type alias GridId =
+    String
+
 
 type alias GameSettings =
     { rows : Int, columns : Int }
@@ -63,19 +65,19 @@ defaultTiming =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { grids = Dict.fromList [("0", deadGrid defaultRows defaultColumns), ("1", deadGrid defaultRows defaultColumns)]
+    ( { grids = Dict.fromList [ ( "0", deadGrid defaultRows defaultColumns ), ( "1", deadGrid defaultRows defaultColumns ) ]
       , settings = { rows = defaultRows, columns = defaultColumns }
       , timeInCycle = 0
       , animation = Just defaultTiming
       , colorway = defaultColorway
       }
-    , Cmd.batch [Cmd.map (GridMsg "0") makeGrid, Cmd.map (GridMsg "1") makeGrid]
+    , Cmd.batch [ Cmd.map (GridMsg "0") makeGrid, Cmd.map (GridMsg "1") makeGrid ]
     )
 
 
 incrementModel : Model -> Model
 incrementModel model =
-    { grids = Dict.map (\_-> stepGrid) (model.grids)
+    { grids = Dict.map (\_ -> stepGrid) model.grids
     , settings = model.settings
     , timeInCycle = Maybe.withDefault defaultTiming model.animation
     , animation = model.animation
@@ -167,9 +169,11 @@ update msg model =
 gridMsgToMsg : GridId -> GridMsg -> Model -> ( Model, Cmd Msg )
 gridMsgToMsg gridId gridMsg model =
     let
-        grid = Maybe.withDefault (deadGrid defaultRows defaultColumns) (Dict.get gridId model.grids)
-        (newGrid, cmd) =  updateGrid gridMsg grid
-            
+        grid =
+            Maybe.withDefault (deadGrid defaultRows defaultColumns) (Dict.get gridId model.grids)
+
+        ( newGrid, cmd ) =
+            updateGrid gridMsg grid
     in
     ( { grids = Dict.insert gridId newGrid model.grids
       , settings = model.settings
@@ -305,24 +309,28 @@ showGrid model gridId grid =
 
 
 viewGrid : Model -> GridId -> Grid -> Html Msg
-viewGrid model gridId grid = 
-    div [] [
-        table [] (showGrid model gridId grid)
-        , button [ onClick (GridMsg gridId (NewGrid (deadGrid defaultRows defaultColumns))) ] [ text "Clear" ]
-        , button [ onClick (GridMsg gridId MkNewGrid) ] [ text "Generate!" ]
-    ]
+viewGrid model gridId grid =
+    div []
+        [ table [] (showGrid model gridId grid)
+        , div [ class "gridcommands" ]
+            [ button [ onClick (GridMsg gridId (NewGrid (deadGrid defaultRows defaultColumns))) ] [ text "Clear" ]
+            , button [ onClick (GridMsg gridId MkNewGrid) ] [ text "Generate!" ]
+            ]
+        ]
+
 
 view : Model -> Html Msg
 view model =
     div []
-        [ div []
-        [     button [ onClick Increment ] [ text "Step" ]
+        [ div [ class "globalcommands" ]
+            [ button [ onClick Increment ] [ text "Step" ]
             , button [ onClick Go ] [ text "Go" ]
             , button [ onClick Stop ] [ text "Stop" ]
             , button [ onClick TryNextColorway ] [ text "Change colors!" ]
-            ],
-          div [ class "grids"]
-                (Dict.values (Dict.map (\k v -> viewGrid model k v) model.grids))]
+            ]
+        , div [ class "grids" ]
+            (Dict.values (Dict.map (\k v -> viewGrid model k v) model.grids))
+        ]
 
 
 subscriptions : Model -> Sub Msg
