@@ -1,20 +1,14 @@
-module CellTeamsTests exposing (..)
+module CellTeams.Grid.ModelTests exposing (..)
 
-import CellTeams exposing (..)
+import CellTeams.Grid.Model exposing (..)
 import Dict
 import Expect
 import List exposing ((::))
 import Test exposing (Test, describe, test)
 
 
-exampleCell : Cell
-exampleCell =
-    { state = Alive
-    }
-
-
-smallerGrid1 : Grid
-smallerGrid1 =
+smallerGrid : Grid
+smallerGrid =
     { cells =
         Dict.fromList
             [ ( ( 0, 0 )
@@ -218,7 +212,7 @@ exampleGridWithMix =
 
 suite : Test
 suite =
-    describe "Game of Life"
+    describe "model"
         [ describe "finding neighboring coords"
             [ test "with origin (0,0)" <|
                 \_ ->
@@ -265,7 +259,7 @@ suite =
             ]
         , test "bigger" <|
             \_ ->
-                Expect.equal (createCellAndNeighbors ( 2, 2 ) ( 0, 0 ) Alive Dict.empty) smallerGrid1.cells
+                Expect.equal (createCellAndNeighbors ( 2, 2 ) ( 0, 0 ) Alive Dict.empty) smallerGrid.cells
         , describe "creating a grid"
             [ test "with all alive cells" <|
                 \_ ->
@@ -314,27 +308,11 @@ suite =
                         (prep (getNeighbors ( 1, 2 ) exampleGridWithMix))
                         (prep [ Cell Dead, Cell Dead, Cell Dead, Cell Alive, Cell Dead, Cell Alive, Cell Alive, Cell Dead ])
             ]
-        , describe "toRows"
-            [ test "converts grid to rows for display" <|
-                \_ ->
-                    Expect.equal
-                        (toRows { rows = 2, columns = 2 } smallerGrid1)
-                        [ [ { state = Alive }
-                          , { state = Alive
-                            }
-                          ]
-                        , [ { state = Alive
-                            }
-                          , { state = Alive
-                            }
-                          ]
-                        ]
-            ]
         , describe "toggleCell"
             [ test "kills a live cell" <|
                 \_ ->
                     Expect.equal
-                        (toggleCell ( 0, 0 ) (Cell Alive) smallerGrid1)
+                        (toggleCell ( 0, 0 ) (Cell Alive) smallerGrid)
                         { cells =
                             Dict.fromList
                                 [ ( ( 0, 0 )

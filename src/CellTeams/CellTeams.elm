@@ -1,15 +1,15 @@
-module CellTeams exposing (..)
+module CellTeams.CellTeams exposing (..)
 
 import Array
 import Browser
 import Browser.Events
-import Dict exposing (Dict)
+import CellTeams.Grid.Model exposing (Cell, CellState(..), Grid, deadGrid, getCell, updateRows)
+import CellTeams.Grid.Update exposing (GridMsg(..), defaultColumns, defaultRows, makeGrid, updateGrid)
 import Html exposing (Html, button, div, table, td, text, tr)
 import Html.Attributes exposing (style)
 import Html.Events exposing (onClick)
 import List exposing (range)
 import Random
-import TakeOne exposing (columns)
 
 
 cellTeamsMain : Program () Model Msg
@@ -22,41 +22,6 @@ cellTeamsMain =
         }
 
 
-type CellState
-    = Alive
-    | Dead
-
-
-type alias CellCoords =
-    ( Int, Int )
-
-
-type alias Cell =
-    { state : CellState
-    }
-
-
-type alias Grid =
-    { cells : Dict CellCoords Cell
-    }
-
-
-type alias Colorway =
-    { name : String
-    , display : Int -> Cell -> String
-    }
-
-
-
--- Things that can be set at the beginning of the game, then can't be changed
-
-
-type alias GameSettings =
-    { rows : Int
-    , columns : Int
-    }
-
-
 type alias Model =
     { grid : Grid
     , settings : GameSettings
@@ -66,104 +31,8 @@ type alias Model =
     }
 
 
-type Msg
-    = NoOp
-    | Increment
-    | Decrement
-    | NewGrid Grid
-    | MkNewGrid
-    | Stop
-    | Go
-    | TryNextColorway
-    | PickRandomColorway
-    | NewColorway Colorway
-    | ToggleCell CellCoords Cell
-
-
-smallGrid : Grid
-smallGrid =
-    { cells =
-        Dict.fromList
-            [ ( ( 0, 0 )
-              , { state = Alive
-                }
-              )
-            , ( ( 0, 1 )
-              , { state = Alive
-                }
-              )
-            , ( ( 1, 0 )
-              , { state = Alive
-                }
-              )
-            , ( ( 1, 1 )
-              , { state = Alive
-                }
-              )
-            ]
-    }
-
-
-toCenter : ( Int, Int ) -> CellCoords
-toCenter ( rows, cols ) =
-    ( floor (toFloat rows / 2), floor (toFloat cols / 2) )
-
-
-findNeighboringCoords : CellCoords -> List CellCoords
-findNeighboringCoords ( row, col ) =
-    let
-        arr =
-            [ ( -1, -1 )
-            , ( -1, 0 )
-            , ( -1, 1 )
-            , ( 0, -1 )
-            , ( 0, 1 )
-            , ( 1, -1 )
-            , ( 1, 0 )
-            , ( 1, 1 )
-            ]
-    in
-    List.foldr (\( rowOff, colOff ) acc -> ( row + rowOff, col + colOff ) :: acc) [] arr
-
-
-createCellAndNeighbors : ( Int, Int ) -> CellCoords -> CellState -> Dict CellCoords Cell -> Dict CellCoords Cell
-createCellAndNeighbors ( r, c ) ( a, b ) state cells =
-    List.foldr
-        (\( a2, b2 ) acc ->
-            if a2 < r && b2 < c && a2 >= 0 && b2 >= 0 then
-                createCellAndNeighbors ( r, c ) ( a2, b2 ) state acc
-
-            else
-                acc
-        )
-        (Dict.insert ( a, b ) (Cell state) cells)
-        (List.filter (\coords -> Dict.get coords cells == Nothing) (findNeighboringCoords ( a, b )))
-
-
-createGrid : Int -> Int -> CellState -> Grid
-createGrid r c state =
-    { cells = createCellAndNeighbors ( r, c ) (toCenter ( r, c )) state Dict.empty
-    }
-
-
-cellToInt : Cell -> Int
-cellToInt cell =
-    case cell.state of
-        Alive ->
-            1
-
-        Dead ->
-            0
-
-
-defaultRows : Int
-defaultRows =
-    20
-
-
-defaultColumns : Int
-defaultColumns =
-    20
+type alias GameSettings =
+    { rows : Int, columns : Int }
 
 
 defaultTiming : Int
@@ -171,108 +40,34 @@ defaultTiming =
     100
 
 
-usuallyAliveCell : Random.Generator CellState
-usuallyAliveCell =
-    Random.weighted ( 50, Alive ) [ ( 50, Dead ) ]
+type alias Colorway =
+    { name : String
+    , display : Int -> Cell -> String
+    }
 
 
-listToIndexedList : Int -> List CellState -> List ( ( Int, Int ), Cell )
-listToIndexedList cols cells =
-    List.indexedMap
-        (\n state ->
-            let
-                row =
-                    n // cols
-
-                col =
-                    modBy cols n
-
-                coords =
-                    ( row, col )
-            in
-            ( coords, Cell state )
-        )
-        cells
-
-
-usuallyAlive : ( Int, Int ) -> Random.Generator Grid
-usuallyAlive ( rows, columns ) =
-    Random.map
-        (\l -> Grid (Dict.fromList (listToIndexedList columns l)))
-        (Random.list (rows * columns) usuallyAliveCell)
-
-
-makeGrid : Cmd Msg
-makeGrid =
-    Random.generate NewGrid (usuallyAlive ( defaultRows, defaultColumns ))
+type Msg
+    = NoOp
+    | Increment
+    | Decrement
+    | Stop
+    | Go
+    | TryNextColorway
+    | PickRandomColorway
+    | NewColorway Colorway
+    | GridMsg GridMsg
 
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { grid = smallGrid
+    ( { grid = deadGrid defaultRows defaultColumns
       , settings = { rows = 2, columns = 2 }
       , timeInCycle = 0
       , animation = Just defaultTiming
       , colorway = defaultColorway
       }
-    , makeGrid
+    , Cmd.map GridMsg makeGrid
     )
-
-
-getCell : CellCoords -> Grid -> Maybe Cell
-getCell c grid =
-    Dict.get c grid.cells
-
-
-getNeighbors : CellCoords -> Grid -> List Cell
-getNeighbors coords grid =
-    List.filterMap (\c -> getCell c grid) (findNeighboringCoords coords)
-
-
-isAlive : Cell -> Bool
-isAlive cell =
-    if cell.state == Alive then
-        True
-
-    else
-        False
-
-
-aliveNeighbors : CellCoords -> Grid -> Int
-aliveNeighbors coords grid =
-    List.length (List.filter isAlive (getNeighbors coords grid))
-
-
-willBeAlive : Cell -> Int -> Bool
-willBeAlive c liveNeighbors =
-    if isAlive c then
-        liveNeighbors
-            == 2
-            || liveNeighbors
-            == 3
-
-    else
-        liveNeighbors == 3
-
-
-updateCell : CellCoords -> Cell -> Grid -> Cell
-updateCell coords cell grid =
-    if willBeAlive cell (aliveNeighbors coords grid) then
-        Cell Alive
-
-    else
-        Cell Dead
-
-
-updateRows : Grid -> Grid
-updateRows grid =
-    { cells = Dict.foldr (\k c acc -> Dict.insert k (updateCell k c grid) acc) grid.cells grid.cells
-    }
-
-
-deadGrid : Grid
-deadGrid =
-    createGrid defaultRows defaultColumns Dead
 
 
 incrementModel : Model -> Model
@@ -295,21 +90,6 @@ decrementModel model =
     }
 
 
-toggleState : CellState -> CellState
-toggleState state =
-    if state == Alive then
-        Dead
-
-    else
-        Alive
-
-
-toggleCell : CellCoords -> Cell -> Grid -> Grid
-toggleCell coords cell grid =
-    { cells = Dict.insert coords (Cell (toggleState cell.state)) grid.cells
-    }
-
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -325,12 +105,6 @@ update msg model =
         PickRandomColorway ->
             ( model, pickRandomColorway )
 
-        MkNewGrid ->
-            ( model, makeGrid )
-
-        NewGrid newGrid ->
-            ( { grid = newGrid, settings = model.settings, timeInCycle = model.timeInCycle, animation = model.animation, colorway = model.colorway }, Cmd.none )
-
         Stop ->
             ( { grid = model.grid, settings = model.settings, timeInCycle = defaultTiming, animation = Nothing, colorway = model.colorway }, Cmd.none )
 
@@ -343,8 +117,24 @@ update msg model =
         TryNextColorway ->
             ( { grid = model.grid, settings = model.settings, timeInCycle = model.timeInCycle, animation = model.animation, colorway = nextColorWay model.colorway }, Cmd.none )
 
-        ToggleCell coords cell ->
-            ( { grid = toggleCell coords cell model.grid, settings = model.settings, timeInCycle = model.timeInCycle, animation = model.animation, colorway = model.colorway }, Cmd.none )
+        GridMsg gridMsg ->
+            gridMsgToMsg gridMsg model
+
+
+gridMsgToMsg : GridMsg -> Model -> ( Model, Cmd Msg )
+gridMsgToMsg gridMsg model =
+    let
+        ( grid, cmd ) =
+            updateGrid gridMsg model.grid
+    in
+    ( { grid = grid
+      , settings = model.settings
+      , timeInCycle = model.timeInCycle
+      , animation = model.animation
+      , colorway = model.colorway
+      }
+    , Cmd.map GridMsg cmd
+    )
 
 
 greenAndGrey : Colorway
@@ -448,7 +238,7 @@ showCell model row col cell =
         [ style "background" (model.colorway.display model.timeInCycle cell)
         , style "width" "1em"
         , style "height" "1em"
-        , onClick (ToggleCell ( row, col ) cell)
+        , onClick (GridMsg (ToggleCell ( row, col ) cell))
         ]
         [ text " " ]
 
@@ -477,8 +267,8 @@ view model =
         , button [ onClick Increment ] [ text "Step" ]
         , button [ onClick Go ] [ text "Go" ]
         , button [ onClick Stop ] [ text "Stop" ]
-        , button [ onClick (NewGrid deadGrid) ] [ text "Clear" ]
-        , button [ onClick MkNewGrid ] [ text "Generate!" ]
+        , button [ onClick (GridMsg (NewGrid (deadGrid defaultRows defaultColumns))) ] [ text "Clear" ]
+        , button [ onClick (GridMsg MkNewGrid) ] [ text "Generate!" ]
         , button [ onClick TryNextColorway ] [ text "Change colors!" ]
         ]
 
