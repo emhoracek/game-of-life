@@ -5248,9 +5248,6 @@ var $author$project$CellTeams$CellTeams$GridMsg = F2(
 	});
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $author$project$CellTeams$Grid$Model$Dead = {$: 'Dead'};
-var $author$project$CellTeams$Grid$Model$Cell = function (state) {
-	return {state: state};
-};
 var $elm$core$List$filter = F2(
 	function (isGood, list) {
 		return A3(
@@ -5457,7 +5454,7 @@ var $author$project$CellTeams$Grid$Model$createCellAndNeighbors = F4(
 			A3(
 				$elm$core$Dict$insert,
 				_Utils_Tuple2(a, b),
-				$author$project$CellTeams$Grid$Model$Cell(state),
+				state,
 				cells),
 			A2(
 				$elm$core$List$filter,
@@ -5479,15 +5476,13 @@ var $author$project$CellTeams$Grid$Model$toCenter = function (_v0) {
 };
 var $author$project$CellTeams$Grid$Model$createGrid = F3(
 	function (r, c, state) {
-		return {
-			cells: A4(
-				$author$project$CellTeams$Grid$Model$createCellAndNeighbors,
-				_Utils_Tuple2(r, c),
-				$author$project$CellTeams$Grid$Model$toCenter(
-					_Utils_Tuple2(r, c)),
-				state,
-				$elm$core$Dict$empty)
-		};
+		return A4(
+			$author$project$CellTeams$Grid$Model$createCellAndNeighbors,
+			_Utils_Tuple2(r, c),
+			$author$project$CellTeams$Grid$Model$toCenter(
+				_Utils_Tuple2(r, c)),
+			state,
+			$elm$core$Dict$empty);
 	});
 var $author$project$CellTeams$Grid$Model$deadGrid = F2(
 	function (rows, cols) {
@@ -5503,12 +5498,11 @@ var $author$project$CellTeams$CellTeams$redAndBlack = A2(
 	'redAndBlack',
 	F2(
 		function (_v0, cell) {
-			return _Utils_eq(cell.state, $author$project$CellTeams$Grid$Model$Alive) ? 'red' : 'black';
+			return _Utils_eq(cell, $author$project$CellTeams$Grid$Model$Alive) ? 'red' : 'black';
 		}));
 var $author$project$CellTeams$CellTeams$defaultColorway = $author$project$CellTeams$CellTeams$redAndBlack;
 var $author$project$CellTeams$Grid$Update$defaultColumns = 20;
 var $author$project$CellTeams$Grid$Update$defaultRows = 20;
-var $author$project$CellTeams$CellTeams$defaultTiming = 100;
 var $elm$core$Dict$fromList = function (assocs) {
 	return A3(
 		$elm$core$List$foldl,
@@ -5631,9 +5625,6 @@ var $elm$random$Random$generate = F2(
 			$elm$random$Random$Generate(
 				A2($elm$random$Random$map, tagger, generator)));
 	});
-var $author$project$CellTeams$Grid$Model$Grid = function (cells) {
-	return {cells: cells};
-};
 var $elm$random$Random$listHelp = F4(
 	function (revList, n, gen, seed) {
 		listHelp:
@@ -5674,9 +5665,7 @@ var $author$project$CellTeams$Grid$Model$listToIndexedList = F2(
 					var row = (n / cols) | 0;
 					var col = A2($elm$core$Basics$modBy, cols, n);
 					var coords = _Utils_Tuple2(row, col);
-					return _Utils_Tuple2(
-						coords,
-						$author$project$CellTeams$Grid$Model$Cell(state));
+					return _Utils_Tuple2(coords, state);
 				}),
 			cells);
 	});
@@ -5763,9 +5752,8 @@ var $author$project$CellTeams$Grid$Model$usuallyAlive = function (_v0) {
 	return A2(
 		$elm$random$Random$map,
 		function (l) {
-			return $author$project$CellTeams$Grid$Model$Grid(
-				$elm$core$Dict$fromList(
-					A2($author$project$CellTeams$Grid$Model$listToIndexedList, columns, l)));
+			return $elm$core$Dict$fromList(
+				A2($author$project$CellTeams$Grid$Model$listToIndexedList, columns, l));
 		},
 		A2($elm$random$Random$list, rows * columns, $author$project$CellTeams$Grid$Model$usuallyAliveCell));
 };
@@ -5778,7 +5766,7 @@ var $elm$core$Platform$Cmd$map = _Platform_map;
 var $author$project$CellTeams$CellTeams$init = function (_v0) {
 	return _Utils_Tuple2(
 		{
-			animation: $elm$core$Maybe$Just($author$project$CellTeams$CellTeams$defaultTiming),
+			animation: $elm$core$Maybe$Nothing,
 			colorway: $author$project$CellTeams$CellTeams$defaultColorway,
 			grids: $elm$core$Dict$fromList(
 				_List_fromArray(
@@ -5808,8 +5796,9 @@ var $author$project$CellTeams$CellTeams$init = function (_v0) {
 };
 var $author$project$CellTeams$CellTeams$Decrement = {$: 'Decrement'};
 var $author$project$CellTeams$CellTeams$Increment = {$: 'Increment'};
-var $author$project$CellTeams$CellTeams$NoOp = {$: 'NoOp'};
 var $elm$core$Basics$neq = _Utils_notEqual;
+var $elm$core$Platform$Sub$batch = _Platform_batch;
+var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $elm$browser$Browser$AnimationManager$Time = function (a) {
 	return {$: 'Time', a: a};
 };
@@ -5941,14 +5930,15 @@ var $elm$browser$Browser$AnimationManager$onAnimationFrame = function (tagger) {
 };
 var $elm$browser$Browser$Events$onAnimationFrame = $elm$browser$Browser$AnimationManager$onAnimationFrame;
 var $author$project$CellTeams$CellTeams$subscriptions = function (model) {
-	return $elm$browser$Browser$Events$onAnimationFrame(
+	return (!_Utils_eq(model.animation, $elm$core$Maybe$Nothing)) ? $elm$browser$Browser$Events$onAnimationFrame(
 		function (_v0) {
-			return (!_Utils_eq(model.animation, $elm$core$Maybe$Nothing)) ? ((!model.timeInCycle) ? $author$project$CellTeams$CellTeams$Increment : $author$project$CellTeams$CellTeams$Decrement) : $author$project$CellTeams$CellTeams$NoOp;
-		});
+			return (!model.timeInCycle) ? $author$project$CellTeams$CellTeams$Increment : $author$project$CellTeams$CellTeams$Decrement;
+		}) : $elm$core$Platform$Sub$none;
 };
 var $author$project$CellTeams$CellTeams$decrementModel = function (model) {
 	return {animation: model.animation, colorway: model.colorway, grids: model.grids, settings: model.settings, timeInCycle: model.timeInCycle - 1};
 };
+var $author$project$CellTeams$CellTeams$defaultTiming = 100;
 var $author$project$CellTeams$CellTeams$go = function (model) {
 	return {
 		animation: $elm$core$Maybe$Just($author$project$CellTeams$CellTeams$defaultTiming),
@@ -5964,14 +5954,11 @@ var $author$project$CellTeams$Grid$Model$toggleState = function (state) {
 };
 var $author$project$CellTeams$Grid$Model$toggleCell = F3(
 	function (coords, cell, grid) {
-		return {
-			cells: A3(
-				$elm$core$Dict$insert,
-				coords,
-				$author$project$CellTeams$Grid$Model$Cell(
-					$author$project$CellTeams$Grid$Model$toggleState(cell.state)),
-				grid.cells)
-		};
+		return A3(
+			$elm$core$Dict$insert,
+			coords,
+			$author$project$CellTeams$Grid$Model$toggleState(cell),
+			grid);
 	});
 var $author$project$CellTeams$Grid$Update$updateGrid = F2(
 	function (msg, grid) {
@@ -6041,6 +6028,81 @@ var $elm$core$Dict$map = F2(
 				A2($elm$core$Dict$map, func, right));
 		}
 	});
+var $elm$core$List$append = F2(
+	function (xs, ys) {
+		if (!ys.b) {
+			return xs;
+		} else {
+			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
+		}
+	});
+var $elm$core$List$concat = function (lists) {
+	return A3($elm$core$List$foldr, $elm$core$List$append, _List_Nil, lists);
+};
+var $elm$core$List$concatMap = F2(
+	function (f, list) {
+		return $elm$core$List$concat(
+			A2($elm$core$List$map, f, list));
+	});
+var $elm$core$List$any = F2(
+	function (isOkay, list) {
+		any:
+		while (true) {
+			if (!list.b) {
+				return false;
+			} else {
+				var x = list.a;
+				var xs = list.b;
+				if (isOkay(x)) {
+					return true;
+				} else {
+					var $temp$isOkay = isOkay,
+						$temp$list = xs;
+					isOkay = $temp$isOkay;
+					list = $temp$list;
+					continue any;
+				}
+			}
+		}
+	});
+var $elm$core$List$member = F2(
+	function (x, xs) {
+		return A2(
+			$elm$core$List$any,
+			function (a) {
+				return _Utils_eq(a, x);
+			},
+			xs);
+	});
+var $author$project$CellTeams$Grid$Model$nub = A2(
+	$elm$core$List$foldl,
+	F2(
+		function (a, acc) {
+			return A2($elm$core$List$member, a, acc) ? acc : A2($elm$core$List$cons, a, acc);
+		}),
+	_List_Nil);
+var $author$project$CellTeams$Grid$Model$listOfCellsToUpdate = function (grid) {
+	var liveCoords = $elm$core$Dict$keys(grid);
+	var allCellsAndNeighbors = A2(
+		$elm$core$List$concatMap,
+		function (k) {
+			return A2(
+				$elm$core$List$cons,
+				k,
+				$author$project$CellTeams$Grid$Model$findNeighboringCoords(k));
+		},
+		liveCoords);
+	return $author$project$CellTeams$Grid$Model$nub(allCellsAndNeighbors);
+};
+var $author$project$CellTeams$Grid$Model$maybeInsert = F3(
+	function (k, maybeV, dict) {
+		if (maybeV.$ === 'Just') {
+			var val = maybeV.a;
+			return A3($elm$core$Dict$insert, k, val, dict);
+		} else {
+			return dict;
+		}
+	});
 var $elm$core$List$maybeCons = F3(
 	function (f, mx, xs) {
 		var _v0 = f(mx);
@@ -6059,21 +6121,17 @@ var $elm$core$List$filterMap = F2(
 			_List_Nil,
 			xs);
 	});
-var $author$project$CellTeams$Grid$Model$getCell = F2(
-	function (c, grid) {
-		return A2($elm$core$Dict$get, c, grid.cells);
-	});
 var $author$project$CellTeams$Grid$Model$getNeighbors = F2(
 	function (coords, grid) {
 		return A2(
 			$elm$core$List$filterMap,
 			function (c) {
-				return A2($author$project$CellTeams$Grid$Model$getCell, c, grid);
+				return A2($elm$core$Dict$get, c, grid);
 			},
 			$author$project$CellTeams$Grid$Model$findNeighboringCoords(coords));
 	});
 var $author$project$CellTeams$Grid$Model$isAlive = function (cell) {
-	return _Utils_eq(cell.state, $author$project$CellTeams$Grid$Model$Alive) ? true : false;
+	return _Utils_eq(cell, $author$project$CellTeams$Grid$Model$Alive) ? true : false;
 };
 var $author$project$CellTeams$Grid$Model$aliveNeighbors = F2(
 	function (coords, grid) {
@@ -6083,32 +6141,37 @@ var $author$project$CellTeams$Grid$Model$aliveNeighbors = F2(
 				$author$project$CellTeams$Grid$Model$isAlive,
 				A2($author$project$CellTeams$Grid$Model$getNeighbors, coords, grid)));
 	});
-var $author$project$CellTeams$Grid$Model$willBeAlive = F2(
-	function (c, liveNeighbors) {
-		return $author$project$CellTeams$Grid$Model$isAlive(c) ? ((liveNeighbors === 2) || (liveNeighbors === 3)) : (liveNeighbors === 3);
+var $author$project$CellTeams$Grid$Model$stepCell = F2(
+	function (neighborCount, mCell) {
+		if ((mCell.$ === 'Just') && (mCell.a.$ === 'Alive')) {
+			var _v1 = mCell.a;
+			return ((neighborCount === 2) || (neighborCount === 3)) ? $elm$core$Maybe$Just($author$project$CellTeams$Grid$Model$Alive) : $elm$core$Maybe$Just($author$project$CellTeams$Grid$Model$Dead);
+		} else {
+			return (neighborCount === 3) ? $elm$core$Maybe$Just($author$project$CellTeams$Grid$Model$Alive) : $elm$core$Maybe$Nothing;
+		}
 	});
-var $author$project$CellTeams$Grid$Model$updateCell = F3(
-	function (coords, cell, grid) {
-		return A2(
-			$author$project$CellTeams$Grid$Model$willBeAlive,
-			cell,
-			A2($author$project$CellTeams$Grid$Model$aliveNeighbors, coords, grid)) ? $author$project$CellTeams$Grid$Model$Cell($author$project$CellTeams$Grid$Model$Alive) : $author$project$CellTeams$Grid$Model$Cell($author$project$CellTeams$Grid$Model$Dead);
+var $author$project$CellTeams$Grid$Model$updateState = F2(
+	function (coords, grid) {
+		var neighborCount = A2($author$project$CellTeams$Grid$Model$aliveNeighbors, coords, grid);
+		var mCell = A2($elm$core$Dict$get, coords, grid);
+		return A2($author$project$CellTeams$Grid$Model$stepCell, neighborCount, mCell);
+	});
+var $author$project$CellTeams$Grid$Model$updateOne = F3(
+	function (oldGrid, coords, newGrid) {
+		var newCell = A2($author$project$CellTeams$Grid$Model$updateState, coords, oldGrid);
+		return A3($author$project$CellTeams$Grid$Model$maybeInsert, coords, newCell, newGrid);
+	});
+var $author$project$CellTeams$Grid$Model$updateCells = F2(
+	function (beforeUpdate, cellsToUpdate) {
+		return A3(
+			$elm$core$List$foldl,
+			$author$project$CellTeams$Grid$Model$updateOne(beforeUpdate),
+			$elm$core$Dict$empty,
+			cellsToUpdate);
 	});
 var $author$project$CellTeams$Grid$Model$stepGrid = function (grid) {
-	return {
-		cells: A3(
-			$elm$core$Dict$foldr,
-			F3(
-				function (k, c, acc) {
-					return A3(
-						$elm$core$Dict$insert,
-						k,
-						A3($author$project$CellTeams$Grid$Model$updateCell, k, c, grid),
-						acc);
-				}),
-			grid.cells,
-			grid.cells)
-	};
+	var cellsToUpdate = $author$project$CellTeams$Grid$Model$listOfCellsToUpdate(grid);
+	return A2($author$project$CellTeams$Grid$Model$updateCells, grid, cellsToUpdate);
 };
 var $author$project$CellTeams$CellTeams$incrementModel = function (model) {
 	return {
@@ -6140,14 +6203,14 @@ var $author$project$CellTeams$CellTeams$glowyPop = A2(
 			var min = 25;
 			var max = 75;
 			var p = min + $elm$core$Basics$round((time / $author$project$CellTeams$CellTeams$defaultTiming) * (max - min));
-			return _Utils_eq(cell.state, $author$project$CellTeams$Grid$Model$Alive) ? ('hsl(150 ' + ($elm$core$String$fromInt(p) + ('% ' + ($elm$core$String$fromInt(p) + '%)')))) : '#333333';
+			return _Utils_eq(cell, $author$project$CellTeams$Grid$Model$Alive) ? ('hsl(150 ' + ($elm$core$String$fromInt(p) + ('% ' + ($elm$core$String$fromInt(p) + '%)')))) : '#333333';
 		}));
 var $author$project$CellTeams$CellTeams$greenAndGrey = A2(
 	$author$project$CellTeams$CellTeams$Colorway,
 	'greenAndGray',
 	F2(
 		function (_v0, cell) {
-			return _Utils_eq(cell.state, $author$project$CellTeams$Grid$Model$Alive) ? 'green' : '#CCC';
+			return _Utils_eq(cell, $author$project$CellTeams$Grid$Model$Alive) ? 'green' : '#CCC';
 		}));
 var $author$project$CellTeams$CellTeams$otherColorways = _List_fromArray(
 	[$author$project$CellTeams$CellTeams$glowyPop, $author$project$CellTeams$CellTeams$greenAndGrey]);
@@ -6424,21 +6487,29 @@ var $author$project$CellTeams$CellTeams$showRow = F4(
 				A3($author$project$CellTeams$CellTeams$showCell, model, gridId, n),
 				row));
 	});
+var $author$project$CellTeams$CellTeams$toColumns = F3(
+	function (cols, grid, row) {
+		var cell = function (col) {
+			return A2(
+				$elm$core$Maybe$withDefault,
+				$author$project$CellTeams$Grid$Model$Dead,
+				A2(
+					$elm$core$Dict$get,
+					_Utils_Tuple2(row, col),
+					grid));
+		};
+		return A2(
+			$elm$core$List$map,
+			function (col) {
+				return cell(col);
+			},
+			A2($elm$core$List$range, 0, cols - 1));
+	});
 var $author$project$CellTeams$CellTeams$toRows = F2(
 	function (settings, grid) {
 		return A2(
 			$elm$core$List$map,
-			function (r) {
-				return A2(
-					$elm$core$List$filterMap,
-					function (c) {
-						return A2(
-							$author$project$CellTeams$Grid$Model$getCell,
-							_Utils_Tuple2(r, c),
-							grid);
-					},
-					A2($elm$core$List$range, 0, settings.columns - 1));
-			},
+			A2($author$project$CellTeams$CellTeams$toColumns, settings.columns, grid),
 			A2($elm$core$List$range, 0, settings.rows - 1));
 	});
 var $author$project$CellTeams$CellTeams$showGrid = F3(
