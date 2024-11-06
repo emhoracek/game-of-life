@@ -7,7 +7,7 @@ import CellTeams.Grid.Model exposing (Cell, CellState(..), Grid, deadGrid, stepG
 import CellTeams.Grid.Update exposing (GridMsg(..), defaultColumns, defaultRows, makeGrid, updateGrid)
 import Dict exposing (Dict)
 import Html exposing (Html, button, div, table, td, text, tr)
-import Html.Attributes exposing (class, style)
+import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 import List exposing (range)
 import Random
@@ -280,20 +280,31 @@ pickRandomColorway =
     Random.generate NewColorway (Random.uniform defaultColorway otherColorways)
 
 
-showCell : Model -> GridId -> Int -> Int -> Cell -> Html Msg
-showCell model gridId row col cell =
+toText : CellState -> String
+toText cell = 
+    if cell == Alive then "✽" else " "
+
+toClass : CellState -> String
+toClass cell = 
+    if cell == Alive then "alive cell" else "dead cell"
+
+
+toVisibility : CellState -> String
+toVisibility cell = 
+    if cell == Alive then "cell-content show-cell" else "cell-content hide-cell"
+
+showCell : GridId -> Int -> Int -> Cell -> Html Msg
+showCell gridId row col cell =
     td
-        [ style "background" (model.colorway.display model.timeInCycle cell)
-        , style "width" "1em"
-        , style "height" "1em"
+        [ class (toClass cell)
         , onClick (GridMsg gridId (ToggleCell ( row, col ) cell))
         ]
-        [ text " " ]
+        [ div [class (toVisibility cell) ] [text "✽"] ]
 
 
-showRow : Model -> GridId -> Int -> List Cell -> Html Msg
-showRow model gridId n row =
-    tr [] (List.indexedMap (showCell model gridId n) row)
+showRow : GridId -> Int -> List Cell -> Html Msg
+showRow gridId n row =
+    tr [] (List.indexedMap (showCell gridId n) row)
 
 
 toColumns : Int -> Grid -> Int -> List Cell
@@ -314,7 +325,7 @@ toRows settings grid =
 
 showGrid : Model -> GridId -> Grid -> List (Html Msg)
 showGrid model gridId grid =
-    List.indexedMap (showRow model gridId) (toRows model.settings grid)
+    List.indexedMap (showRow gridId) (toRows model.settings grid)
 
 
 viewGrid : Model -> GridId -> Grid -> Html Msg
