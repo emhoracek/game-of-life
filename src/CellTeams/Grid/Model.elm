@@ -1,7 +1,6 @@
 module CellTeams.Grid.Model exposing (..)
 
-import Dict exposing (Dict, values)
-import Fuzz exposing (maybe)
+import Dict exposing (Dict)
 import Html exposing (a)
 import Html.Attributes exposing (coords)
 import List

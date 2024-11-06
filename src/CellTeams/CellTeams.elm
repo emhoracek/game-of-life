@@ -3,7 +3,7 @@ module CellTeams.CellTeams exposing (..)
 import Array
 import Browser
 import Browser.Events
-import CellTeams.Grid.Model exposing (Cell, CellCoords, CellState(..), Grid, deadGrid, stepGrid)
+import CellTeams.Grid.Model exposing (Cell, CellState(..), Grid, deadGrid, stepGrid)
 import CellTeams.Grid.Update exposing (GridMsg(..), defaultColumns, defaultRows, makeGrid, updateGrid)
 import Dict exposing (Dict)
 import Html exposing (Html, button, div, table, td, text, tr)
