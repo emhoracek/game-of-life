@@ -1,7 +1,7 @@
-module CellTeams.ViewTests exposing (..)
+module Garden.ViewTests exposing (..)
 
-import CellTeams.View exposing (..)
-import CellTeams.Grid.Model exposing (CellState(..), Grid)
+import Garden.View exposing (..)
+import Garden.Grid.Model exposing (CellState(..), Grid)
 import Dict
 import Expect
 import List exposing ((::))

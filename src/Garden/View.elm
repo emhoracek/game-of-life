@@ -1,13 +1,13 @@
-module CellTeams.View exposing (..)
+module Garden.View exposing (..)
 
-import CellTeams.Grid.Model exposing (Cell, CellState(..), Grid, deadGrid)
-import CellTeams.Grid.Update exposing (GridMsg(..), defaultColumns, defaultRows)
+import Garden.Grid.Model exposing (Cell, CellState(..), Grid, deadGrid)
+import Garden.Grid.Update exposing (GridMsg(..), defaultColumns, defaultRows)
 import Dict
 import Html exposing (Html, button, div, table, td, text, tr)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 import List exposing (range)
-import CellTeams.Model exposing (GridId, Msg(..), GameSettings, Model)
+import Garden.Model exposing (GridId, Msg(..), GameSettings, Model)
 
 
 toText : CellState -> String

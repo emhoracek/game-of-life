@@ -1,10 +1,10 @@
-module CellTeams.Update exposing (..)
+module Garden.Update exposing (..)
 
 import Browser.Events
 import Dict
-import CellTeams.Grid.Model exposing (CellState(..), deadGrid, stepGrid)
-import CellTeams.Grid.Update exposing (GridMsg, defaultColumns, defaultRows, makeGrid, updateGrid)
-import CellTeams.Model exposing (GridId, Model, Msg(..))
+import Garden.Grid.Model exposing (CellState(..), deadGrid, stepGrid)
+import Garden.Grid.Update exposing (GridMsg, defaultColumns, defaultRows, makeGrid, updateGrid)
+import Garden.Model exposing (GridId, Model, Msg(..))
 
 
 defaultTiming : Int

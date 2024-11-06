@@ -1,6 +1,6 @@
-module CellTeams.Grid.ModelTests exposing (..)
+module Garden.Grid.ModelTests exposing (..)
 
-import CellTeams.Grid.Model exposing (..)
+import Garden.Grid.Model exposing (..)
 import Dict
 import Expect
 import List exposing ((::))

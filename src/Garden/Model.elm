@@ -1,7 +1,7 @@
-module CellTeams.Model exposing (..)
+module Garden.Model exposing (..)
 
-import CellTeams.Grid.Model exposing (CellState(..), Grid)
-import CellTeams.Grid.Update exposing (GridMsg(..))
+import Garden.Grid.Model exposing (CellState(..), Grid)
+import Garden.Grid.Update exposing (GridMsg(..))
 import Dict exposing (Dict)
 
 type alias Model =

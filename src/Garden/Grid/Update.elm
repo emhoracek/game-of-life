@@ -1,6 +1,6 @@
-module CellTeams.Grid.Update exposing (..)
+module Garden.Grid.Update exposing (..)
 
-import CellTeams.Grid.Model exposing (Cell, CellCoords, Grid, toggleCell, usuallyAlive)
+import Garden.Grid.Model exposing (Cell, CellCoords, Grid, toggleCell, usuallyAlive)
 import Random
 
 

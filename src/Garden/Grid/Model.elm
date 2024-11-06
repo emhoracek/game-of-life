@@ -1,4 +1,4 @@
-module CellTeams.Grid.Model exposing (..)
+module Garden.Grid.Model exposing (..)
 
 import Dict exposing (Dict)
 import Html exposing (a)

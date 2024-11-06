@@ -1,10 +1,10 @@
 module Main exposing (..)
 
 import Browser
-import CellTeams.Update exposing (init)
-import CellTeams.Update exposing (update, subscriptions)
-import CellTeams.View exposing (view)
-import CellTeams.Model exposing (Model, Msg)
+import Garden.Update exposing (init)
+import Garden.Update exposing (update, subscriptions)
+import Garden.View exposing (view)
+import Garden.Model exposing (Model, Msg)
 
 
 cellTeamsMain : Program () Model Msg
