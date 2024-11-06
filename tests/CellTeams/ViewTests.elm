@@ -1,6 +1,6 @@
-module CellTeams.CellTeamsTests exposing (..)
+module CellTeams.ViewTests exposing (..)
 
-import CellTeams.CellTeams exposing (..)
+import CellTeams.View exposing (..)
 import CellTeams.Grid.Model exposing (CellState(..), Grid)
 import Dict
 import Expect

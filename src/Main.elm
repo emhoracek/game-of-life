@@ -1,11 +1,18 @@
 module Main exposing (..)
 
--- import TakeOne exposing (takeOneMain)
--- import TakeTwo exposing (takeTwoMain)
--- import TakeThree exposing (takeThreeMain)
-import CellTeams.CellTeams exposing (cellTeamsMain)
+import Browser
+import CellTeams.Update exposing (init)
+import CellTeams.Update exposing (update, subscriptions)
+import CellTeams.View exposing (view)
+import CellTeams.Model exposing (Model, Msg)
 
 
-main : Program () CellTeams.CellTeams.Model CellTeams.CellTeams.Msg
-main =
-    cellTeamsMain
+cellTeamsMain : Program () Model Msg
+cellTeamsMain =
+    Browser.element
+        { init = init
+        , update = update
+        , subscriptions = subscriptions
+        , view = view
+        }
+
