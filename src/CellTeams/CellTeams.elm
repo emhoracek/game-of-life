@@ -68,7 +68,7 @@ init _ =
     ( { grids = Dict.fromList [ ( "0", deadGrid defaultRows defaultColumns ), ( "1", deadGrid defaultRows defaultColumns ) ]
       , settings = { rows = defaultRows, columns = defaultColumns }
       , timeInCycle = 0
-      , animation = Just defaultTiming
+      , animation = Nothing
       , colorway = defaultColorway
       }
     , Cmd.batch [ Cmd.map (GridMsg "0") makeGrid, Cmd.map (GridMsg "1") makeGrid ]
@@ -335,15 +335,15 @@ view model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
+  if model.animation /= Nothing then
     Browser.Events.onAnimationFrame
         (\_ ->
-            if model.animation /= Nothing then
                 if model.timeInCycle == 0 then
                     Increment
 
                 else
                     Decrement
 
-            else
-                NoOp
         )
+        else 
+          Sub.none 

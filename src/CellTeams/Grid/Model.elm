@@ -3,6 +3,9 @@ module CellTeams.Grid.Model exposing (..)
 import Dict exposing (Dict)
 import List
 import Random
+import Fuzz exposing (maybe)
+import Dict exposing (values)
+import Html.Attributes exposing (coords)
 
 
 type CellState
@@ -150,8 +153,7 @@ updateCell coords cell grid =
 
 
 stepGrid : Grid -> Grid
-stepGrid grid =
-    Dict.foldr (\k c acc -> Dict.insert k (updateCell k c grid) acc) grid grid
+stepGrid grid = stepSparseGrid grid
 
 
 toggleState : CellState -> CellState
@@ -171,3 +173,83 @@ toggleCell coords cell grid =
 deadGrid : Int -> Int -> Grid
 deadGrid rows cols =
     createGrid rows cols Dead
+
+
+maybeUpdate : Int -> Maybe Cell -> Maybe Cell
+maybeUpdate neighborCount mCell = 
+  case mCell of 
+    Just Alive -> 
+        if neighborCount == 2 || neighborCount == 3 then Just Alive else Just Dead
+    _ -> 
+        if neighborCount == 3 then Just Alive else Nothing
+
+
+getBounds :  Grid -> ((Int, Int), (Int, Int))
+getBounds grid = 
+    let rowsLowToHigh = List.sort (List.map Tuple.first (Dict.keys grid))
+        colsLowToHigh = List.sort (List.map Tuple.second (Dict.keys grid))
+        
+        minRow = max (Maybe.withDefault 0 (List.head rowsLowToHigh)) -5
+        maxRow = min (Maybe.withDefault 0 (List.head (List.reverse rowsLowToHigh)) ) 20
+        
+        minCol =  max (Maybe.withDefault 0 (List.head colsLowToHigh)) -5
+        maxCol =  min (Maybe.withDefault 0 (List.head (List.reverse colsLowToHigh))) 20 in
+    ((minRow, minCol), (maxRow, maxCol))
+
+getCenter : (Int, Int) -> (Int, Int) -> CellCoords
+getCenter (row1, col1) (row2, col2) = (row2 - row1 // 2, col2 - col1 // 2) 
+
+stepSparseGrid : Grid -> Grid
+stepSparseGrid grid =
+  let (mins, maxes) = Debug.log "bounds" (getBounds grid)
+      center =  Debug.log "center" (getCenter mins maxes)
+      res = updateCellAndNeighbors mins maxes center grid ([], Dict.empty)
+      blah = Debug.log "foo" (List.length (Tuple.first res)) in
+
+    Tuple.second res
+
+withinBounds : (Int, Int) -> (Int, Int) -> CellCoords -> Bool
+withinBounds ( minRow, minCol ) (maxRow, maxCol) (row, col) =
+    row < maxRow + 1 && col < maxCol + 1 && row >= minRow && row >= minCol
+
+
+-- Base case:
+--   All the neighbors have been updated
+
+
+updateCellAndNeighbors : ( Int, Int ) -> (Int, Int) -> CellCoords -> Grid -> (List CellCoords, Grid) -> (List CellCoords, Grid)
+updateCellAndNeighbors min max coords gridBefore (alreadyUpdated, currentGrid) =
+    let neighbors = findNeighboringCoords coords
+        notAlreadyUpdated = --Debug.log "neighbors"
+          (filterNeighbors min max alreadyUpdated neighbors) in
+    if List.length alreadyUpdated < 100 then
+        List.foldl
+            (\nextCoords acc ->
+                updateCellAndNeighbors min max nextCoords gridBefore acc
+            )
+            (coords :: alreadyUpdated, updateCellInGrid coords gridBefore currentGrid)
+            notAlreadyUpdated
+    else
+        (alreadyUpdated, currentGrid)
+
+
+
+filterNeighbors : (Int, Int) -> (Int, Int) -> List CellCoords -> List CellCoords -> List CellCoords
+filterNeighbors min max alreadyUpdated neighbors =
+    List.filter (\neighbor -> 
+            not (List.member neighbor alreadyUpdated) &&
+                withinBounds min max neighbor) 
+                        neighbors
+
+updateCellInGrid : CellCoords -> Grid -> Grid -> Grid
+updateCellInGrid coords gridBefore currentGrid = 
+  let neighborCount = aliveNeighbors coords gridBefore 
+      mCell = Dict.get coords gridBefore in
+  maybeInsert coords (maybeUpdate neighborCount mCell) currentGrid
+
+
+maybeInsert : comparable -> Maybe b -> Dict comparable b ->  Dict comparable b
+maybeInsert k maybeV dict = 
+  case maybeV of
+      Just val -> Dict.insert k val dict
+      Nothing -> dict 
