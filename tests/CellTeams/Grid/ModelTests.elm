@@ -4,7 +4,7 @@ import CellTeams.Grid.Model exposing (..)
 import Dict
 import Expect
 import List exposing ((::))
-import Test exposing (Test, describe, test)
+import Test exposing (Test, describe, skip, test)
 
 
 smallerGrid : Grid
@@ -179,8 +179,19 @@ exampleGridWithMix =
         ]
 
 
+tinyGrid : Grid
+tinyGrid =
+    Dict.fromList
+        [ ( ( 1, 1 )
+          , Alive
+          )
+        ]
+
+
+
 -- A A  -> A A
 -- A       A A
+
 
 sparseGrid1 : Grid
 sparseGrid1 =
@@ -193,25 +204,33 @@ sparseGrid1 =
           )
         , ( ( 1, 0 )
           , Alive
-          )]
+          )
+        ]
+
 
 sparseGrid1Next : Grid
 sparseGrid1Next =
     Dict.fromList
-        [  ( ( 0, 0 )
+        [ ( ( 0, 0 )
           , Alive
-          ),(( 0, 1 )
+          )
+        , ( ( 0, 1 )
           , Alive
-          ),
-          ( ( 1, 0 )
-          , Alive),
-          ( ( 1, 1 )
+          )
+        , ( ( 1, 0 )
           , Alive
-          )]
+          )
+        , ( ( 1, 1 )
+          , Alive
+          )
+        ]
+
+
 
 -- A - A     A - D
 -- A A - ->  A D A
 -- - A -     A A -
+
 
 sparseGrid : Grid
 sparseGrid =
@@ -234,9 +253,11 @@ sparseGrid =
         ]
 
 
+
 -- A - A     A - D
 -- A A - ->  A D A
 -- - A -     A A -
+
 
 sparseGridNext : Grid
 sparseGridNext =
@@ -265,6 +286,58 @@ sparseGridNext =
         ]
 
 
+sparseGrid2 : Grid
+sparseGrid2 =
+    Dict.fromList
+        [ ( ( 0, 0 )
+          , Alive
+          )
+        , ( ( 0, 2 )
+          , Alive
+          )
+        , ( ( 1, 0 )
+          , Alive
+          )
+        , ( ( 1, 1 )
+          , Alive
+          )
+        , ( ( 2, 1 )
+          , Alive
+          )
+        , ( ( 2000, 1000 )
+          , Alive
+          )
+        ]
+
+
+sparseGrid2Next : Grid
+sparseGrid2Next =
+    Dict.fromList
+        [ ( ( 0, 0 )
+          , Alive
+          )
+        , ( ( 0, 2 )
+          , Dead
+          )
+        , ( ( 1, 0 )
+          , Alive
+          )
+        , ( ( 1, 1 )
+          , Dead
+          )
+        , ( ( 1, 2 )
+          , Alive
+          )
+        , ( ( 2, 0 )
+          , Alive
+          )
+        , ( ( 2, 1 )
+          , Alive
+          )
+        , ( ( 2000, 1000 )
+          , Dead
+          )
+        ]
 
 
 suite : Test
@@ -330,31 +403,6 @@ suite =
                 \_ ->
                     Expect.equal (isAlive Dead) False
             ]
-        , describe "getCell"
-            [ test "upper left" <|
-                \_ ->
-                    Expect.equal (getCell ( 0, 0 ) exampleGrid) (Just Alive)
-            , test "second row, second column" <|
-                \_ ->
-                    Expect.equal (getCell ( 1, 1 ) exampleGrid) (Just Alive)
-            , test "out of bounds" <|
-                \_ ->
-                    Expect.equal (getCell ( 42, 3432 ) exampleGrid) Nothing
-            ]
-        , describe "willBeAlive"
-            [ test "upper left" <|
-                \_ ->
-                    Expect.equal (willBeAlive Dead 2) False
-            , test "second row, second column" <|
-                \_ ->
-                    Expect.equal (willBeAlive Alive 4) False
-            , test "second row, third column" <|
-                \_ ->
-                    Expect.equal (willBeAlive Alive 3) True
-            , test "out of bounds" <|
-                \_ ->
-                    Expect.equal (willBeAlive Alive 0) False
-            ]
         , describe "getNeighbors"
             [ test "row 2, column 3" <|
                 \_ ->
@@ -366,70 +414,67 @@ suite =
             [ test "stepping a grid" <|
                 \_ ->
                     Expect.equal (stepGrid smallerGrid) smallerGridNext
+            , test "stepping a sparse grid" <|
+                \_ ->
+                    Expect.equal (stepGrid sparseGrid2) sparseGrid2Next
             ]
         , describe "getBounds"
-             [ test "tiny" <| 
-               \_ -> 
-                 Expect.equal (getBounds sparseGrid1) ((0,0), (1,1)), 
-              test "small" <| 
-               \_ -> 
-                 Expect.equal (getBounds sparseGrid) ((0,0), (2,2))]
-
+            [ test "tiny" <|
+                \_ ->
+                    Expect.equal (getBounds sparseGrid1) ( ( 0, 0 ), ( 1, 1 ) )
+            , test "small" <|
+                \_ ->
+                    Expect.equal (getBounds sparseGrid) ( ( 0, 0 ), ( 2, 2 ) )
+            ]
         , describe "getCenter"
-             [ test "tiny" <| 
-               \_ -> 
-                 Expect.equal (getCenter (0,0) (1,0)) (1,0), 
-              test "small" <| 
-               \_ -> 
-                 Expect.equal (getCenter (0,0) (2,1)) (2,1)]
-
+            [ test "tiny" <|
+                \_ ->
+                    Expect.equal (getCenter ( 0, 0 ) ( 1, 0 )) ( 1, 0 )
+            , test "small" <|
+                \_ ->
+                    Expect.equal (getCenter ( 0, 0 ) ( 2, 1 )) ( 2, 1 )
+            ]
         , describe "maybeUpdate"
-             [ test "alive" <| 
-               \_ -> 
-                 Expect.equal (maybeUpdate 2 (Just Alive)) (Just Alive) , 
-              test "dead with neighbors" <| 
-               \_ -> 
-                 Expect.equal (maybeUpdate 3 (Just Dead)) (Just Alive),
-              test "nothing with neighbors" <| 
-               \_ -> 
-                 Expect.equal (maybeUpdate 3 Nothing) (Just Alive),
-              test "dead without neighbors" <| 
-               \_ -> 
-                 Expect.equal (maybeUpdate 1 (Just Dead)) Nothing,
-              test "alive with too many neighbors" <| 
-               \_ -> 
-                 Expect.equal (maybeUpdate 4 (Just Alive)) (Just Dead)]
-
-
-        , describe "filterNeighbors"
-            [ test "none already updated, inside small bounds" <|
+            [ test "alive" <|
                 \_ ->
-                    Expect.equal (filterNeighbors (0,0) (1,1) [] [(0,0)]) [(0,0)],
-
-              test "none already updated, outide small bounds" <|
+                    Expect.equal (stepCell 2 (Just Alive)) (Just Alive)
+            , test "dead with neighbors" <|
                 \_ ->
-                    Expect.equal (filterNeighbors (0,0) (1,1) [] [(-1,-1)]) [],
-
-              test " already updated, inside small bounds" <|
+                    Expect.equal (stepCell 3 (Just Dead)) (Just Alive)
+            , test "nothing with neighbors" <|
                 \_ ->
-                    Expect.equal (filterNeighbors (0,0) (1,1) [(0,0)] [(0,0)]) []
+                    Expect.equal (stepCell 3 Nothing) (Just Alive)
+            , test "dead without neighbors" <|
+                \_ ->
+                    Expect.equal (stepCell 1 (Just Dead)) Nothing
+            , test "alive with too many neighbors" <|
+                \_ ->
+                    Expect.equal (stepCell 4 (Just Alive)) (Just Dead)
+            ]
+        , describe "listOfCellsToCheck"
+            [ test "tiny grid" <|
+                \_ ->
+                    Expect.equalLists (List.sort (listOfCellsToUpdate tinyGrid))
+                        [ ( 0, 0 ), ( 0, 1 ), ( 0, 2 ), ( 1, 0 ), ( 1, 1 ), ( 1, 2 ), ( 2, 0 ), ( 2, 1 ), ( 2, 2 ) ]
+            , test "sparse grid" <|
+                \_ ->
+                    Expect.equalLists (List.sort (listOfCellsToUpdate sparseGrid))
+                        [ ( -1, -1 ), ( -1, 0 ), ( -1, 1 ), ( -1, 2 ), ( -1, 3 ), ( 0, -1 ), ( 0, 0 ), ( 0, 1 ), ( 0, 2 ), ( 0, 3 ), ( 1, -1 ), ( 1, 0 ), ( 1, 1 ), ( 1, 2 ), ( 1, 3 ), ( 2, -1 ), ( 2, 0 ), ( 2, 1 ), ( 2, 2 ), ( 3, 0 ), ( 3, 1 ), ( 3, 2 ) ]
             ]
         , describe "stepSparseGrid"
             [ test "an empty grid" <|
                 \_ ->
-                    Expect.equal (stepSparseGrid Dict.empty) Dict.empty
+                    Expect.equal (stepGrid Dict.empty) Dict.empty
             , test "a grid with one cell" <|
                 \_ ->
-                    Expect.equal (stepSparseGrid (Dict.insert (1,1) Alive Dict.empty)) 
-                    (Dict.insert (1,1) Dead Dict.empty)
-            
+                    Expect.equal (stepGrid (Dict.insert ( 1, 1 ) Alive Dict.empty))
+                        (Dict.insert ( 1, 1 ) Dead Dict.empty)
             , test "a tiny grid" <|
                 \_ ->
-                    Expect.equal (stepSparseGrid sparseGrid1) sparseGrid1Next
-            
+                    Expect.equal (stepGrid sparseGrid1) sparseGrid1Next
             , test "stepping a sparse grid" <|
                 \_ ->
-                    Expect.equal (stepSparseGrid sparseGrid) sparseGridNext
+                    Expect.equal (stepGrid sparseGrid) sparseGridNext
             ]
         , describe "toggleCell"
             [ test "kills a live cell" <|

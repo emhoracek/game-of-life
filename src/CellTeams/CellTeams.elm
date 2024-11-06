@@ -3,7 +3,7 @@ module CellTeams.CellTeams exposing (..)
 import Array
 import Browser
 import Browser.Events
-import CellTeams.Grid.Model exposing (Cell, CellState(..), Grid, deadGrid, getCell, stepGrid)
+import CellTeams.Grid.Model exposing (Cell, CellState(..), Grid, deadGrid, stepGrid)
 import CellTeams.Grid.Update exposing (GridMsg(..), defaultColumns, defaultRows, makeGrid, updateGrid)
 import Dict exposing (Dict)
 import Html exposing (Html, button, div, table, td, text, tr)
@@ -299,7 +299,7 @@ showRow model gridId n row =
 toRows : GameSettings -> Grid -> List (List Cell)
 toRows settings grid =
     List.map
-        (\r -> List.filterMap (\c -> getCell ( r, c ) grid) (range 0 (settings.columns - 1)))
+        (\r -> List.filterMap (\c -> Dict.get ( r, c ) grid) (range 0 (settings.columns - 1)))
         (range 0 (settings.rows - 1))
 
 
@@ -335,15 +335,15 @@ view model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  if model.animation /= Nothing then
-    Browser.Events.onAnimationFrame
-        (\_ ->
+    if model.animation /= Nothing then
+        Browser.Events.onAnimationFrame
+            (\_ ->
                 if model.timeInCycle == 0 then
                     Increment
 
                 else
                     Decrement
+            )
 
-        )
-        else 
-          Sub.none 
+    else
+        Sub.none
