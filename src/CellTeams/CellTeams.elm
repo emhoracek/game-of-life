@@ -3,7 +3,7 @@ module CellTeams.CellTeams exposing (..)
 import Array
 import Browser
 import Browser.Events
-import CellTeams.Grid.Model exposing (Cell, CellState(..), Grid, deadGrid, stepGrid)
+import CellTeams.Grid.Model exposing (Cell, CellCoords, CellState(..), Grid, deadGrid, stepGrid)
 import CellTeams.Grid.Update exposing (GridMsg(..), defaultColumns, defaultRows, makeGrid, updateGrid)
 import Dict exposing (Dict)
 import Html exposing (Html, button, div, table, td, text, tr)
@@ -296,10 +296,19 @@ showRow model gridId n row =
     tr [] (List.indexedMap (showCell model gridId n) row)
 
 
+toColumns : Int -> Grid -> Int -> List Cell
+toColumns cols grid row =
+    let
+        cell col =
+            Maybe.withDefault Dead (Dict.get ( row, col ) grid)
+    in
+    List.map (\col -> cell col) (range 0 (cols - 1))
+
+
 toRows : GameSettings -> Grid -> List (List Cell)
 toRows settings grid =
     List.map
-        (\r -> List.filterMap (\c -> Dict.get ( r, c ) grid) (range 0 (settings.columns - 1)))
+        (toColumns settings.columns grid)
         (range 0 (settings.rows - 1))
 
 
