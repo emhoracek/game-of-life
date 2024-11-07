@@ -23,3 +23,56 @@
     margin: 1em;
     margin-top: 0.5em;
 }
+
+table {
+    background-color: #CFB8B1;
+}
+
+/* #0A8754 */
+.cell {
+    background: #956D5F;
+    width: 1.25em;
+    height: 1.25em;
+    text-align: center;
+    padding: 0
+}
+
+.cell-content {
+    transition: color 1s;
+}
+
+
+.hide-cell {
+    color: #956D5F;
+}
+
+.cell-content {
+    cursor: default
+}
+
+
+.blue-plant {
+    color: #91CCCF
+}
+
+.pink-plant {
+    color: #E38DA8
+}
+
+.purple-plant {
+    color: #AF83CC
+}
+
+.yellow-plant {
+    color: #ECE2A1
+}
+
+.dead {
+    background-color: #956D5F;
+    border-radius: 3em;
+}
+
+.alive {
+    background-color: #428A51;
+    border-radius: 3em;
+}

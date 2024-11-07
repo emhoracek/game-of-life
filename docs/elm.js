@@ -5242,12 +5242,13 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$element = _Browser_element;
-var $author$project$CellTeams$CellTeams$GridMsg = F2(
+var $author$project$Garden$Model$Blue = {$: 'Blue'};
+var $author$project$Garden$Model$GridMsg = F2(
 	function (a, b) {
 		return {$: 'GridMsg', a: a, b: b};
 	});
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
-var $author$project$CellTeams$Grid$Model$Dead = {$: 'Dead'};
+var $author$project$Garden$Grid$Model$Dead = {$: 'Dead'};
 var $elm$core$List$filter = F2(
 	function (isGood, list) {
 		return A3(
@@ -5262,7 +5263,7 @@ var $elm$core$List$filter = F2(
 var $elm$core$Basics$negate = function (n) {
 	return -n;
 };
-var $author$project$CellTeams$Grid$Model$findNeighboringCoords = function (_v0) {
+var $author$project$Garden$Grid$Model$findNeighboringCoords = function (_v0) {
 	var row = _v0.a;
 	var col = _v0.b;
 	var arr = _List_fromArray(
@@ -5432,7 +5433,7 @@ var $elm$core$Dict$insert = F3(
 			return x;
 		}
 	});
-var $author$project$CellTeams$Grid$Model$createCellAndNeighbors = F4(
+var $author$project$Garden$Grid$Model$createCellAndNeighbors = F4(
 	function (_v0, _v1, state, cells) {
 		var r = _v0.a;
 		var c = _v0.b;
@@ -5445,7 +5446,7 @@ var $author$project$CellTeams$Grid$Model$createCellAndNeighbors = F4(
 					var a2 = _v2.a;
 					var b2 = _v2.b;
 					return ((_Utils_cmp(a2, r) < 0) && ((_Utils_cmp(b2, c) < 0) && ((a2 >= 0) && (b2 >= 0)))) ? A4(
-						$author$project$CellTeams$Grid$Model$createCellAndNeighbors,
+						$author$project$Garden$Grid$Model$createCellAndNeighbors,
 						_Utils_Tuple2(r, c),
 						_Utils_Tuple2(a2, b2),
 						state,
@@ -5463,46 +5464,33 @@ var $author$project$CellTeams$Grid$Model$createCellAndNeighbors = F4(
 						A2($elm$core$Dict$get, coords, cells),
 						$elm$core$Maybe$Nothing);
 				},
-				$author$project$CellTeams$Grid$Model$findNeighboringCoords(
+				$author$project$Garden$Grid$Model$findNeighboringCoords(
 					_Utils_Tuple2(a, b))));
 	});
 var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
-var $author$project$CellTeams$Grid$Model$toCenter = function (_v0) {
+var $author$project$Garden$Grid$Model$toCenter = function (_v0) {
 	var rows = _v0.a;
 	var cols = _v0.b;
 	return _Utils_Tuple2(
 		$elm$core$Basics$floor(rows / 2),
 		$elm$core$Basics$floor(cols / 2));
 };
-var $author$project$CellTeams$Grid$Model$createGrid = F3(
+var $author$project$Garden$Grid$Model$createGrid = F3(
 	function (r, c, state) {
 		return A4(
-			$author$project$CellTeams$Grid$Model$createCellAndNeighbors,
+			$author$project$Garden$Grid$Model$createCellAndNeighbors,
 			_Utils_Tuple2(r, c),
-			$author$project$CellTeams$Grid$Model$toCenter(
+			$author$project$Garden$Grid$Model$toCenter(
 				_Utils_Tuple2(r, c)),
 			state,
 			$elm$core$Dict$empty);
 	});
-var $author$project$CellTeams$Grid$Model$deadGrid = F2(
+var $author$project$Garden$Grid$Model$deadGrid = F2(
 	function (rows, cols) {
-		return A3($author$project$CellTeams$Grid$Model$createGrid, rows, cols, $author$project$CellTeams$Grid$Model$Dead);
+		return A3($author$project$Garden$Grid$Model$createGrid, rows, cols, $author$project$Garden$Grid$Model$Dead);
 	});
-var $author$project$CellTeams$Grid$Model$Alive = {$: 'Alive'};
-var $author$project$CellTeams$CellTeams$Colorway = F2(
-	function (name, display) {
-		return {display: display, name: name};
-	});
-var $author$project$CellTeams$CellTeams$redAndBlack = A2(
-	$author$project$CellTeams$CellTeams$Colorway,
-	'redAndBlack',
-	F2(
-		function (_v0, cell) {
-			return _Utils_eq(cell, $author$project$CellTeams$Grid$Model$Alive) ? 'red' : 'black';
-		}));
-var $author$project$CellTeams$CellTeams$defaultColorway = $author$project$CellTeams$CellTeams$redAndBlack;
-var $author$project$CellTeams$Grid$Update$defaultColumns = 20;
-var $author$project$CellTeams$Grid$Update$defaultRows = 20;
+var $author$project$Garden$Grid$Update$defaultColumns = 20;
+var $author$project$Garden$Grid$Update$defaultRows = 20;
 var $elm$core$Dict$fromList = function (assocs) {
 	return A3(
 		$elm$core$List$foldl,
@@ -5515,8 +5503,8 @@ var $elm$core$Dict$fromList = function (assocs) {
 		$elm$core$Dict$empty,
 		assocs);
 };
-var $author$project$CellTeams$Grid$Update$NewGrid = function (a) {
-	return {$: 'NewGrid', a: a};
+var $author$project$Garden$Model$SetColors = function (a) {
+	return {$: 'SetColors', a: a};
 };
 var $elm$random$Random$Generate = function (a) {
 	return {$: 'Generate', a: a};
@@ -5625,6 +5613,9 @@ var $elm$random$Random$generate = F2(
 			$elm$random$Random$Generate(
 				A2($elm$random$Random$map, tagger, generator)));
 	});
+var $author$project$Garden$Model$Pink = {$: 'Pink'};
+var $author$project$Garden$Model$Purple = {$: 'Purple'};
+var $author$project$Garden$Model$Yellow = {$: 'Yellow'};
 var $elm$random$Random$listHelp = F4(
 	function (revList, n, gen, seed) {
 		listHelp:
@@ -5655,20 +5646,9 @@ var $elm$random$Random$list = F2(
 				return A4($elm$random$Random$listHelp, _List_Nil, n, gen, seed);
 			});
 	});
-var $elm$core$Basics$modBy = _Basics_modBy;
-var $author$project$CellTeams$Grid$Model$listToIndexedList = F2(
-	function (cols, cells) {
-		return A2(
-			$elm$core$List$indexedMap,
-			F2(
-				function (n, state) {
-					var row = (n / cols) | 0;
-					var col = A2($elm$core$Basics$modBy, cols, n);
-					var coords = _Utils_Tuple2(row, col);
-					return _Utils_Tuple2(coords, state);
-				}),
-			cells);
-	});
+var $elm$random$Random$addOne = function (value) {
+	return _Utils_Tuple2(1, value);
+};
 var $elm$core$Basics$abs = function (n) {
 	return (n < 0) ? (-n) : n;
 };
@@ -5739,46 +5719,118 @@ var $elm$random$Random$weighted = F2(
 			A2($elm$random$Random$getByWeight, first, others),
 			A2($elm$random$Random$float, 0, total));
 	});
-var $author$project$CellTeams$Grid$Model$usuallyAliveCell = A2(
+var $elm$random$Random$uniform = F2(
+	function (value, valueList) {
+		return A2(
+			$elm$random$Random$weighted,
+			$elm$random$Random$addOne(value),
+			A2($elm$core$List$map, $elm$random$Random$addOne, valueList));
+	});
+var $author$project$Garden$View$randomColors = F2(
+	function (r, c) {
+		return A2(
+			$elm$random$Random$list,
+			r,
+			A2(
+				$elm$random$Random$list,
+				c,
+				A2(
+					$elm$random$Random$uniform,
+					$author$project$Garden$Model$Blue,
+					_List_fromArray(
+						[$author$project$Garden$Model$Pink, $author$project$Garden$Model$Purple, $author$project$Garden$Model$Yellow]))));
+	});
+var $author$project$Garden$View$generateRandomColors = F2(
+	function (r, c) {
+		return A2(
+			$elm$random$Random$generate,
+			function (colors) {
+				return $author$project$Garden$Model$SetColors(colors);
+			},
+			A2($author$project$Garden$View$randomColors, r, c));
+	});
+var $author$project$Garden$Grid$Update$NewGrid = function (a) {
+	return {$: 'NewGrid', a: a};
+};
+var $elm$core$Basics$modBy = _Basics_modBy;
+var $author$project$Garden$Grid$Model$listToIndexedList = F2(
+	function (cols, cells) {
+		return A2(
+			$elm$core$List$indexedMap,
+			F2(
+				function (n, state) {
+					var row = (n / cols) | 0;
+					var col = A2($elm$core$Basics$modBy, cols, n);
+					var coords = _Utils_Tuple2(row, col);
+					return _Utils_Tuple2(coords, state);
+				}),
+			cells);
+	});
+var $author$project$Garden$Grid$Model$Alive = {$: 'Alive'};
+var $author$project$Garden$Grid$Model$usuallyAliveCell = A2(
 	$elm$random$Random$weighted,
-	_Utils_Tuple2(50, $author$project$CellTeams$Grid$Model$Alive),
+	_Utils_Tuple2(50, $author$project$Garden$Grid$Model$Alive),
 	_List_fromArray(
 		[
-			_Utils_Tuple2(50, $author$project$CellTeams$Grid$Model$Dead)
+			_Utils_Tuple2(50, $author$project$Garden$Grid$Model$Dead)
 		]));
-var $author$project$CellTeams$Grid$Model$usuallyAlive = function (_v0) {
+var $author$project$Garden$Grid$Model$usuallyAlive = function (_v0) {
 	var rows = _v0.a;
 	var columns = _v0.b;
 	return A2(
 		$elm$random$Random$map,
 		function (l) {
 			return $elm$core$Dict$fromList(
-				A2($author$project$CellTeams$Grid$Model$listToIndexedList, columns, l));
+				A2($author$project$Garden$Grid$Model$listToIndexedList, columns, l));
 		},
-		A2($elm$random$Random$list, rows * columns, $author$project$CellTeams$Grid$Model$usuallyAliveCell));
+		A2($elm$random$Random$list, rows * columns, $author$project$Garden$Grid$Model$usuallyAliveCell));
 };
-var $author$project$CellTeams$Grid$Update$makeGrid = A2(
+var $author$project$Garden$Grid$Update$makeGrid = A2(
 	$elm$random$Random$generate,
-	$author$project$CellTeams$Grid$Update$NewGrid,
-	$author$project$CellTeams$Grid$Model$usuallyAlive(
-		_Utils_Tuple2($author$project$CellTeams$Grid$Update$defaultRows, $author$project$CellTeams$Grid$Update$defaultColumns)));
+	$author$project$Garden$Grid$Update$NewGrid,
+	$author$project$Garden$Grid$Model$usuallyAlive(
+		_Utils_Tuple2($author$project$Garden$Grid$Update$defaultRows, $author$project$Garden$Grid$Update$defaultColumns)));
 var $elm$core$Platform$Cmd$map = _Platform_map;
-var $author$project$CellTeams$CellTeams$init = function (_v0) {
+var $elm$core$List$repeatHelp = F3(
+	function (result, n, value) {
+		repeatHelp:
+		while (true) {
+			if (n <= 0) {
+				return result;
+			} else {
+				var $temp$result = A2($elm$core$List$cons, value, result),
+					$temp$n = n - 1,
+					$temp$value = value;
+				result = $temp$result;
+				n = $temp$n;
+				value = $temp$value;
+				continue repeatHelp;
+			}
+		}
+	});
+var $elm$core$List$repeat = F2(
+	function (n, value) {
+		return A3($elm$core$List$repeatHelp, _List_Nil, n, value);
+	});
+var $author$project$Garden$Update$init = function (_v0) {
 	return _Utils_Tuple2(
 		{
 			animation: $elm$core$Maybe$Nothing,
-			colorway: $author$project$CellTeams$CellTeams$defaultColorway,
 			grids: $elm$core$Dict$fromList(
 				_List_fromArray(
 					[
 						_Utils_Tuple2(
 						'0',
-						A2($author$project$CellTeams$Grid$Model$deadGrid, $author$project$CellTeams$Grid$Update$defaultRows, $author$project$CellTeams$Grid$Update$defaultColumns)),
+						A2($author$project$Garden$Grid$Model$deadGrid, $author$project$Garden$Grid$Update$defaultRows, $author$project$Garden$Grid$Update$defaultColumns)),
 						_Utils_Tuple2(
 						'1',
-						A2($author$project$CellTeams$Grid$Model$deadGrid, $author$project$CellTeams$Grid$Update$defaultRows, $author$project$CellTeams$Grid$Update$defaultColumns))
+						A2($author$project$Garden$Grid$Model$deadGrid, $author$project$Garden$Grid$Update$defaultRows, $author$project$Garden$Grid$Update$defaultColumns))
 					])),
-			settings: {columns: $author$project$CellTeams$Grid$Update$defaultColumns, rows: $author$project$CellTeams$Grid$Update$defaultRows},
+			plants: A2(
+				$elm$core$List$repeat,
+				$author$project$Garden$Grid$Update$defaultRows,
+				A2($elm$core$List$repeat, $author$project$Garden$Grid$Update$defaultColumns, $author$project$Garden$Model$Blue)),
+			settings: {columns: $author$project$Garden$Grid$Update$defaultColumns, rows: $author$project$Garden$Grid$Update$defaultRows},
 			timeInCycle: 0
 		},
 		$elm$core$Platform$Cmd$batch(
@@ -5786,16 +5838,17 @@ var $author$project$CellTeams$CellTeams$init = function (_v0) {
 				[
 					A2(
 					$elm$core$Platform$Cmd$map,
-					$author$project$CellTeams$CellTeams$GridMsg('0'),
-					$author$project$CellTeams$Grid$Update$makeGrid),
+					$author$project$Garden$Model$GridMsg('0'),
+					$author$project$Garden$Grid$Update$makeGrid),
 					A2(
 					$elm$core$Platform$Cmd$map,
-					$author$project$CellTeams$CellTeams$GridMsg('1'),
-					$author$project$CellTeams$Grid$Update$makeGrid)
+					$author$project$Garden$Model$GridMsg('1'),
+					$author$project$Garden$Grid$Update$makeGrid),
+					A2($author$project$Garden$View$generateRandomColors, $author$project$Garden$Grid$Update$defaultRows, $author$project$Garden$Grid$Update$defaultColumns)
 				])));
 };
-var $author$project$CellTeams$CellTeams$Decrement = {$: 'Decrement'};
-var $author$project$CellTeams$CellTeams$Increment = {$: 'Increment'};
+var $author$project$Garden$Model$Decrement = {$: 'Decrement'};
+var $author$project$Garden$Model$Increment = {$: 'Increment'};
 var $elm$core$Basics$neq = _Utils_notEqual;
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
@@ -5929,44 +5982,44 @@ var $elm$browser$Browser$AnimationManager$onAnimationFrame = function (tagger) {
 		$elm$browser$Browser$AnimationManager$Time(tagger));
 };
 var $elm$browser$Browser$Events$onAnimationFrame = $elm$browser$Browser$AnimationManager$onAnimationFrame;
-var $author$project$CellTeams$CellTeams$subscriptions = function (model) {
+var $author$project$Garden$Update$subscriptions = function (model) {
 	return (!_Utils_eq(model.animation, $elm$core$Maybe$Nothing)) ? $elm$browser$Browser$Events$onAnimationFrame(
 		function (_v0) {
-			return (!model.timeInCycle) ? $author$project$CellTeams$CellTeams$Increment : $author$project$CellTeams$CellTeams$Decrement;
+			return (!model.timeInCycle) ? $author$project$Garden$Model$Increment : $author$project$Garden$Model$Decrement;
 		}) : $elm$core$Platform$Sub$none;
 };
-var $author$project$CellTeams$CellTeams$decrementModel = function (model) {
-	return {animation: model.animation, colorway: model.colorway, grids: model.grids, settings: model.settings, timeInCycle: model.timeInCycle - 1};
+var $author$project$Garden$Update$decrementModel = function (model) {
+	return {animation: model.animation, grids: model.grids, plants: model.plants, settings: model.settings, timeInCycle: model.timeInCycle - 1};
 };
-var $author$project$CellTeams$CellTeams$defaultTiming = 100;
-var $author$project$CellTeams$CellTeams$go = function (model) {
+var $author$project$Garden$Update$defaultTiming = 100;
+var $author$project$Garden$Update$go = function (model) {
 	return {
-		animation: $elm$core$Maybe$Just($author$project$CellTeams$CellTeams$defaultTiming),
-		colorway: model.colorway,
+		animation: $elm$core$Maybe$Just($author$project$Garden$Update$defaultTiming),
 		grids: model.grids,
+		plants: model.plants,
 		settings: model.settings,
-		timeInCycle: $author$project$CellTeams$CellTeams$defaultTiming
+		timeInCycle: $author$project$Garden$Update$defaultTiming
 	};
 };
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
-var $author$project$CellTeams$Grid$Model$toggleState = function (state) {
-	return _Utils_eq(state, $author$project$CellTeams$Grid$Model$Alive) ? $author$project$CellTeams$Grid$Model$Dead : $author$project$CellTeams$Grid$Model$Alive;
+var $author$project$Garden$Grid$Model$toggleState = function (state) {
+	return _Utils_eq(state, $author$project$Garden$Grid$Model$Alive) ? $author$project$Garden$Grid$Model$Dead : $author$project$Garden$Grid$Model$Alive;
 };
-var $author$project$CellTeams$Grid$Model$toggleCell = F3(
+var $author$project$Garden$Grid$Model$toggleCell = F3(
 	function (coords, cell, grid) {
 		return A3(
 			$elm$core$Dict$insert,
 			coords,
-			$author$project$CellTeams$Grid$Model$toggleState(cell),
+			$author$project$Garden$Grid$Model$toggleState(cell),
 			grid);
 	});
-var $author$project$CellTeams$Grid$Update$updateGrid = F2(
+var $author$project$Garden$Grid$Update$updateGrid = F2(
 	function (msg, grid) {
 		switch (msg.$) {
 			case 'NoOp':
 				return _Utils_Tuple2(grid, $elm$core$Platform$Cmd$none);
 			case 'MkNewGrid':
-				return _Utils_Tuple2(grid, $author$project$CellTeams$Grid$Update$makeGrid);
+				return _Utils_Tuple2(grid, $author$project$Garden$Grid$Update$makeGrid);
 			case 'NewGrid':
 				var newGrid = msg.a;
 				return _Utils_Tuple2(newGrid, $elm$core$Platform$Cmd$none);
@@ -5974,7 +6027,7 @@ var $author$project$CellTeams$Grid$Update$updateGrid = F2(
 				var coords = msg.a;
 				var cell = msg.b;
 				return _Utils_Tuple2(
-					A3($author$project$CellTeams$Grid$Model$toggleCell, coords, cell, grid),
+					A3($author$project$Garden$Grid$Model$toggleCell, coords, cell, grid),
 					$elm$core$Platform$Cmd$none);
 		}
 	});
@@ -5987,26 +6040,26 @@ var $elm$core$Maybe$withDefault = F2(
 			return _default;
 		}
 	});
-var $author$project$CellTeams$CellTeams$gridMsgToMsg = F3(
+var $author$project$Garden$Update$gridMsgToMsg = F3(
 	function (gridId, gridMsg, model) {
 		var grid = A2(
 			$elm$core$Maybe$withDefault,
-			A2($author$project$CellTeams$Grid$Model$deadGrid, $author$project$CellTeams$Grid$Update$defaultRows, $author$project$CellTeams$Grid$Update$defaultColumns),
+			A2($author$project$Garden$Grid$Model$deadGrid, $author$project$Garden$Grid$Update$defaultRows, $author$project$Garden$Grid$Update$defaultColumns),
 			A2($elm$core$Dict$get, gridId, model.grids));
-		var _v0 = A2($author$project$CellTeams$Grid$Update$updateGrid, gridMsg, grid);
+		var _v0 = A2($author$project$Garden$Grid$Update$updateGrid, gridMsg, grid);
 		var newGrid = _v0.a;
 		var cmd = _v0.b;
 		return _Utils_Tuple2(
 			{
 				animation: model.animation,
-				colorway: model.colorway,
 				grids: A3($elm$core$Dict$insert, gridId, newGrid, model.grids),
+				plants: model.plants,
 				settings: model.settings,
 				timeInCycle: model.timeInCycle
 			},
 			A2(
 				$elm$core$Platform$Cmd$map,
-				$author$project$CellTeams$CellTeams$GridMsg(gridId),
+				$author$project$Garden$Model$GridMsg(gridId),
 				cmd));
 	});
 var $elm$core$Dict$map = F2(
@@ -6074,14 +6127,14 @@ var $elm$core$List$member = F2(
 			},
 			xs);
 	});
-var $author$project$CellTeams$Grid$Model$nub = A2(
+var $author$project$Garden$Grid$Model$nub = A2(
 	$elm$core$List$foldl,
 	F2(
 		function (a, acc) {
 			return A2($elm$core$List$member, a, acc) ? acc : A2($elm$core$List$cons, a, acc);
 		}),
 	_List_Nil);
-var $author$project$CellTeams$Grid$Model$listOfCellsToUpdate = function (grid) {
+var $author$project$Garden$Grid$Model$listOfCellsToUpdate = function (grid) {
 	var liveCoords = $elm$core$Dict$keys(grid);
 	var allCellsAndNeighbors = A2(
 		$elm$core$List$concatMap,
@@ -6089,12 +6142,12 @@ var $author$project$CellTeams$Grid$Model$listOfCellsToUpdate = function (grid) {
 			return A2(
 				$elm$core$List$cons,
 				k,
-				$author$project$CellTeams$Grid$Model$findNeighboringCoords(k));
+				$author$project$Garden$Grid$Model$findNeighboringCoords(k));
 		},
 		liveCoords);
-	return $author$project$CellTeams$Grid$Model$nub(allCellsAndNeighbors);
+	return $author$project$Garden$Grid$Model$nub(allCellsAndNeighbors);
 };
-var $author$project$CellTeams$Grid$Model$maybeInsert = F3(
+var $author$project$Garden$Grid$Model$maybeInsert = F3(
 	function (k, maybeV, dict) {
 		if (maybeV.$ === 'Just') {
 			var val = maybeV.a;
@@ -6121,287 +6174,113 @@ var $elm$core$List$filterMap = F2(
 			_List_Nil,
 			xs);
 	});
-var $author$project$CellTeams$Grid$Model$getNeighbors = F2(
+var $author$project$Garden$Grid$Model$getNeighbors = F2(
 	function (coords, grid) {
 		return A2(
 			$elm$core$List$filterMap,
 			function (c) {
 				return A2($elm$core$Dict$get, c, grid);
 			},
-			$author$project$CellTeams$Grid$Model$findNeighboringCoords(coords));
+			$author$project$Garden$Grid$Model$findNeighboringCoords(coords));
 	});
-var $author$project$CellTeams$Grid$Model$isAlive = function (cell) {
-	return _Utils_eq(cell, $author$project$CellTeams$Grid$Model$Alive) ? true : false;
+var $author$project$Garden$Grid$Model$isAlive = function (cell) {
+	return _Utils_eq(cell, $author$project$Garden$Grid$Model$Alive) ? true : false;
 };
-var $author$project$CellTeams$Grid$Model$aliveNeighbors = F2(
+var $author$project$Garden$Grid$Model$aliveNeighbors = F2(
 	function (coords, grid) {
 		return $elm$core$List$length(
 			A2(
 				$elm$core$List$filter,
-				$author$project$CellTeams$Grid$Model$isAlive,
-				A2($author$project$CellTeams$Grid$Model$getNeighbors, coords, grid)));
+				$author$project$Garden$Grid$Model$isAlive,
+				A2($author$project$Garden$Grid$Model$getNeighbors, coords, grid)));
 	});
-var $author$project$CellTeams$Grid$Model$stepCell = F2(
+var $author$project$Garden$Grid$Model$stepCell = F2(
 	function (neighborCount, mCell) {
 		if ((mCell.$ === 'Just') && (mCell.a.$ === 'Alive')) {
 			var _v1 = mCell.a;
-			return ((neighborCount === 2) || (neighborCount === 3)) ? $elm$core$Maybe$Just($author$project$CellTeams$Grid$Model$Alive) : $elm$core$Maybe$Just($author$project$CellTeams$Grid$Model$Dead);
+			return ((neighborCount === 2) || (neighborCount === 3)) ? $elm$core$Maybe$Just($author$project$Garden$Grid$Model$Alive) : $elm$core$Maybe$Just($author$project$Garden$Grid$Model$Dead);
 		} else {
-			return (neighborCount === 3) ? $elm$core$Maybe$Just($author$project$CellTeams$Grid$Model$Alive) : $elm$core$Maybe$Nothing;
+			return (neighborCount === 3) ? $elm$core$Maybe$Just($author$project$Garden$Grid$Model$Alive) : $elm$core$Maybe$Nothing;
 		}
 	});
-var $author$project$CellTeams$Grid$Model$updateState = F2(
+var $author$project$Garden$Grid$Model$updateState = F2(
 	function (coords, grid) {
-		var neighborCount = A2($author$project$CellTeams$Grid$Model$aliveNeighbors, coords, grid);
+		var neighborCount = A2($author$project$Garden$Grid$Model$aliveNeighbors, coords, grid);
 		var mCell = A2($elm$core$Dict$get, coords, grid);
-		return A2($author$project$CellTeams$Grid$Model$stepCell, neighborCount, mCell);
+		return A2($author$project$Garden$Grid$Model$stepCell, neighborCount, mCell);
 	});
-var $author$project$CellTeams$Grid$Model$updateOne = F3(
+var $author$project$Garden$Grid$Model$updateOne = F3(
 	function (oldGrid, coords, newGrid) {
-		var newCell = A2($author$project$CellTeams$Grid$Model$updateState, coords, oldGrid);
-		return A3($author$project$CellTeams$Grid$Model$maybeInsert, coords, newCell, newGrid);
+		var newCell = A2($author$project$Garden$Grid$Model$updateState, coords, oldGrid);
+		return A3($author$project$Garden$Grid$Model$maybeInsert, coords, newCell, newGrid);
 	});
-var $author$project$CellTeams$Grid$Model$updateCells = F2(
+var $author$project$Garden$Grid$Model$updateCells = F2(
 	function (beforeUpdate, cellsToUpdate) {
 		return A3(
 			$elm$core$List$foldl,
-			$author$project$CellTeams$Grid$Model$updateOne(beforeUpdate),
+			$author$project$Garden$Grid$Model$updateOne(beforeUpdate),
 			$elm$core$Dict$empty,
 			cellsToUpdate);
 	});
-var $author$project$CellTeams$Grid$Model$stepGrid = function (grid) {
-	var cellsToUpdate = $author$project$CellTeams$Grid$Model$listOfCellsToUpdate(grid);
-	return A2($author$project$CellTeams$Grid$Model$updateCells, grid, cellsToUpdate);
+var $author$project$Garden$Grid$Model$stepGrid = function (grid) {
+	var cellsToUpdate = $author$project$Garden$Grid$Model$listOfCellsToUpdate(grid);
+	return A2($author$project$Garden$Grid$Model$updateCells, grid, cellsToUpdate);
 };
-var $author$project$CellTeams$CellTeams$incrementModel = function (model) {
+var $author$project$Garden$Update$incrementModel = function (model) {
 	return {
 		animation: model.animation,
-		colorway: model.colorway,
 		grids: A2(
 			$elm$core$Dict$map,
 			function (_v0) {
-				return $author$project$CellTeams$Grid$Model$stepGrid;
+				return $author$project$Garden$Grid$Model$stepGrid;
 			},
 			model.grids),
+		plants: model.plants,
 		settings: model.settings,
-		timeInCycle: A2($elm$core$Maybe$withDefault, $author$project$CellTeams$CellTeams$defaultTiming, model.animation)
+		timeInCycle: A2($elm$core$Maybe$withDefault, $author$project$Garden$Update$defaultTiming, model.animation)
 	};
 };
-var $author$project$CellTeams$CellTeams$newColorway = F2(
-	function (colorway, model) {
-		return {animation: model.animation, colorway: colorway, grids: model.grids, settings: model.settings, timeInCycle: model.timeInCycle};
+var $author$project$Garden$Update$setPlants = F2(
+	function (model, plants) {
+		return {animation: model.animation, grids: model.grids, plants: plants, settings: model.settings, timeInCycle: model.timeInCycle};
 	});
-var $author$project$CellTeams$CellTeams$NewColorway = function (a) {
-	return {$: 'NewColorway', a: a};
+var $author$project$Garden$Update$stop = function (model) {
+	return {animation: $elm$core$Maybe$Nothing, grids: model.grids, plants: model.plants, settings: model.settings, timeInCycle: $author$project$Garden$Update$defaultTiming};
 };
-var $elm$core$Basics$round = _Basics_round;
-var $author$project$CellTeams$CellTeams$glowyPop = A2(
-	$author$project$CellTeams$CellTeams$Colorway,
-	'glowyPop',
-	F2(
-		function (time, cell) {
-			var min = 25;
-			var max = 75;
-			var p = min + $elm$core$Basics$round((time / $author$project$CellTeams$CellTeams$defaultTiming) * (max - min));
-			return _Utils_eq(cell, $author$project$CellTeams$Grid$Model$Alive) ? ('hsl(150 ' + ($elm$core$String$fromInt(p) + ('% ' + ($elm$core$String$fromInt(p) + '%)')))) : '#333333';
-		}));
-var $author$project$CellTeams$CellTeams$greenAndGrey = A2(
-	$author$project$CellTeams$CellTeams$Colorway,
-	'greenAndGray',
-	F2(
-		function (_v0, cell) {
-			return _Utils_eq(cell, $author$project$CellTeams$Grid$Model$Alive) ? 'green' : '#CCC';
-		}));
-var $author$project$CellTeams$CellTeams$otherColorways = _List_fromArray(
-	[$author$project$CellTeams$CellTeams$glowyPop, $author$project$CellTeams$CellTeams$greenAndGrey]);
-var $elm$random$Random$addOne = function (value) {
-	return _Utils_Tuple2(1, value);
-};
-var $elm$random$Random$uniform = F2(
-	function (value, valueList) {
-		return A2(
-			$elm$random$Random$weighted,
-			$elm$random$Random$addOne(value),
-			A2($elm$core$List$map, $elm$random$Random$addOne, valueList));
-	});
-var $author$project$CellTeams$CellTeams$pickRandomColorway = A2(
-	$elm$random$Random$generate,
-	$author$project$CellTeams$CellTeams$NewColorway,
-	A2($elm$random$Random$uniform, $author$project$CellTeams$CellTeams$defaultColorway, $author$project$CellTeams$CellTeams$otherColorways));
-var $author$project$CellTeams$CellTeams$stop = function (model) {
-	return {animation: $elm$core$Maybe$Nothing, colorway: model.colorway, grids: model.grids, settings: model.settings, timeInCycle: $author$project$CellTeams$CellTeams$defaultTiming};
-};
-var $author$project$CellTeams$CellTeams$allColorways = A2($elm$core$List$cons, $author$project$CellTeams$CellTeams$defaultColorway, $author$project$CellTeams$CellTeams$otherColorways);
-var $elm$core$Maybe$andThen = F2(
-	function (callback, maybeValue) {
-		if (maybeValue.$ === 'Just') {
-			var value = maybeValue.a;
-			return callback(value);
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
-var $elm$core$Array$fromListHelp = F3(
-	function (list, nodeList, nodeListSize) {
-		fromListHelp:
-		while (true) {
-			var _v0 = A2($elm$core$Elm$JsArray$initializeFromList, $elm$core$Array$branchFactor, list);
-			var jsArray = _v0.a;
-			var remainingItems = _v0.b;
-			if (_Utils_cmp(
-				$elm$core$Elm$JsArray$length(jsArray),
-				$elm$core$Array$branchFactor) < 0) {
-				return A2(
-					$elm$core$Array$builderToArray,
-					true,
-					{nodeList: nodeList, nodeListSize: nodeListSize, tail: jsArray});
-			} else {
-				var $temp$list = remainingItems,
-					$temp$nodeList = A2(
-					$elm$core$List$cons,
-					$elm$core$Array$Leaf(jsArray),
-					nodeList),
-					$temp$nodeListSize = nodeListSize + 1;
-				list = $temp$list;
-				nodeList = $temp$nodeList;
-				nodeListSize = $temp$nodeListSize;
-				continue fromListHelp;
-			}
-		}
-	});
-var $elm$core$Array$fromList = function (list) {
-	if (!list.b) {
-		return $elm$core$Array$empty;
-	} else {
-		return A3($elm$core$Array$fromListHelp, list, _List_Nil, 0);
-	}
-};
-var $elm$core$Array$bitMask = 4294967295 >>> (32 - $elm$core$Array$shiftStep);
-var $elm$core$Elm$JsArray$unsafeGet = _JsArray_unsafeGet;
-var $elm$core$Array$getHelp = F3(
-	function (shift, index, tree) {
-		getHelp:
-		while (true) {
-			var pos = $elm$core$Array$bitMask & (index >>> shift);
-			var _v0 = A2($elm$core$Elm$JsArray$unsafeGet, pos, tree);
-			if (_v0.$ === 'SubTree') {
-				var subTree = _v0.a;
-				var $temp$shift = shift - $elm$core$Array$shiftStep,
-					$temp$index = index,
-					$temp$tree = subTree;
-				shift = $temp$shift;
-				index = $temp$index;
-				tree = $temp$tree;
-				continue getHelp;
-			} else {
-				var values = _v0.a;
-				return A2($elm$core$Elm$JsArray$unsafeGet, $elm$core$Array$bitMask & index, values);
-			}
-		}
-	});
-var $elm$core$Bitwise$shiftLeftBy = _Bitwise_shiftLeftBy;
-var $elm$core$Array$tailIndex = function (len) {
-	return (len >>> 5) << 5;
-};
-var $elm$core$Array$get = F2(
-	function (index, _v0) {
-		var len = _v0.a;
-		var startShift = _v0.b;
-		var tree = _v0.c;
-		var tail = _v0.d;
-		return ((index < 0) || (_Utils_cmp(index, len) > -1)) ? $elm$core$Maybe$Nothing : ((_Utils_cmp(
-			index,
-			$elm$core$Array$tailIndex(len)) > -1) ? $elm$core$Maybe$Just(
-			A2($elm$core$Elm$JsArray$unsafeGet, $elm$core$Array$bitMask & index, tail)) : $elm$core$Maybe$Just(
-			A3($elm$core$Array$getHelp, startShift, index, tree)));
-	});
-var $elm$core$List$head = function (list) {
-	if (list.b) {
-		var x = list.a;
-		var xs = list.b;
-		return $elm$core$Maybe$Just(x);
-	} else {
-		return $elm$core$Maybe$Nothing;
-	}
-};
-var $author$project$CellTeams$CellTeams$getColorwayIndex = function (name) {
-	return $elm$core$List$head(
-		A2(
-			$elm$core$List$filterMap,
-			function (a) {
-				return a;
-			},
-			A2(
-				$elm$core$List$indexedMap,
-				F2(
-					function (i, c) {
-						return _Utils_eq(c.name, name) ? $elm$core$Maybe$Just(i) : $elm$core$Maybe$Nothing;
-					}),
-				$author$project$CellTeams$CellTeams$allColorways)));
-};
-var $author$project$CellTeams$CellTeams$nextColorWay = function (currentColorway) {
-	var maybeIndex = $author$project$CellTeams$CellTeams$getColorwayIndex(currentColorway.name);
-	var maybeColorway = A2(
-		$elm$core$Maybe$andThen,
-		function (i) {
-			return A2(
-				$elm$core$Array$get,
-				i + 1,
-				$elm$core$Array$fromList($author$project$CellTeams$CellTeams$allColorways));
-		},
-		maybeIndex);
-	return A2($elm$core$Maybe$withDefault, $author$project$CellTeams$CellTeams$defaultColorway, maybeColorway);
-};
-var $author$project$CellTeams$CellTeams$tryNextColorWay = function (model) {
-	return {
-		animation: model.animation,
-		colorway: $author$project$CellTeams$CellTeams$nextColorWay(model.colorway),
-		grids: model.grids,
-		settings: model.settings,
-		timeInCycle: model.timeInCycle
-	};
-};
-var $author$project$CellTeams$CellTeams$update = F2(
+var $author$project$Garden$Update$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
 			case 'NoOp':
 				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 			case 'Decrement':
 				return _Utils_Tuple2(
-					$author$project$CellTeams$CellTeams$decrementModel(model),
+					$author$project$Garden$Update$decrementModel(model),
 					$elm$core$Platform$Cmd$none);
 			case 'Increment':
 				return _Utils_Tuple2(
-					$author$project$CellTeams$CellTeams$incrementModel(model),
+					$author$project$Garden$Update$incrementModel(model),
 					$elm$core$Platform$Cmd$none);
-			case 'PickRandomColorway':
-				return _Utils_Tuple2(model, $author$project$CellTeams$CellTeams$pickRandomColorway);
 			case 'Stop':
 				return _Utils_Tuple2(
-					$author$project$CellTeams$CellTeams$stop(model),
+					$author$project$Garden$Update$stop(model),
 					$elm$core$Platform$Cmd$none);
 			case 'Go':
 				return _Utils_Tuple2(
-					$author$project$CellTeams$CellTeams$go(model),
+					$author$project$Garden$Update$go(model),
 					$elm$core$Platform$Cmd$none);
-			case 'NewColorway':
-				var colorway = msg.a;
+			case 'SetColors':
+				var plants = msg.a;
 				return _Utils_Tuple2(
-					A2($author$project$CellTeams$CellTeams$newColorway, colorway, model),
-					$elm$core$Platform$Cmd$none);
-			case 'TryNextColorway':
-				return _Utils_Tuple2(
-					$author$project$CellTeams$CellTeams$tryNextColorWay(model),
+					A2($author$project$Garden$Update$setPlants, model, plants),
 					$elm$core$Platform$Cmd$none);
 			default:
 				var gridId = msg.a;
 				var gridMsg = msg.b;
-				return A3($author$project$CellTeams$CellTeams$gridMsgToMsg, gridId, gridMsg, model);
+				return A3($author$project$Garden$Update$gridMsgToMsg, gridId, gridMsg, model);
 		}
 	});
-var $author$project$CellTeams$CellTeams$Go = {$: 'Go'};
-var $author$project$CellTeams$CellTeams$Stop = {$: 'Stop'};
-var $author$project$CellTeams$CellTeams$TryNextColorway = {$: 'TryNextColorway'};
+var $author$project$Garden$Model$Go = {$: 'Go'};
+var $author$project$Garden$Model$Stop = {$: 'Stop'};
 var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
@@ -6442,85 +6321,130 @@ var $elm$core$Dict$values = function (dict) {
 		_List_Nil,
 		dict);
 };
-var $author$project$CellTeams$Grid$Update$MkNewGrid = {$: 'MkNewGrid'};
-var $author$project$CellTeams$Grid$Update$ToggleCell = F2(
+var $author$project$Garden$Grid$Update$MkNewGrid = {$: 'MkNewGrid'};
+var $author$project$Garden$Grid$Update$ToggleCell = F2(
 	function (a, b) {
 		return {$: 'ToggleCell', a: a, b: b};
 	});
-var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
-var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
+var $elm$core$Tuple$second = function (_v0) {
+	var y = _v0.b;
+	return y;
+};
+var $elm$html$Html$Attributes$classList = function (classes) {
+	return $elm$html$Html$Attributes$class(
+		A2(
+			$elm$core$String$join,
+			' ',
+			A2(
+				$elm$core$List$map,
+				$elm$core$Tuple$first,
+				A2($elm$core$List$filter, $elm$core$Tuple$second, classes))));
+};
 var $elm$html$Html$td = _VirtualDom_node('td');
-var $author$project$CellTeams$CellTeams$showCell = F5(
-	function (model, gridId, row, col, cell) {
+var $author$project$Garden$View$toLiveliness = function (cell) {
+	return _Utils_eq(cell, $author$project$Garden$Grid$Model$Alive) ? 'alive' : 'dead';
+};
+var $author$project$Garden$View$plantToText = function (plant) {
+	switch (plant.$) {
+		case 'Blue':
+			return 'blue-plant';
+		case 'Pink':
+			return 'pink-plant';
+		case 'Purple':
+			return 'purple-plant';
+		default:
+			return 'yellow-plant';
+	}
+};
+var $author$project$Garden$View$toVisibility = F2(
+	function (cell, plant) {
+		return _Utils_eq(cell, $author$project$Garden$Grid$Model$Alive) ? $author$project$Garden$View$plantToText(plant) : 'hide-cell';
+	});
+var $author$project$Garden$View$showCell = F4(
+	function (gridId, row, col, _v0) {
+		var cell = _v0.a;
+		var plant = _v0.b;
 		return A2(
 			$elm$html$Html$td,
 			_List_fromArray(
 				[
-					A2(
-					$elm$html$Html$Attributes$style,
-					'background',
-					A2(model.colorway.display, model.timeInCycle, cell)),
-					A2($elm$html$Html$Attributes$style, 'width', '1em'),
-					A2($elm$html$Html$Attributes$style, 'height', '1em'),
+					$elm$html$Html$Attributes$class('cell'),
 					$elm$html$Html$Events$onClick(
 					A2(
-						$author$project$CellTeams$CellTeams$GridMsg,
+						$author$project$Garden$Model$GridMsg,
 						gridId,
 						A2(
-							$author$project$CellTeams$Grid$Update$ToggleCell,
+							$author$project$Garden$Grid$Update$ToggleCell,
 							_Utils_Tuple2(row, col),
 							cell)))
 				]),
 			_List_fromArray(
 				[
-					$elm$html$Html$text(' ')
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$classList(
+							_List_fromArray(
+								[
+									_Utils_Tuple2('cell-content', true),
+									_Utils_Tuple2(
+									A2($author$project$Garden$View$toVisibility, cell, plant),
+									true),
+									_Utils_Tuple2(
+									$author$project$Garden$View$toLiveliness(cell),
+									true)
+								]))
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('✽')
+						]))
 				]));
 	});
 var $elm$html$Html$tr = _VirtualDom_node('tr');
-var $author$project$CellTeams$CellTeams$showRow = F4(
-	function (model, gridId, n, row) {
+var $author$project$Garden$View$showRow = F3(
+	function (gridId, n, row) {
 		return A2(
 			$elm$html$Html$tr,
 			_List_Nil,
 			A2(
 				$elm$core$List$indexedMap,
-				A3($author$project$CellTeams$CellTeams$showCell, model, gridId, n),
+				A2($author$project$Garden$View$showCell, gridId, n),
 				row));
 	});
-var $author$project$CellTeams$CellTeams$toColumns = F3(
-	function (cols, grid, row) {
-		var cell = function (col) {
-			return A2(
-				$elm$core$Maybe$withDefault,
-				$author$project$CellTeams$Grid$Model$Dead,
-				A2(
-					$elm$core$Dict$get,
-					_Utils_Tuple2(row, col),
-					grid));
-		};
-		return A2(
-			$elm$core$List$map,
-			function (col) {
-				return cell(col);
-			},
-			A2($elm$core$List$range, 0, cols - 1));
+var $author$project$Garden$View$toColumns = F3(
+	function (grid, row, plants) {
+		var cell = F2(
+			function (col, plant) {
+				return _Utils_Tuple2(
+					A2(
+						$elm$core$Maybe$withDefault,
+						$author$project$Garden$Grid$Model$Dead,
+						A2(
+							$elm$core$Dict$get,
+							_Utils_Tuple2(row, col),
+							grid)),
+					plant);
+			});
+		return A2($elm$core$List$indexedMap, cell, plants);
 	});
-var $author$project$CellTeams$CellTeams$toRows = F2(
-	function (settings, grid) {
+var $author$project$Garden$View$toRows = F2(
+	function (grid, plants) {
 		return A2(
-			$elm$core$List$map,
-			A2($author$project$CellTeams$CellTeams$toColumns, settings.columns, grid),
-			A2($elm$core$List$range, 0, settings.rows - 1));
+			$elm$core$List$indexedMap,
+			$author$project$Garden$View$toColumns(grid),
+			plants);
 	});
-var $author$project$CellTeams$CellTeams$showGrid = F3(
+var $author$project$Garden$View$showGrid = F3(
 	function (model, gridId, grid) {
 		return A2(
 			$elm$core$List$indexedMap,
-			A2($author$project$CellTeams$CellTeams$showRow, model, gridId),
-			A2($author$project$CellTeams$CellTeams$toRows, model.settings, grid));
+			$author$project$Garden$View$showRow(gridId),
+			A2($author$project$Garden$View$toRows, grid, model.plants));
 	});
 var $elm$html$Html$table = _VirtualDom_node('table');
-var $author$project$CellTeams$CellTeams$viewGrid = F3(
+var $author$project$Garden$View$viewGrid = F3(
 	function (model, gridId, grid) {
 		return A2(
 			$elm$html$Html$div,
@@ -6530,7 +6454,7 @@ var $author$project$CellTeams$CellTeams$viewGrid = F3(
 					A2(
 					$elm$html$Html$table,
 					_List_Nil,
-					A3($author$project$CellTeams$CellTeams$showGrid, model, gridId, grid)),
+					A3($author$project$Garden$View$showGrid, model, gridId, grid)),
 					A2(
 					$elm$html$Html$div,
 					_List_fromArray(
@@ -6545,10 +6469,10 @@ var $author$project$CellTeams$CellTeams$viewGrid = F3(
 								[
 									$elm$html$Html$Events$onClick(
 									A2(
-										$author$project$CellTeams$CellTeams$GridMsg,
+										$author$project$Garden$Model$GridMsg,
 										gridId,
-										$author$project$CellTeams$Grid$Update$NewGrid(
-											A2($author$project$CellTeams$Grid$Model$deadGrid, $author$project$CellTeams$Grid$Update$defaultRows, $author$project$CellTeams$Grid$Update$defaultColumns))))
+										$author$project$Garden$Grid$Update$NewGrid(
+											A2($author$project$Garden$Grid$Model$deadGrid, $author$project$Garden$Grid$Update$defaultRows, $author$project$Garden$Grid$Update$defaultColumns))))
 								]),
 							_List_fromArray(
 								[
@@ -6559,7 +6483,7 @@ var $author$project$CellTeams$CellTeams$viewGrid = F3(
 							_List_fromArray(
 								[
 									$elm$html$Html$Events$onClick(
-									A2($author$project$CellTeams$CellTeams$GridMsg, gridId, $author$project$CellTeams$Grid$Update$MkNewGrid))
+									A2($author$project$Garden$Model$GridMsg, gridId, $author$project$Garden$Grid$Update$MkNewGrid))
 								]),
 							_List_fromArray(
 								[
@@ -6568,7 +6492,7 @@ var $author$project$CellTeams$CellTeams$viewGrid = F3(
 						]))
 				]));
 	});
-var $author$project$CellTeams$CellTeams$view = function (model) {
+var $author$project$Garden$View$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
 		_List_Nil,
@@ -6586,7 +6510,7 @@ var $author$project$CellTeams$CellTeams$view = function (model) {
 						$elm$html$Html$button,
 						_List_fromArray(
 							[
-								$elm$html$Html$Events$onClick($author$project$CellTeams$CellTeams$Increment)
+								$elm$html$Html$Events$onClick($author$project$Garden$Model$Increment)
 							]),
 						_List_fromArray(
 							[
@@ -6596,7 +6520,7 @@ var $author$project$CellTeams$CellTeams$view = function (model) {
 						$elm$html$Html$button,
 						_List_fromArray(
 							[
-								$elm$html$Html$Events$onClick($author$project$CellTeams$CellTeams$Go)
+								$elm$html$Html$Events$onClick($author$project$Garden$Model$Go)
 							]),
 						_List_fromArray(
 							[
@@ -6606,21 +6530,11 @@ var $author$project$CellTeams$CellTeams$view = function (model) {
 						$elm$html$Html$button,
 						_List_fromArray(
 							[
-								$elm$html$Html$Events$onClick($author$project$CellTeams$CellTeams$Stop)
+								$elm$html$Html$Events$onClick($author$project$Garden$Model$Stop)
 							]),
 						_List_fromArray(
 							[
 								$elm$html$Html$text('Stop')
-							])),
-						A2(
-						$elm$html$Html$button,
-						_List_fromArray(
-							[
-								$elm$html$Html$Events$onClick($author$project$CellTeams$CellTeams$TryNextColorway)
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Change colors!')
 							]))
 					])),
 				A2(
@@ -6634,13 +6548,12 @@ var $author$project$CellTeams$CellTeams$view = function (model) {
 						$elm$core$Dict$map,
 						F2(
 							function (k, v) {
-								return A3($author$project$CellTeams$CellTeams$viewGrid, model, k, v);
+								return A3($author$project$Garden$View$viewGrid, model, k, v);
 							}),
 						model.grids)))
 			]));
 };
-var $author$project$CellTeams$CellTeams$cellTeamsMain = $elm$browser$Browser$element(
-	{init: $author$project$CellTeams$CellTeams$init, subscriptions: $author$project$CellTeams$CellTeams$subscriptions, update: $author$project$CellTeams$CellTeams$update, view: $author$project$CellTeams$CellTeams$view});
-var $author$project$Main$main = $author$project$CellTeams$CellTeams$cellTeamsMain;
+var $author$project$Main$main = $elm$browser$Browser$element(
+	{init: $author$project$Garden$Update$init, subscriptions: $author$project$Garden$Update$subscriptions, update: $author$project$Garden$Update$update, view: $author$project$Garden$View$view});
 _Platform_export({'Main':{'init':$author$project$Main$main(
 	$elm$json$Json$Decode$succeed(_Utils_Tuple0))(0)}});}(this));
