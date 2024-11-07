@@ -1,14 +1,15 @@
 module Garden.View exposing (..)
 
 import Dict
-import Garden.Grid.Model exposing (Cell, CellState(..), Grid, deadGrid)
+import Garden.Grid.Model exposing (Cell, CellState(..), Grid, countLiving, deadGrid, getBounds)
 import Garden.Grid.Update exposing (GridMsg(..), defaultColumns, defaultRows)
 import Garden.Model exposing (DisplayGrid, GameSettings, GridId, Model, Msg(..), Plant(..))
-import Html exposing (Html, button, div, table, td, text, tr)
+import Html exposing (Html, button, dd, div, dl, dt, table, td, text, tr)
 import Html.Attributes exposing (class, classList)
 import Html.Events exposing (onClick)
 import List exposing (range)
 import Random
+import String exposing (fromInt)
 
 
 toPlants : Int -> Grid -> Int -> List (Maybe Plant)
@@ -75,15 +76,6 @@ cellToText cell =
         "dead"
 
 
-toLiveliness : CellState -> String
-toLiveliness cell =
-    if cell == Alive then
-        "alive"
-
-    else
-        "dead"
-
-
 toVisibility : CellState -> Plant -> String
 toVisibility cell plant =
     if cell == Alive then
@@ -103,7 +95,7 @@ showCell gridId row col ( cell, plant ) =
             [ classList
                 [ ( "cell-content", True )
                 , ( toVisibility cell plant, True )
-                , ( toLiveliness cell, True )
+                , ( cellToText cell, True )
                 ]
             ]
             [ text "✽" ]
@@ -136,10 +128,44 @@ showGrid model gridId grid =
     List.indexedMap (showRow gridId) (toRows grid model.plants)
 
 
+showGridData : Grid -> Html Msg
+showGridData grid =
+    let
+        ( ( minY, minX ), ( maxY, maxX ) ) =
+            getBounds grid
+
+        boundsStrings =
+            [ "("
+            , fromInt minX
+            , ", "
+            , fromInt minY
+            , ") to ("
+            , fromInt maxX
+            , ", "
+            , fromInt maxY
+            , ")"
+            ]
+
+        liveCells =
+            countLiving grid
+    in
+    dl [ class "grid-data" ]
+        [ div [ class "definition" ]
+            [ dt [] [ text "Live cells" ]
+            , dd [] [ text (fromInt liveCells) ]
+            ]
+        , div [ class "definition" ]
+            [ dt [] [ text "Live area" ]
+            , dd [] [ text (String.join "" boundsStrings) ]
+            ]
+        ]
+
+
 viewGrid : Model -> GridId -> Grid -> Html Msg
 viewGrid model gridId grid =
     div []
         [ table [] (showGrid model gridId grid)
+        , div [] [ showGridData grid ]
         , div [ class "gridcommands" ]
             [ button [ onClick (GridMsg gridId (NewGrid (deadGrid defaultRows defaultColumns))) ] [ text "Clear" ]
             , button [ onClick (GridMsg gridId MkNewGrid) ] [ text "Generate!" ]
@@ -147,13 +173,22 @@ viewGrid model gridId grid =
         ]
 
 
+stopGoButton : Model -> Html Msg
+stopGoButton model =
+    case model.animation of
+        Nothing ->
+            button [ onClick Go ] [ text "Go" ]
+
+        _ ->
+            button [ onClick Stop ] [ text "Pause" ]
+
+
 view : Model -> Html Msg
 view model =
     div []
         [ div [ class "globalcommands" ]
             [ button [ onClick Increment ] [ text "Step" ]
-            , button [ onClick Go ] [ text "Go" ]
-            , button [ onClick Stop ] [ text "Stop" ]
+            , stopGoButton model
             ]
         , div [ class "grids" ]
             (Dict.values (Dict.map (\k v -> viewGrid model k v) model.grids))

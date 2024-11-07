@@ -181,16 +181,16 @@ getBounds grid =
             List.sort (List.map Tuple.second (Dict.keys grid))
 
         minRow =
-            max (Maybe.withDefault 0 (List.head rowsLowToHigh)) -5
+            Maybe.withDefault 0 (List.head rowsLowToHigh)
 
         maxRow =
-            min (Maybe.withDefault 0 (List.head (List.reverse rowsLowToHigh))) 20
+            Maybe.withDefault 0 (List.head (List.reverse rowsLowToHigh))
 
         minCol =
-            max (Maybe.withDefault 0 (List.head colsLowToHigh)) -5
+            Maybe.withDefault 0 (List.head colsLowToHigh)
 
         maxCol =
-            min (Maybe.withDefault 0 (List.head (List.reverse colsLowToHigh))) 20
+            Maybe.withDefault 0 (List.head (List.reverse colsLowToHigh))
     in
     ( ( minRow, minCol ), ( maxRow, maxCol ) )
 
@@ -236,6 +236,19 @@ updateOne oldGrid coords newGrid =
             updateState coords oldGrid
     in
     maybeInsert coords newCell newGrid
+
+
+countLiving : Grid -> Int
+countLiving =
+    Dict.foldl
+        (\_ cell acc ->
+            if isAlive cell then
+                acc + 1
+
+            else
+                acc
+        )
+        0
 
 
 

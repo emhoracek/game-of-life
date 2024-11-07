@@ -476,6 +476,20 @@ suite =
                 \_ ->
                     Expect.equal (stepGrid sparseGrid) sparseGridNext
             ]
+        , describe "count living"
+            [ test "an empty grid" <|
+                \_ ->
+                    Expect.equal (countLiving Dict.empty) 0
+            , test "a grid with one cell" <|
+                \_ ->
+                    Expect.equal (countLiving (Dict.insert ( 1, 1 ) Alive Dict.empty)) 1
+            , test "a small grid" <|
+                \_ ->
+                    Expect.equal (countLiving smallerGrid) 3
+            , test "a sparse grid" <|
+                \_ ->
+                    Expect.equal (countLiving exampleGridWithMix) 9
+            ]
         , describe "toggleCell"
             [ test "kills a live cell" <|
                 \_ ->

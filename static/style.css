@@ -1,3 +1,25 @@
+body {
+    background-color: #428A51;
+    color: #fffafb;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
+}
+
+header {
+    text-align: center;
+}
+
+h1 {
+    font-family: Georgia, 'Times New Roman', Times, serif
+}
+
+button {
+    color: #fffafb;
+    padding: 0.25em 0.5em;
+    background-color: #3D5467;
+    border: 1px solid black;
+    border-radius: 3px;
+}
+
 .globalcommands {
     display: flex;
     justify-content: center;
@@ -30,7 +52,7 @@ table {
 
 /* #0A8754 */
 .cell {
-    background: #956D5F;
+    background: #A4938E;
     width: 1.25em;
     height: 1.25em;
     text-align: center;
@@ -39,11 +61,6 @@ table {
 
 .cell-content {
     transition: color 1s;
-}
-
-
-.hide-cell {
-    color: #956D5F;
 }
 
 .cell-content {
@@ -67,12 +84,22 @@ table {
     color: #ECE2A1
 }
 
+.hide-cell {
+    color: #A4938E;
+}
+
 .dead {
-    background-color: #956D5F;
+    background-color: #A4938E;
     border-radius: 3em;
 }
 
 .alive {
     background-color: #428A51;
     border-radius: 3em;
+}
+
+dl {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }
