@@ -1,10 +1,10 @@
 module Garden.Grid.ModelTests exposing (..)
 
-import Garden.Grid.Model exposing (..)
 import Dict
 import Expect
+import Garden.Grid.Model exposing (..)
 import List exposing ((::))
-import Test exposing (Test, describe, skip, test)
+import Test exposing (Test, describe, test)
 
 
 smallerGrid : Grid

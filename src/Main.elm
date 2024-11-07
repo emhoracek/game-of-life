@@ -1,18 +1,16 @@
 module Main exposing (..)
 
 import Browser
-import Garden.Update exposing (init)
-import Garden.Update exposing (update, subscriptions)
-import Garden.View exposing (view)
 import Garden.Model exposing (Model, Msg)
+import Garden.Update exposing (init, subscriptions, update)
+import Garden.View exposing (view)
 
 
-cellTeamsMain : Program () Model Msg
-cellTeamsMain =
+main : Program () Model Msg
+main =
     Browser.element
         { init = init
         , update = update
         , subscriptions = subscriptions
         , view = view
         }
-

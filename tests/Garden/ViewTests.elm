@@ -1,9 +1,10 @@
 module Garden.ViewTests exposing (..)
 
-import Garden.View exposing (..)
-import Garden.Grid.Model exposing (CellState(..), Grid)
 import Dict
 import Expect
+import Garden.Grid.Model exposing (CellState(..), Grid)
+import Garden.Model exposing (Plant(..))
+import Garden.View exposing (..)
 import List exposing ((::))
 import Test exposing (Test, describe, test)
 
@@ -43,10 +44,9 @@ sparseGrid =
         , ( ( 1, 0 )
           , Alive
           )
-
-        -- , ( ( 3000, 301 )
-        --   , Alive
-        --   )
+        , ( ( 3000, 301 )
+          , Alive
+          )
         ]
 
 
@@ -57,29 +57,46 @@ suite =
             [ test "converts grid to rows for display" <|
                 \_ ->
                     Expect.equal
-                        (toRows { rows = 2, columns = 3 } smallGrid)
-                        [ [ Alive, Dead, Dead ]
-                        , [ Alive, Alive, Dead ]
+                        (toRows smallGrid (List.repeat 2 (List.repeat 3 Blue)))
+                        [ [ ( Alive, Blue ), ( Dead, Blue ), ( Dead, Blue ) ]
+                        , [ ( Alive, Blue ), ( Alive, Blue ), ( Dead, Blue ) ]
                         ]
             , test "sparse grid" <|
                 \_ ->
                     Expect.equal
-                        (toRows { rows = 3, columns = 3 } sparseGrid)
-                        [ [ Alive, Dead, Alive ]
-                        , [ Alive, Dead, Dead ]
-                        , [ Dead, Dead, Dead ]
+                        (toRows sparseGrid (List.repeat 3 (List.repeat 3 Blue)))
+                        [ [ ( Alive, Blue ), ( Dead, Blue ), ( Alive, Blue ) ]
+                        , [ ( Alive, Blue ), ( Dead, Blue ), ( Dead, Blue ) ]
+                        , [ ( Dead, Blue ), ( Dead, Blue ), ( Dead, Blue ) ]
+                        ]
+            ]
+        , describe "toPlants"
+            [ test "converts grid to rows for display" <|
+                \_ ->
+                    Expect.equal
+                        (toDisplayGrid { rows = 2, columns = 3 } smallGrid)
+                        [ [ Just Blue, Nothing, Nothing ]
+                        , [ Just Blue, Just Blue, Nothing ]
+                        ]
+            , test "sparse grid" <|
+                \_ ->
+                    Expect.equal
+                        (toDisplayGrid { rows = 3, columns = 3 } sparseGrid)
+                        [ [ Just Blue, Nothing, Just Blue ]
+                        , [ Just Blue, Nothing, Nothing ]
+                        , [ Nothing, Nothing, Nothing ]
                         ]
             ]
         , describe "toColumns"
             [ test "converts row of grid to list of cells for display" <|
                 \_ ->
                     Expect.equal
-                        (toColumns 3 smallGrid 0)
-                        [ Alive, Dead, Dead ]
+                        (toColumns smallGrid 0 (List.repeat 3 Blue))
+                        [ ( Alive, Blue ), ( Dead, Blue ), ( Dead, Blue ) ]
             , test "sparse grid" <|
                 \_ ->
                     Expect.equal
-                        (toColumns 3 sparseGrid 0)
-                        [ Alive, Dead, Alive ]
+                        (toColumns sparseGrid 0 (List.repeat 3 Blue))
+                        [ ( Alive, Blue ), ( Dead, Blue ), ( Alive, Blue ) ]
             ]
         ]

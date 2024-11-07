@@ -4,7 +4,8 @@ import Browser.Events
 import Dict
 import Garden.Grid.Model exposing (CellState(..), deadGrid, stepGrid)
 import Garden.Grid.Update exposing (GridMsg, defaultColumns, defaultRows, makeGrid, updateGrid)
-import Garden.Model exposing (GridId, Model, Msg(..))
+import Garden.Model exposing (GridId, Model, Msg(..), Plant(..))
+import Garden.View exposing (generateRandomColors)
 
 
 defaultTiming : Int
@@ -18,8 +19,13 @@ init _ =
       , settings = { rows = defaultRows, columns = defaultColumns }
       , timeInCycle = 0
       , animation = Nothing
+      , plants = List.repeat defaultRows (List.repeat defaultColumns Blue)
       }
-    , Cmd.batch [ Cmd.map (GridMsg "0") makeGrid, Cmd.map (GridMsg "1") makeGrid ]
+    , Cmd.batch
+        [ Cmd.map (GridMsg "0") makeGrid
+        , Cmd.map (GridMsg "1") makeGrid
+        , generateRandomColors defaultRows defaultColumns
+        ]
     )
 
 
@@ -29,6 +35,7 @@ incrementModel model =
     , settings = model.settings
     , timeInCycle = Maybe.withDefault defaultTiming model.animation
     , animation = model.animation
+    , plants = model.plants
     }
 
 
@@ -38,6 +45,7 @@ decrementModel model =
     , settings = model.settings
     , timeInCycle = model.timeInCycle - 1
     , animation = model.animation
+    , plants = model.plants
     }
 
 
@@ -47,6 +55,7 @@ go model =
     , settings = model.settings
     , timeInCycle = defaultTiming
     , animation = Just defaultTiming
+    , plants = model.plants
     }
 
 
@@ -56,6 +65,17 @@ stop model =
     , settings = model.settings
     , timeInCycle = defaultTiming
     , animation = Nothing
+    , plants = model.plants
+    }
+
+
+setPlants : Model -> List (List Plant) -> Model
+setPlants model plants =
+    { grids = model.grids
+    , settings = model.settings
+    , timeInCycle = model.timeInCycle
+    , animation = model.animation
+    , plants = plants
     }
 
 
@@ -77,6 +97,9 @@ update msg model =
         Go ->
             ( go model, Cmd.none )
 
+        SetColors plants ->
+            ( setPlants model plants, Cmd.none )
+
         GridMsg gridId gridMsg ->
             gridMsgToMsg gridId gridMsg model
 
@@ -94,9 +117,11 @@ gridMsgToMsg gridId gridMsg model =
       , settings = model.settings
       , timeInCycle = model.timeInCycle
       , animation = model.animation
+      , plants = model.plants
       }
     , Cmd.map (GridMsg gridId) cmd
     )
+
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
