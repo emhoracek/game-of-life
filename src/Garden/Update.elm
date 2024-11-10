@@ -1,10 +1,9 @@
 module Garden.Update exposing (..)
 
 import Browser.Events
-import Dict
 import Garden.Grid.Model exposing (CellState(..), deadGrid, stepGrid)
 import Garden.Grid.Update exposing (GridMsg, defaultColumns, defaultRows, makeGrid, updateGrid)
-import Garden.Model exposing (GridId, Model, Msg(..), Plant(..))
+import Garden.Model exposing (GridName(..), Model, Msg(..), Plant(..))
 import Garden.View exposing (generateRandomColors)
 
 
@@ -15,15 +14,15 @@ defaultTiming =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { grids = Dict.fromList [ ( "0", deadGrid defaultRows defaultColumns ), ( "1", deadGrid defaultRows defaultColumns ) ]
+    ( { garden = deadGrid defaultRows defaultColumns
+      , nursery = deadGrid (defaultRows // 2) (defaultColumns // 2)
       , settings = { rows = defaultRows, columns = defaultColumns }
       , timeInCycle = 0
       , animation = Nothing
       , plants = List.repeat defaultRows (List.repeat defaultColumns Blue)
       }
     , Cmd.batch
-        [ Cmd.map (GridMsg "0") makeGrid
-        , Cmd.map (GridMsg "1") makeGrid
+        [ Cmd.map (GridMsg Garden) makeGrid
         , generateRandomColors defaultRows defaultColumns
         ]
     )
@@ -31,7 +30,8 @@ init _ =
 
 incrementModel : Model -> Model
 incrementModel model =
-    { grids = Dict.map (\_ -> stepGrid) model.grids
+    { garden = stepGrid model.garden
+    , nursery = stepGrid model.nursery
     , settings = model.settings
     , timeInCycle = Maybe.withDefault defaultTiming model.animation
     , animation = model.animation
@@ -41,7 +41,8 @@ incrementModel model =
 
 decrementModel : Model -> Model
 decrementModel model =
-    { grids = model.grids
+    { garden = model.garden
+    , nursery = model.nursery
     , settings = model.settings
     , timeInCycle = model.timeInCycle - 1
     , animation = model.animation
@@ -51,7 +52,8 @@ decrementModel model =
 
 go : Model -> Model
 go model =
-    { grids = model.grids
+    { garden = model.garden
+    , nursery = model.nursery
     , settings = model.settings
     , timeInCycle = defaultTiming
     , animation = Just defaultTiming
@@ -61,7 +63,8 @@ go model =
 
 stop : Model -> Model
 stop model =
-    { grids = model.grids
+    { garden = model.garden
+    , nursery = model.nursery
     , settings = model.settings
     , timeInCycle = defaultTiming
     , animation = Nothing
@@ -71,7 +74,8 @@ stop model =
 
 setPlants : Model -> List (List Plant) -> Model
 setPlants model plants =
-    { grids = model.grids
+    { garden = model.garden
+    , nursery = model.nursery
     , settings = model.settings
     , timeInCycle = model.timeInCycle
     , animation = model.animation
@@ -100,26 +104,34 @@ update msg model =
         SetColors plants ->
             ( setPlants model plants, Cmd.none )
 
-        GridMsg gridId gridMsg ->
-            gridMsgToMsg gridId gridMsg model
+        GridMsg gridName gridMsg ->
+            gridMsgToMsg gridName gridMsg model
 
 
-gridMsgToMsg : GridId -> GridMsg -> Model -> ( Model, Cmd Msg )
-gridMsgToMsg gridId gridMsg model =
+gridMsgToMsg : GridName -> GridMsg -> Model -> ( Model, Cmd Msg )
+gridMsgToMsg gridName gridMsg model =
     let
-        grid =
-            Maybe.withDefault (deadGrid defaultRows defaultColumns) (Dict.get gridId model.grids)
-
         ( newGrid, cmd ) =
-            updateGrid gridMsg grid
+            updateGrid gridMsg model.garden
     in
-    ( { grids = Dict.insert gridId newGrid model.grids
+    ( { garden =
+            if gridName == Garden then
+                newGrid
+
+            else
+                model.garden
+      , nursery =
+            if gridName == Nursery then
+                newGrid
+
+            else
+                model.nursery
       , settings = model.settings
       , timeInCycle = model.timeInCycle
       , animation = model.animation
       , plants = model.plants
       }
-    , Cmd.map (GridMsg gridId) cmd
+    , Cmd.map (GridMsg gridName) cmd
     )
 
 

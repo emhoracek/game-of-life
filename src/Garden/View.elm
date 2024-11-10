@@ -3,7 +3,7 @@ module Garden.View exposing (..)
 import Dict
 import Garden.Grid.Model exposing (Cell, CellState(..), Grid, countLiving, deadGrid, getBounds)
 import Garden.Grid.Update exposing (GridMsg(..), defaultColumns, defaultRows)
-import Garden.Model exposing (DisplayGrid, GameSettings, GridId, Model, Msg(..), Plant(..))
+import Garden.Model exposing (DisplayGrid, GameSettings, GridName(..), Model, Msg(..), Plant(..))
 import Html exposing (Html, button, dd, div, dl, dt, table, td, text, tr)
 import Html.Attributes exposing (class, classList)
 import Html.Events exposing (onClick)
@@ -85,11 +85,11 @@ toVisibility cell plant =
         "hide-cell"
 
 
-showCell : GridId -> Int -> Int -> ( Cell, Plant ) -> Html Msg
-showCell gridId row col ( cell, plant ) =
+showCell : Int -> Int -> ( Cell, Plant ) -> Html Msg
+showCell row col ( cell, plant ) =
     td
         [ class "cell"
-        , onClick (GridMsg gridId (ToggleCell ( row, col ) cell))
+        , onClick (GridMsg Nursery (ToggleCell ( row, col ) cell))
         ]
         [ div
             [ classList
@@ -102,9 +102,9 @@ showCell gridId row col ( cell, plant ) =
         ]
 
 
-showRow : GridId -> Int -> List ( Cell, Plant ) -> Html Msg
-showRow gridId n row =
-    tr [] (List.indexedMap (showCell gridId n) row)
+showRow : Int -> List ( Cell, Plant ) -> Html Msg
+showRow n row =
+    tr [] (List.indexedMap (showCell n) row)
 
 
 toColumns : Grid -> Int -> List Plant -> List ( Cell, Plant )
@@ -123,9 +123,9 @@ toRows grid plants =
         plants
 
 
-showGrid : Model -> GridId -> Grid -> List (Html Msg)
-showGrid model gridId grid =
-    List.indexedMap (showRow gridId) (toRows grid model.plants)
+showGrid : Model -> Grid -> List (Html Msg)
+showGrid model grid =
+    List.indexedMap showRow (toRows grid model.plants)
 
 
 showGridData : Grid -> Html Msg
@@ -161,14 +161,18 @@ showGridData grid =
         ]
 
 
-viewGrid : Model -> GridId -> Grid -> Html Msg
-viewGrid model gridId grid =
+viewGrid : Model -> GridName -> Grid -> Html Msg
+viewGrid model gridName grid =
     div []
-        [ table [] (showGrid model gridId grid)
+        [ table [] (showGrid model grid)
         , div [] [ showGridData grid ]
         , div [ class "gridcommands" ]
-            [ button [ onClick (GridMsg gridId (NewGrid (deadGrid defaultRows defaultColumns))) ] [ text "Clear" ]
-            , button [ onClick (GridMsg gridId MkNewGrid) ] [ text "Generate!" ]
+            [ button
+                [ onClick
+                    (GridMsg gridName (NewGrid (deadGrid defaultRows defaultColumns)))
+                ]
+                [ text "Clear" ]
+            , button [ onClick (GridMsg gridName MkNewGrid) ] [ text "Generate!" ]
             ]
         ]
 
@@ -191,5 +195,7 @@ view model =
             , stopGoButton model
             ]
         , div [ class "grids" ]
-            (Dict.values (Dict.map (\k v -> viewGrid model k v) model.grids))
+            [ div [ class "nursery" ] [ viewGrid model Nursery model.nursery ]
+            , div [ class "garden" ] [ viewGrid model Garden model.garden ]
+            ]
         ]

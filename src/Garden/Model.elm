@@ -1,21 +1,17 @@
 module Garden.Model exposing (..)
 
-import Dict exposing (Dict)
 import Garden.Grid.Model exposing (CellState(..), Grid)
 import Garden.Grid.Update exposing (GridMsg(..))
 
 
 type alias Model =
-    { grids : Dict GridId Grid
+    { garden : Grid
+    , nursery : Grid
     , settings : GameSettings
     , timeInCycle : Int
     , animation : Maybe Int
     , plants : List (List Plant)
     }
-
-
-type alias GridId =
-    String
 
 
 type alias GameSettings =
@@ -33,6 +29,11 @@ type alias DisplayGrid =
     List (List (Maybe Plant))
 
 
+type GridName
+    = Garden
+    | Nursery
+
+
 type Msg
     = NoOp
     | Increment
@@ -40,7 +41,7 @@ type Msg
     | Stop
     | Go
     | SetColors (List (List Plant))
-    | GridMsg GridId GridMsg
+    | GridMsg GridName GridMsg
 
 
 defaultTiming : Int

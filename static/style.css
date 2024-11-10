@@ -60,7 +60,7 @@ table {
 }
 
 .cell-content {
-    transition: color 1s;
+    transition: color, background-color 500ms;
 }
 
 .cell-content {
