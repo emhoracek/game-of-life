@@ -3,7 +3,6 @@ module Garden.Display.Model exposing (..)
 
 import Array exposing (Array)
 import Dict
-import Garden.Model exposing (GridName(..), Msg(..), Plant(..))
 import Garden.Grid.Model exposing (Grid, CellState(..))
 
 
@@ -12,6 +11,13 @@ type alias Display =
      columns : Int,
      plants : Array Plant,
      grid: Grid } 
+
+
+type Plant
+    = Blue
+    | Pink
+    | Purple
+    | Yellow
 
 
 listDisplay : Display -> List (List (Maybe Plant))

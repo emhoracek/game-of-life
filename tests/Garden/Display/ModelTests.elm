@@ -4,7 +4,6 @@ import Array
 import Dict
 import Expect
 import Garden.Grid.Model exposing (CellState(..), Grid)
-import Garden.Model exposing (Plant(..))
 import Garden.Display.Model exposing (..)
 import List exposing ((::))
 import Test exposing (Test, describe, test)

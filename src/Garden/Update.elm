@@ -3,7 +3,8 @@ module Garden.Update exposing (..)
 import Browser.Events
 import Garden.Grid.Model exposing (CellState(..), deadGrid, stepGrid)
 import Garden.Grid.Update exposing (GridMsg, defaultColumns, defaultRows, makeGrid, updateGrid)
-import Garden.Model exposing (GridName(..), Model, Msg(..), Plant(..))
+import Garden.Model exposing (GridName(..), Model, Msg(..))
+import Garden.Display.Model exposing (Plant(..))
 import Garden.View exposing (generateRandomColors)
 
 
