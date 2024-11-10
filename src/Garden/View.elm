@@ -3,7 +3,7 @@ module Garden.View exposing (..)
 import Dict
 import Garden.Grid.Model exposing (Cell, CellState(..), Grid, countLiving, deadGrid, getBounds)
 import Garden.Grid.Update exposing (GridMsg(..), defaultColumns, defaultRows)
-import Garden.Model exposing (DisplayGrid, GameSettings, GridName(..), Model, Msg(..), Plant(..))
+import Garden.Model exposing (GameSettings, GridName(..), Model, Msg(..), Plant(..))
 import Html exposing (Html, button, dd, div, dl, dt, table, td, text, tr)
 import Html.Attributes exposing (class, classList)
 import Html.Events exposing (onClick)
@@ -32,13 +32,6 @@ cellToPlant mCell =
 
         _ ->
             Nothing
-
-
-toDisplayGrid : GameSettings -> Grid -> DisplayGrid
-toDisplayGrid settings grid =
-    List.map
-        (\row -> toPlants settings.columns grid row)
-        (range 0 (settings.rows - 1))
 
 
 randomColors : Int -> Int -> Random.Generator (List (List Plant))

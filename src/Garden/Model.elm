@@ -25,10 +25,6 @@ type Plant
     | Yellow
 
 
-type alias DisplayGrid =
-    List (List (Maybe Plant))
-
-
 type GridName
     = Garden
     | Nursery

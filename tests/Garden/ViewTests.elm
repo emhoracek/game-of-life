@@ -70,23 +70,6 @@ suite =
                         , [ ( Dead, Blue ), ( Dead, Blue ), ( Dead, Blue ) ]
                         ]
             ]
-        , describe "toPlants"
-            [ test "converts grid to rows for display" <|
-                \_ ->
-                    Expect.equal
-                        (toDisplayGrid { rows = 2, columns = 3 } smallGrid)
-                        [ [ Just Blue, Nothing, Nothing ]
-                        , [ Just Blue, Just Blue, Nothing ]
-                        ]
-            , test "sparse grid" <|
-                \_ ->
-                    Expect.equal
-                        (toDisplayGrid { rows = 3, columns = 3 } sparseGrid)
-                        [ [ Just Blue, Nothing, Just Blue ]
-                        , [ Just Blue, Nothing, Nothing ]
-                        , [ Nothing, Nothing, Nothing ]
-                        ]
-            ]
         , describe "toColumns"
             [ test "converts row of grid to list of cells for display" <|
                 \_ ->
