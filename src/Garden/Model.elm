@@ -1,13 +1,16 @@
 module Garden.Model exposing (..)
 
-import Garden.Grid.Model exposing (CellState(..), Grid)
+import Array exposing (Array)
 import Garden.Display.Model exposing (Display, Plant)
+import Garden.Grid.Model exposing (CellState(..), Grid)
 import Garden.Grid.Update exposing (GridMsg(..))
 
 
 type alias Model =
     { garden : Grid
     , nursery : Grid
+    , gardenDisplay : Display
+    , nurseryDisplay : Display
     , settings : GameSettings
     , timeInCycle : Int
     , animation : Maybe Int
@@ -30,7 +33,7 @@ type Msg
     | Decrement
     | Stop
     | Go
-    | SetColors (List (List Plant))
+    | SetColors (Array Plant)
     | GridMsg GridName GridMsg
 
 

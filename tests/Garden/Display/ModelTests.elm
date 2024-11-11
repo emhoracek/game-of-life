@@ -60,7 +60,6 @@ suite =
                         display =
                             { rows = 2
                             , columns = 3
-                            , grid = smallGrid
                             , plants = Array.fromList [ Yellow, Purple, Pink, Blue ]
                             }
                     in
@@ -71,7 +70,6 @@ suite =
                         display =
                             { rows = 2
                             , columns = 3
-                            , grid = smallGrid
                             , plants = Array.fromList [ Yellow, Purple, Pink, Pink ]
                             }
                     in
@@ -81,14 +79,14 @@ suite =
             [ test "shows display as rows of plants" <|
                 \_ ->
                     Expect.equal
-                        (listDisplay { rows = 2, columns = 3, grid = smallGrid, plants = Array.repeat 100 Blue })
+                        (listDisplay smallGrid { rows = 2, columns = 3, plants = Array.repeat 100 Blue })
                         [ [ Just Blue, Nothing, Nothing ]
                         , [ Just Blue, Just Blue, Nothing ]
                         ]
             , test "sparse grid" <|
                 \_ ->
                     Expect.equal
-                        (listDisplay { rows = 3, columns = 3, grid = sparseGrid, plants = Array.repeat 100 Blue })
+                        (listDisplay sparseGrid { rows = 3, columns = 3, plants = Array.repeat 100 Blue })
                         [ [ Just Blue, Nothing, Just Blue ]
                         , [ Just Blue, Nothing, Nothing ]
                         , [ Nothing, Nothing, Nothing ]
