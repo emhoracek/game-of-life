@@ -24,6 +24,12 @@ type alias Grid =
     Dict CellCoords Cell
 
 
+type alias Area =
+    { topLeft : ( Int, Int )
+    , bottomRight : ( Int, Int )
+    }
+
+
 toCenter : ( Int, Int ) -> CellCoords
 toCenter ( rows, cols ) =
     ( floor (toFloat rows / 2), floor (toFloat cols / 2) )
@@ -166,7 +172,7 @@ stepCell neighborCount mCell =
                 Nothing
 
 
-getBounds : Grid -> ( ( Int, Int ), ( Int, Int ) )
+getBounds : Grid -> Area
 getBounds grid =
     let
         liveCoords =
@@ -190,7 +196,8 @@ getBounds grid =
         maxCol =
             Maybe.withDefault 0 (List.head (List.reverse colsLowToHigh))
     in
-    ( ( minRow, minCol ), ( maxRow, maxCol ) )
+    { topLeft = ( minRow, minCol ),
+      bottomRight = ( maxRow, maxCol ) }
 
 
 getCenter : ( Int, Int ) -> ( Int, Int ) -> CellCoords

@@ -2,8 +2,8 @@ module Garden.Model exposing (..)
 
 import Array exposing (Array)
 import Dict
-import Garden.Display.Model exposing (Area, Display, Plant, centerOf)
-import Garden.Grid.Model exposing (CellState(..), Grid)
+import Garden.Display.Model exposing (Display, Plant, centerOf)
+import Garden.Grid.Model exposing (CellState(..), Grid, Area)
 import Garden.Grid.Update exposing (GridMsg(..))
 
 

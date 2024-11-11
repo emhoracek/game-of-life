@@ -421,10 +421,10 @@ suite =
         , describe "getBounds"
             [ test "tiny" <|
                 \_ ->
-                    Expect.equal (getBounds sparseGrid1) ( ( 0, 0 ), ( 1, 1 ) )
+                    Expect.equal (getBounds sparseGrid1) { topLeft = ( 0, 0 ), bottomRight = ( 1, 1 ) }
             , test "small" <|
                 \_ ->
-                    Expect.equal (getBounds sparseGrid) ( ( 0, 0 ), ( 2, 2 ) )
+                    Expect.equal (getBounds sparseGrid) { topLeft = ( 0, 0 ), bottomRight = ( 2, 2 ) }
             ]
         , describe "getCenter"
             [ test "tiny" <|

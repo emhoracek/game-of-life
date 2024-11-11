@@ -2,7 +2,7 @@ module Garden.Display.Model exposing (..)
 
 import Array exposing (Array)
 import Dict
-import Garden.Grid.Model exposing (CellState(..), Grid)
+import Garden.Grid.Model exposing (CellState(..), Grid, Area)
 import Garden.Grid.Update exposing (defaultColumns, defaultRows)
 import Random exposing (Generator)
 
@@ -18,12 +18,6 @@ type alias Display =
     { rows : Int
     , columns : Int
     , plants : Array Plant
-    }
-
-
-type alias Area =
-    { topLeft : ( Int, Int )
-    , bottomRight : ( Int, Int )
     }
 
 

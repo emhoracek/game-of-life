@@ -1,8 +1,8 @@
 module Garden.View exposing (..)
 
 import Dict
-import Garden.Display.Model exposing (Area, Display, Plant(..), listDisplay)
-import Garden.Grid.Model exposing (CellState(..), Grid, countLiving, getBounds)
+import Garden.Display.Model exposing (Display, Plant(..), listDisplay)
+import Garden.Grid.Model exposing (Area, CellState(..), Grid, countLiving, getBounds)
 import Garden.Grid.Update exposing (GridMsg(..))
 import Garden.Model exposing (GridName(..), Model, Msg(..))
 import Html exposing (Html, button, dd, div, dl, dt, table, td, text, tr)
@@ -98,8 +98,9 @@ showGrid grid showCell display =
 showGridData : Grid -> Html Msg
 showGridData grid =
     let
-        ( ( minY, minX ), ( maxY, maxX ) ) =
-            getBounds grid
+        area = getBounds grid
+        (minY, minX ) = area.topLeft
+        ( maxY, maxX ) = area.bottomRight
 
         boundsStrings =
             [ "("
