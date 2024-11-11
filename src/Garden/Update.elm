@@ -20,10 +20,8 @@ init _ =
       , nursery = deadGrid (defaultRows // 2) (defaultColumns // 2)
       , gardenDisplay = initGardenDisplay
       , nurseryDisplay = initNurseryDisplay
-      , settings = { rows = defaultRows, columns = defaultColumns }
       , timeInCycle = 0
       , animation = Nothing
-      , plants = List.repeat defaultRows (List.repeat defaultColumns Blue)
       }
     , Cmd.batch
         [ Cmd.map (GridMsg Garden) makeGrid
@@ -38,10 +36,8 @@ incrementModel model =
     , nursery = stepGrid model.nursery
     , gardenDisplay = model.gardenDisplay
     , nurseryDisplay = model.nurseryDisplay
-    , settings = model.settings
     , timeInCycle = Maybe.withDefault defaultTiming model.animation
     , animation = model.animation
-    , plants = model.plants
     }
 
 
@@ -51,10 +47,8 @@ decrementModel model =
     , nursery = model.nursery
     , gardenDisplay = model.gardenDisplay
     , nurseryDisplay = model.nurseryDisplay
-    , settings = model.settings
     , timeInCycle = model.timeInCycle - 1
     , animation = model.animation
-    , plants = model.plants
     }
 
 
@@ -64,10 +58,8 @@ go model =
     , nursery = model.nursery
     , gardenDisplay = model.gardenDisplay
     , nurseryDisplay = model.nurseryDisplay
-    , settings = model.settings
     , timeInCycle = defaultTiming
     , animation = Just defaultTiming
-    , plants = model.plants
     }
 
 
@@ -77,10 +69,8 @@ stop model =
     , nursery = model.nursery
     , gardenDisplay = model.gardenDisplay
     , nurseryDisplay = model.nurseryDisplay
-    , settings = model.settings
     , timeInCycle = defaultTiming
     , animation = Nothing
-    , plants = model.plants
     }
 
 
@@ -98,10 +88,8 @@ setPlants model plants =
         , columns = model.nurseryDisplay.columns
         , plants = plants
         }
-    , settings = model.settings
     , timeInCycle = model.timeInCycle
     , animation = model.animation
-    , plants = [ [] ]
     }
 
 
@@ -154,10 +142,8 @@ gridMsgToMsg gridName gridMsg model =
                 model.nursery
       , gardenDisplay = model.gardenDisplay
       , nurseryDisplay = model.nurseryDisplay
-      , settings = model.settings
       , timeInCycle = model.timeInCycle
       , animation = model.animation
-      , plants = model.plants
       }
     , Cmd.map (GridMsg gridName) cmd
     )

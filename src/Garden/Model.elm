@@ -11,15 +11,9 @@ type alias Model =
     , nursery : Grid
     , gardenDisplay : Display
     , nurseryDisplay : Display
-    , settings : GameSettings
     , timeInCycle : Int
     , animation : Maybe Int
-    , plants : List (List Plant)
     }
-
-
-type alias GameSettings =
-    { rows : Int, columns : Int }
 
 
 type GridName
