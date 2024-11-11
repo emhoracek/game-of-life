@@ -2,11 +2,11 @@ module Garden.Update exposing (..)
 
 import Array exposing (Array)
 import Browser.Events
-import Garden.Display.Model exposing (Plant(..), initGardenDisplay, initNurseryDisplay)
+import Garden.Display.Model exposing (Plant(..), initGardenDisplay, initNurseryDisplay, randomColors)
 import Garden.Grid.Model exposing (CellState(..), deadGrid, stepGrid)
 import Garden.Grid.Update exposing (GridMsg, defaultColumns, defaultRows, makeGrid, updateGrid)
 import Garden.Model exposing (GridName(..), Model, Msg(..))
-import Garden.View exposing (generateRandomColors)
+import Random
 
 
 defaultTiming : Int
@@ -163,3 +163,8 @@ subscriptions model =
 
     else
         Sub.none
+
+
+generateRandomColors : Int -> Int -> Cmd Msg
+generateRandomColors r c =
+    Random.generate (\colors -> SetColors (Array.fromList colors)) (randomColors r c)

@@ -1,6 +1,5 @@
 module Garden.View exposing (..)
 
-import Array
 import Garden.Display.Model exposing (Display, Plant(..), listDisplay)
 import Garden.Grid.Model exposing (CellState(..), Grid, countLiving, deadGrid, getBounds)
 import Garden.Grid.Update exposing (GridMsg(..), defaultColumns, defaultRows)
@@ -8,18 +7,8 @@ import Garden.Model exposing (GridName(..), Model, Msg(..))
 import Html exposing (Html, button, dd, div, dl, dt, table, td, text, tr)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
-import Random
 import String exposing (fromInt)
 
-
-randomColors : Int -> Int -> Random.Generator (List Plant)
-randomColors r c =
-    Random.list (r * c) (Random.uniform Blue [ Pink, Purple, Yellow ])
-
-
-generateRandomColors : Int -> Int -> Cmd Msg
-generateRandomColors r c =
-    Random.generate (\colors -> SetColors (Array.fromList colors)) (randomColors r c)
 
 
 plantToText : Plant -> String

@@ -4,6 +4,7 @@ import Array exposing (Array)
 import Dict
 import Garden.Grid.Model exposing (CellState(..), Grid)
 import Garden.Grid.Update exposing (defaultColumns, defaultRows)
+import Random exposing (Generator)
 
 
 type Plant
@@ -56,3 +57,8 @@ initGardenDisplay =
 initNurseryDisplay : Display
 initNurseryDisplay =
     { rows = defaultRows // 2, columns = defaultColumns // 2, plants = Array.fromList [] }
+
+
+randomColors : Int -> Int -> Generator (List Plant)
+randomColors r c =
+    Random.list (r * c) (Random.uniform Blue [ Pink, Purple, Yellow ])
