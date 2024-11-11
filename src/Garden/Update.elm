@@ -3,10 +3,11 @@ module Garden.Update exposing (..)
 import Array exposing (Array)
 import Browser.Events
 import Garden.Display.Model exposing (Plant(..), initGardenDisplay, initNurseryDisplay, randomColors)
-import Garden.Grid.Model exposing (CellState(..), addSubGrid, deadGrid, stepGrid)
-import Garden.Grid.Update exposing (GridMsg, defaultColumns, defaultRows, makeGrid, updateGrid)
+import Garden.Grid.Model exposing (CellState(..), addSubGrid, stepGrid)
+import Garden.Grid.Update exposing (GridMsg, defaultColumns, defaultRows, updateGrid)
 import Garden.Model exposing (GridName(..), Model, Msg(..))
 import Random
+import Dict
 
 
 defaultTiming : Int
@@ -16,17 +17,15 @@ defaultTiming =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { garden = deadGrid defaultRows defaultColumns
-      , nursery = deadGrid (defaultRows // 2) (defaultColumns // 2)
+    ( { garden = Dict.empty
+      , nursery = Dict.empty
       , gardenDisplay = initGardenDisplay
       , nurseryDisplay = initNurseryDisplay
       , timeInCycle = 0
       , animation = Nothing
       }
     , Cmd.batch
-        [ Cmd.map (GridMsg Garden) makeGrid
-        , generateRandomColors defaultRows defaultColumns
-        ]
+        [ generateRandomColors defaultRows defaultColumns ]
     )
 
 

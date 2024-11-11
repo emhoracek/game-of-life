@@ -1,8 +1,9 @@
 module Garden.View exposing (..)
 
+import Dict
 import Garden.Display.Model exposing (Display, Plant(..), listDisplay)
-import Garden.Grid.Model exposing (CellState(..), Grid, countLiving, deadGrid, getBounds)
-import Garden.Grid.Update exposing (GridMsg(..), defaultColumns, defaultRows)
+import Garden.Grid.Model exposing (CellState(..), Grid, countLiving, getBounds)
+import Garden.Grid.Update exposing (GridMsg(..))
 import Garden.Model exposing (GridName(..), Model, Msg(..))
 import Html exposing (Html, button, dd, div, dl, dt, table, td, text, tr)
 import Html.Attributes exposing (class)
@@ -129,7 +130,7 @@ viewNursery grid display =
         , div [ class "gridcommands" ]
             [ button
                 [ onClick
-                    (GridMsg Nursery (NewGrid (deadGrid defaultRows defaultColumns)))
+                    (GridMsg Nursery (NewGrid Dict.empty))
                 ]
                 [ text "Clear" ]
             , button [ onClick (GridMsg Nursery MkNewGrid) ] [ text "Generate!" ]

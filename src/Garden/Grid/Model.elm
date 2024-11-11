@@ -148,11 +148,6 @@ toggleCell coords cell grid =
     Dict.insert coords (toggleState cell) grid
 
 
-deadGrid : Int -> Int -> Grid
-deadGrid rows cols =
-    createGrid rows cols Dead
-
-
 stepCell : Int -> Maybe Cell -> Maybe Cell
 stepCell neighborCount mCell =
     case mCell of
