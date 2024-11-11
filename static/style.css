@@ -63,6 +63,11 @@ table {
     transition: color, background-color 500ms;
 }
 
+.targeted {
+    border: 1px solid red;
+}
+
+
 .cell-content {
     cursor: default
 }

@@ -1,7 +1,7 @@
 module Garden.View exposing (..)
 
 import Dict
-import Garden.Display.Model exposing (Display, Plant(..), listDisplay)
+import Garden.Display.Model exposing (Area, Display, Plant(..), listDisplay)
 import Garden.Grid.Model exposing (CellState(..), Grid, countLiving, getBounds)
 import Garden.Grid.Update exposing (GridMsg(..))
 import Garden.Model exposing (GridName(..), Model, Msg(..))
@@ -41,10 +41,24 @@ type alias CellDisplay =
     Int -> Int -> Maybe Plant -> Html Msg
 
 
-showGardenCell : CellDisplay
-showGardenCell _ _ mPlant =
+showGardenCell : Area -> CellDisplay
+showGardenCell target row col mPlant =
+    let
+        ( ( r1, c1 ), ( r2, c2 ) ) =
+            ( target.topLeft, target.bottomRight )
+
+        inTarget =
+            row >= r1 && row <= r2 + 1 && col >= c1 && col <= c2 + 1
+
+        targetClasses =
+            if inTarget then
+                "targeted"
+
+            else
+                ""
+    in
     td
-        [ class "cell" ]
+        [ class ("cell " ++ targetClasses) ]
         [ div
             [ class ("cell-content " ++ cellClasses mPlant) ]
             [ text "✽" ]
@@ -114,10 +128,10 @@ showGridData grid =
         ]
 
 
-viewGarden : Grid -> Display -> Html Msg
-viewGarden grid display =
+viewGarden : Grid -> Display -> Area -> Html Msg
+viewGarden grid display target =
     div []
-        [ table [] (showGrid grid showGardenCell display)
+        [ table [] (showGrid grid (showGardenCell target) display)
         , div [] [ showGridData grid ]
         ]
 
@@ -133,7 +147,7 @@ viewNursery grid display =
                     (GridMsg Nursery (NewGrid Dict.empty))
                 ]
                 [ text "Clear" ]
-            , button [ onClick (GridMsg Nursery (MkNewGrid (display.rows, display.columns))) ] [ text "Generate!" ]
+            , button [ onClick (GridMsg Nursery (MkNewGrid ( display.rows, display.columns ))) ] [ text "Generate!" ]
             ]
         ]
 
@@ -158,6 +172,6 @@ view model =
             ]
         , div [ class "grids" ]
             [ div [ class "nursery" ] [ viewNursery model.nursery model.nurseryDisplay ]
-            , div [ class "garden" ] [ viewGarden model.garden model.gardenDisplay ]
+            , div [ class "garden" ] [ viewGarden model.garden model.gardenDisplay model.nurseryTarget ]
             ]
         ]

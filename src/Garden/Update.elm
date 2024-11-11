@@ -2,12 +2,12 @@ module Garden.Update exposing (..)
 
 import Array exposing (Array)
 import Browser.Events
-import Garden.Display.Model exposing (Plant(..), initGardenDisplay, initNurseryDisplay, randomColors)
+import Dict
+import Garden.Display.Model exposing (Plant(..), centerAt, centerOf, initGardenDisplay, initNurseryDisplay, randomColors)
 import Garden.Grid.Model exposing (CellState(..), addSubGrid, stepGrid)
 import Garden.Grid.Update exposing (GridMsg, defaultColumns, defaultRows, updateGrid)
-import Garden.Model exposing (GridName(..), Model, Msg(..))
+import Garden.Model exposing (GridName(..), Model, Msg(..), moveVisibleGrid)
 import Random
-import Dict
 
 
 defaultTiming : Int
@@ -21,6 +21,7 @@ init _ =
       , nursery = Dict.empty
       , gardenDisplay = initGardenDisplay
       , nurseryDisplay = initNurseryDisplay
+      , nurseryTarget = centerAt initNurseryDisplay (centerOf initGardenDisplay)
       , timeInCycle = 0
       , animation = Nothing
       }
@@ -35,6 +36,7 @@ incrementModel model =
     , nursery = stepGrid model.nursery
     , gardenDisplay = model.gardenDisplay
     , nurseryDisplay = model.nurseryDisplay
+    , nurseryTarget = model.nurseryTarget
     , timeInCycle = Maybe.withDefault defaultTiming model.animation
     , animation = model.animation
     }
@@ -46,6 +48,7 @@ decrementModel model =
     , nursery = model.nursery
     , gardenDisplay = model.gardenDisplay
     , nurseryDisplay = model.nurseryDisplay
+    , nurseryTarget = model.nurseryTarget
     , timeInCycle = model.timeInCycle - 1
     , animation = model.animation
     }
@@ -57,6 +60,7 @@ go model =
     , nursery = model.nursery
     , gardenDisplay = model.gardenDisplay
     , nurseryDisplay = model.nurseryDisplay
+    , nurseryTarget = model.nurseryTarget
     , timeInCycle = defaultTiming
     , animation = Just defaultTiming
     }
@@ -68,6 +72,7 @@ stop model =
     , nursery = model.nursery
     , gardenDisplay = model.gardenDisplay
     , nurseryDisplay = model.nurseryDisplay
+    , nurseryTarget = model.nurseryTarget
     , timeInCycle = defaultTiming
     , animation = Nothing
     }
@@ -75,10 +80,15 @@ stop model =
 
 addNursery : Model -> Model
 addNursery model =
-    { garden = addSubGrid model.garden model.nursery
+    let
+        newGrid =
+            moveVisibleGrid model.nursery model.nurseryDisplay model.gardenDisplay
+    in
+    { garden = addSubGrid model.garden newGrid
     , nursery = model.nursery
     , gardenDisplay = model.gardenDisplay
     , nurseryDisplay = model.nurseryDisplay
+    , nurseryTarget = model.nurseryTarget
     , timeInCycle = model.timeInCycle
     , animation = model.animation
     }
@@ -98,6 +108,7 @@ setPlants model plants =
         , columns = model.nurseryDisplay.columns
         , plants = plants
         }
+    , nurseryTarget = model.nurseryTarget
     , timeInCycle = model.timeInCycle
     , animation = model.animation
     }
@@ -155,6 +166,7 @@ gridMsgToMsg gridName gridMsg model =
                 model.nursery
       , gardenDisplay = model.gardenDisplay
       , nurseryDisplay = model.nurseryDisplay
+      , nurseryTarget = model.nurseryTarget
       , timeInCycle = model.timeInCycle
       , animation = model.animation
       }

@@ -21,6 +21,31 @@ type alias Display =
     }
 
 
+type alias Area =
+    { topLeft : ( Int, Int )
+    , bottomRight : ( Int, Int )
+    }
+
+
+centerOf : Display -> ( Int, Int )
+centerOf display =
+    ( (display.rows - 1) // 2, (display.columns - 1) // 2 )
+
+
+centerAt : Display -> ( Int, Int ) -> Area
+centerAt display ( r, c ) =
+    let
+        height =
+            (display.rows - 1) // 2
+
+        width =
+            (display.columns - 1) // 2
+    in
+    { topLeft = ( r - height, c - width )
+    , bottomRight = ( r + height, c + width )
+    }
+
+
 listDisplay : Grid -> Display -> List (List (Maybe Plant))
 listDisplay grid display =
     List.foldr

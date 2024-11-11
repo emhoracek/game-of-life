@@ -92,4 +92,18 @@ suite =
                         , [ Nothing, Nothing, Nothing ]
                         ]
             ]
+        , describe "centerOf"
+            [ test "even grid" <|
+                \_ -> Expect.equal (centerOf { rows = 4, columns = 4, plants = Array.empty }) ( 1, 1 )
+            , test "odd grid" <|
+                \_ -> Expect.equal (centerOf { rows = 3, columns = 4, plants = Array.empty }) ( 1, 1 )
+            ]
+        , describe "centerAt"
+            [ test "odd grid" <|
+                \_ ->
+                    Expect.equal (centerAt { rows = 5, columns = 5, plants = Array.empty } ( 10, 10 ))
+                        { topLeft = ( 8, 8 )
+                        , bottomRight = ( 12, 12 )
+                        }
+            ]
         ]
