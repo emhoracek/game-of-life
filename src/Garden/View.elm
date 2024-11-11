@@ -133,7 +133,7 @@ viewNursery grid display =
                     (GridMsg Nursery (NewGrid Dict.empty))
                 ]
                 [ text "Clear" ]
-            , button [ onClick (GridMsg Nursery MkNewGrid) ] [ text "Generate!" ]
+            , button [ onClick (GridMsg Nursery (MkNewGrid (display.rows, display.columns))) ] [ text "Generate!" ]
             ]
         ]
 

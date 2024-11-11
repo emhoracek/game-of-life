@@ -7,7 +7,7 @@ import Random
 type GridMsg
     = NoOp
     | NewGrid Grid
-    | MkNewGrid
+    | MkNewGrid (Int, Int)
     | ToggleCell CellCoords Cell
 
 
@@ -21,9 +21,9 @@ defaultColumns =
     20
 
 
-makeGrid : Cmd GridMsg
-makeGrid =
-    Random.generate NewGrid (usuallyAlive ( defaultRows, defaultColumns ))
+makeGrid : Int -> Int -> Cmd GridMsg
+makeGrid rows cols =
+    Random.generate NewGrid (usuallyAlive ( rows, cols ))
 
 
 updateGrid : GridMsg -> Grid -> ( Grid, Cmd GridMsg )
@@ -32,8 +32,8 @@ updateGrid msg grid =
         NoOp ->
             ( grid, Cmd.none )
 
-        MkNewGrid ->
-            ( grid, makeGrid )
+        MkNewGrid (rows, cols) ->
+            ( grid, makeGrid rows cols )
 
         NewGrid newGrid ->
             ( newGrid, Cmd.none )
