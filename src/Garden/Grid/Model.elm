@@ -174,8 +174,9 @@ stepCell neighborCount mCell =
 getBounds : Grid -> ( ( Int, Int ), ( Int, Int ) )
 getBounds grid =
     let
-        liveCoords = Dict.keys (Dict.filter (\_ v -> v == Alive ) grid)
-        
+        liveCoords =
+            Dict.keys (Dict.filter (\_ v -> v == Alive) grid)
+
         rowsLowToHigh =
             List.sort (List.map Tuple.first liveCoords)
 
@@ -251,6 +252,11 @@ countLiving =
                 acc
         )
         0
+
+
+addSubGrid : Grid -> Grid -> Grid
+addSubGrid main toAdd =
+    Dict.union (Dict.filter (\_ v -> v == Alive) main) toAdd
 
 
 

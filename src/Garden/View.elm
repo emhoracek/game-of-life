@@ -10,7 +10,6 @@ import Html.Events exposing (onClick)
 import String exposing (fromInt)
 
 
-
 plantToText : Plant -> String
 plantToText plant =
     case plant of
@@ -154,6 +153,7 @@ view model =
         [ div [ class "globalcommands" ]
             [ button [ onClick Increment ] [ text "Step" ]
             , stopGoButton model
+            , button [ onClick AddNursery ] [ text "Add nursery plants" ]
             ]
         , div [ class "grids" ]
             [ div [ class "nursery" ] [ viewNursery model.nursery model.nurseryDisplay ]

@@ -3,7 +3,7 @@ module Garden.Update exposing (..)
 import Array exposing (Array)
 import Browser.Events
 import Garden.Display.Model exposing (Plant(..), initGardenDisplay, initNurseryDisplay, randomColors)
-import Garden.Grid.Model exposing (CellState(..), deadGrid, stepGrid)
+import Garden.Grid.Model exposing (CellState(..), addSubGrid, deadGrid, stepGrid)
 import Garden.Grid.Update exposing (GridMsg, defaultColumns, defaultRows, makeGrid, updateGrid)
 import Garden.Model exposing (GridName(..), Model, Msg(..))
 import Random
@@ -74,6 +74,17 @@ stop model =
     }
 
 
+addNursery : Model -> Model
+addNursery model =
+    { garden = addSubGrid model.garden model.nursery
+    , nursery = model.nursery
+    , gardenDisplay = model.gardenDisplay
+    , nurseryDisplay = model.nurseryDisplay
+    , timeInCycle = model.timeInCycle
+    , animation = model.animation
+    }
+
+
 setPlants : Model -> Array Plant -> Model
 setPlants model plants =
     { garden = model.garden
@@ -110,6 +121,9 @@ update msg model =
 
         Go ->
             ( go model, Cmd.none )
+
+        AddNursery ->
+            ( addNursery model, Cmd.none )
 
         SetColors plants ->
             ( setPlants model plants, Cmd.none )

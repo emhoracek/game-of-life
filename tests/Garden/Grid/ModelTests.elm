@@ -511,6 +511,73 @@ suite =
                             ]
                         )
             ]
+        , describe "addSubGrid"
+            [ test "adding an empty grid to an empty grid" <|
+                \_ ->
+                    let
+                        garden =
+                            Dict.empty
+
+                        nursery =
+                            Dict.empty
+
+                        garden2 =
+                            Dict.empty
+                    in
+                    Expect.equal (addSubGrid garden nursery) garden2
+            , test "adding a single point to an empty grid" <|
+                \_ ->
+                    let
+                        garden =
+                            Dict.empty
+
+                        nursery =
+                            Dict.fromList [ ( ( 10, 10 ), Alive ) ]
+
+                        garden2 =
+                            Dict.fromList [ ( ( 10, 10 ), Alive ) ]
+                    in
+                    Expect.equal (addSubGrid garden nursery) garden2
+            , test "adding a single point to a grid with a different point" <|
+                \_ ->
+                    let
+                        garden =
+                            Dict.fromList [ ( ( 1, 1 ), Alive ) ]
+
+                        nursery =
+                            Dict.fromList [ ( ( 10, 10 ), Alive ) ]
+
+                        garden2 =
+                            Dict.fromList [ ( ( 1, 1 ), Alive ), ( ( 10, 10 ), Alive ) ]
+                    in
+                    Expect.equal (addSubGrid garden nursery) garden2
+            , test "adding two grids, add any live nursery cells" <|
+                \_ ->
+                    let
+                        garden =
+                            Dict.fromList [ ( ( 1, 1 ), Dead ) ]
+
+                        nursery =
+                            Dict.fromList [ ( ( 1, 1 ), Alive ) ]
+
+                        garden2 =
+                            Dict.fromList [ ( ( 1, 1 ), Alive ) ]
+                    in
+                    Expect.equal (addSubGrid garden nursery) garden2
+            , test "adding two grids, don't include dead nursery cells" <|
+                \_ ->
+                    let
+                        garden =
+                            Dict.fromList [ ( ( 1, 1 ), Alive ) ]
+
+                        nursery =
+                            Dict.fromList [ ( ( 1, 1 ), Dead ) ]
+
+                        garden2 =
+                            Dict.fromList [ ( ( 1, 1 ), Alive ) ]
+                    in
+                    Expect.equal (addSubGrid garden nursery) garden2
+            ]
         ]
 
 

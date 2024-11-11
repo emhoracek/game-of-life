@@ -1,6 +1,7 @@
 module Garden.Model exposing (..)
 
 import Array exposing (Array)
+import Dict
 import Garden.Display.Model exposing (Display, Plant)
 import Garden.Grid.Model exposing (CellState(..), Grid)
 import Garden.Grid.Update exposing (GridMsg(..))
@@ -27,6 +28,7 @@ type Msg
     | Decrement
     | Stop
     | Go
+    | AddNursery
     | SetColors (Array Plant)
     | GridMsg GridName GridMsg
 
