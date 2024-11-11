@@ -1,39 +1,15 @@
 module Garden.View exposing (..)
 
 import Array
-import Dict
 import Garden.Display.Model exposing (Display, Plant(..), listDisplay)
-import Garden.Grid.Model exposing (Cell, CellState(..), Grid, countLiving, deadGrid, getBounds)
+import Garden.Grid.Model exposing (CellState(..), Grid, countLiving, deadGrid, getBounds)
 import Garden.Grid.Update exposing (GridMsg(..), defaultColumns, defaultRows)
 import Garden.Model exposing (GridName(..), Model, Msg(..))
 import Html exposing (Html, button, dd, div, dl, dt, table, td, text, tr)
-import Html.Attributes exposing (class, classList)
+import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
-import List exposing (range)
 import Random
 import String exposing (fromInt)
-
-
-toPlants : Int -> Grid -> Int -> List (Maybe Plant)
-toPlants cols grid row =
-    let
-        cell col =
-            Dict.get ( row, col ) grid
-    in
-    List.map (\col -> cellToPlant (cell col)) (range 0 (cols - 1))
-
-
-cellToPlant : Maybe CellState -> Maybe Plant
-cellToPlant mCell =
-    case mCell of
-        Just Dead ->
-            Nothing
-
-        Just Alive ->
-            Just Blue
-
-        _ ->
-            Nothing
 
 
 randomColors : Int -> Int -> Random.Generator (List Plant)
@@ -62,32 +38,14 @@ plantToText plant =
             "yellow-plant"
 
 
-cellToText : Cell -> String
-cellToText cell =
-    if cell == Alive then
-        "alive"
-
-    else
-        "dead"
-
-
-toVisibility1 : Maybe Plant -> String
-toVisibility1 mPlant =
+cellClasses : Maybe Plant -> String
+cellClasses mPlant =
     case mPlant of
         Nothing ->
-            "hide-cell"
+            "hide-cell dead"
 
         Just plant ->
-            plantToText plant
-
-
-toVisibility : CellState -> Plant -> String
-toVisibility cell plant =
-    if cell == Alive then
-        plantToText plant
-
-    else
-        "hide-cell"
+            "alive " ++ plantToText plant
 
 
 showCell : GridName -> Int -> Int -> Maybe Plant -> Html Msg
@@ -110,12 +68,7 @@ showCell gridName row col mPlant =
     td
         (List.append clickHandler [ class "cell" ])
         [ div
-            [ classList
-                [ ( "cell-content", True )
-                , ( toVisibility1 mPlant, True )
-                , ( cellToText cell, True )
-                ]
-            ]
+            [ class ("cell-content " ++ cellClasses mPlant) ]
             [ text "✽" ]
         ]
 
@@ -123,22 +76,6 @@ showCell gridName row col mPlant =
 showRow : GridName -> Int -> List (Maybe Plant) -> Html Msg
 showRow gridName n row =
     tr [] (List.indexedMap (showCell gridName n) row)
-
-
-toColumns : Grid -> Int -> List Plant -> List ( Cell, Plant )
-toColumns grid row plants =
-    let
-        cell col plant =
-            ( Maybe.withDefault Dead (Dict.get ( row, col ) grid), plant )
-    in
-    List.indexedMap cell plants
-
-
-toRows : Grid -> List (List Plant) -> List (List ( Cell, Plant ))
-toRows grid plants =
-    List.indexedMap
-        (toColumns grid)
-        plants
 
 
 showGrid : Grid -> GridName -> Display -> List (Html Msg)
