@@ -174,11 +174,13 @@ stepCell neighborCount mCell =
 getBounds : Grid -> ( ( Int, Int ), ( Int, Int ) )
 getBounds grid =
     let
+        liveCoords = Dict.keys (Dict.filter (\_ v -> v == Alive ) grid)
+        
         rowsLowToHigh =
-            List.sort (List.map Tuple.first (Dict.keys grid))
+            List.sort (List.map Tuple.first liveCoords)
 
         colsLowToHigh =
-            List.sort (List.map Tuple.second (Dict.keys grid))
+            List.sort (List.map Tuple.second liveCoords)
 
         minRow =
             Maybe.withDefault 0 (List.head rowsLowToHigh)
