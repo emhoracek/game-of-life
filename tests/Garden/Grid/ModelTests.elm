@@ -3,7 +3,6 @@ module Garden.Grid.ModelTests exposing (..)
 import Dict
 import Expect
 import Garden.Grid.Model exposing (..)
-import List exposing ((::))
 import Test exposing (Test, describe, test)
 
 
@@ -386,14 +385,6 @@ suite =
                 \_ ->
                     Expect.equal (createCellAndNeighbors ( 1, 2 ) ( 0, 0 ) Alive Dict.empty)
                         (Dict.fromList [ ( ( 0, 0 ), Alive ), ( ( 0, 1 ), Alive ) ])
-            ]
-        , describe "creating a grid"
-            [ test "with all alive cells" <|
-                \_ ->
-                    Expect.equal (createGrid 3 3 Alive) exampleGrid
-            , test "with more cells" <|
-                \_ ->
-                    Expect.equal (createGrid 3 4 Alive) largerGrid
             ]
         , describe "isAlive"
             [ test "an Alive cell is Alive" <|

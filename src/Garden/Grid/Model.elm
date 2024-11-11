@@ -66,24 +66,9 @@ createCellAndNeighbors ( r, c ) ( a, b ) state cells =
         (List.filter (\coords -> Dict.get coords cells == Nothing) (findNeighboringCoords ( a, b )))
 
 
-createGrid : Int -> Int -> CellState -> Grid
-createGrid r c state =
-    createCellAndNeighbors ( r, c ) (toCenter ( r, c )) state Dict.empty
-
-
-cellToInt : Cell -> Int
-cellToInt cell =
-    case cell of
-        Alive ->
-            1
-
-        Dead ->
-            0
-
-
-usuallyAliveCell : Random.Generator CellState
-usuallyAliveCell =
-    Random.weighted ( 50, Alive ) [ ( 50, Dead ) ]
+usuallyDeadCell : Random.Generator CellState
+usuallyDeadCell =
+    Random.weighted ( 40, Alive ) [ ( 60, Dead ) ]
 
 
 listToIndexedList : Int -> List CellState -> List ( ( Int, Int ), Cell )
@@ -109,7 +94,7 @@ usuallyAlive : ( Int, Int ) -> Random.Generator Grid
 usuallyAlive ( rows, columns ) =
     Random.map
         (\l -> Dict.fromList (listToIndexedList columns l))
-        (Random.list (rows * columns) usuallyAliveCell)
+        (Random.list (rows * columns) usuallyDeadCell)
 
 
 getNeighbors : CellCoords -> Grid -> List Cell
@@ -196,8 +181,9 @@ getBounds grid =
         maxCol =
             Maybe.withDefault 0 (List.head (List.reverse colsLowToHigh))
     in
-    { topLeft = ( minRow, minCol ),
-      bottomRight = ( maxRow, maxCol ) }
+    { topLeft = ( minRow, minCol )
+    , bottomRight = ( maxRow, maxCol )
+    }
 
 
 getCenter : ( Int, Int ) -> ( Int, Int ) -> CellCoords
