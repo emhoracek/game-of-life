@@ -48,8 +48,22 @@ cellClasses mPlant =
             "alive " ++ plantToText plant
 
 
-showCell : GridName -> Int -> Int -> Maybe Plant -> Html Msg
-showCell gridName row col mPlant =
+type alias CellDisplay =
+    Int -> Int -> Maybe Plant -> Html Msg
+
+
+showGardenCell : CellDisplay
+showGardenCell _ _ mPlant =
+    td
+        [ class "cell" ]
+        [ div
+            [ class ("cell-content " ++ cellClasses mPlant) ]
+            [ text "✽" ]
+        ]
+
+
+showNurseryCell : CellDisplay
+showNurseryCell row col mPlant =
     let
         cell =
             if mPlant == Nothing then
@@ -57,30 +71,25 @@ showCell gridName row col mPlant =
 
             else
                 Alive
-
-        clickHandler =
-            if gridName == Nursery then
-                [ onClick (GridMsg gridName (ToggleCell ( row, col ) cell)) ]
-
-            else
-                []
     in
     td
-        (List.append clickHandler [ class "cell" ])
+        [ class "cell"
+        , onClick (GridMsg Nursery (ToggleCell ( row, col ) cell))
+        ]
         [ div
             [ class ("cell-content " ++ cellClasses mPlant) ]
             [ text "✽" ]
         ]
 
 
-showRow : GridName -> Int -> List (Maybe Plant) -> Html Msg
-showRow gridName n row =
-    tr [] (List.indexedMap (showCell gridName n) row)
+showRow : CellDisplay -> Int -> List (Maybe Plant) -> Html Msg
+showRow showCell n row =
+    tr [] (List.indexedMap (showCell n) row)
 
 
-showGrid : Grid -> GridName -> Display -> List (Html Msg)
-showGrid grid gridName display =
-    List.indexedMap (showRow gridName) (listDisplay grid display)
+showGrid : Grid -> CellDisplay -> Display -> List (Html Msg)
+showGrid grid showCell display =
+    List.indexedMap (showRow showCell) (listDisplay grid display)
 
 
 showGridData : Grid -> Html Msg
@@ -116,18 +125,26 @@ showGridData grid =
         ]
 
 
-viewGrid : Grid -> GridName -> Display -> Html Msg
-viewGrid grid gridName display =
+viewGarden : Grid -> Display -> Html Msg
+viewGarden grid display =
     div []
-        [ table [] (showGrid grid gridName display)
+        [ table [] (showGrid grid showGardenCell display)
+        , div [] [ showGridData grid ]
+        ]
+
+
+viewNursery : Grid -> Display -> Html Msg
+viewNursery grid display =
+    div []
+        [ table [] (showGrid grid showNurseryCell display)
         , div [] [ showGridData grid ]
         , div [ class "gridcommands" ]
             [ button
                 [ onClick
-                    (GridMsg gridName (NewGrid (deadGrid defaultRows defaultColumns)))
+                    (GridMsg Nursery (NewGrid (deadGrid defaultRows defaultColumns)))
                 ]
                 [ text "Clear" ]
-            , button [ onClick (GridMsg gridName MkNewGrid) ] [ text "Generate!" ]
+            , button [ onClick (GridMsg Nursery MkNewGrid) ] [ text "Generate!" ]
             ]
         ]
 
@@ -150,7 +167,7 @@ view model =
             , stopGoButton model
             ]
         , div [ class "grids" ]
-            [ div [ class "nursery" ] [ viewGrid model.nursery Nursery model.nurseryDisplay ]
-            , div [ class "garden" ] [ viewGrid model.garden Garden model.gardenDisplay ]
+            [ div [ class "nursery" ] [ viewNursery model.nursery model.nurseryDisplay ]
+            , div [ class "garden" ] [ viewGarden model.garden model.gardenDisplay ]
             ]
         ]
