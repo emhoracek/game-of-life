@@ -5243,19 +5243,55 @@ var $elm$core$Task$perform = F2(
 	});
 var $elm$browser$Browser$element = _Browser_element;
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
+var $author$project$Garden$Grid$Model$dimensionsOf = function (area) {
+	var _v0 = area.bottomRight;
+	var r2 = _v0.a;
+	var c2 = _v0.b;
+	var _v1 = area.topLeft;
+	var r1 = _v1.a;
+	var c1 = _v1.b;
+	return _Utils_Tuple2((r2 - r1) + 1, (c2 - c1) + 1);
+};
+var $elm$core$Tuple$mapBoth = F3(
+	function (funcA, funcB, _v0) {
+		var x = _v0.a;
+		var y = _v0.b;
+		return _Utils_Tuple2(
+			funcA(x),
+			funcB(y));
+	});
 var $author$project$Garden$Display$Model$centerAt = F2(
 	function (display, _v0) {
 		var r = _v0.a;
 		var c = _v0.b;
-		var width = ((display.columns - 1) / 2) | 0;
-		var height = ((display.rows - 1) / 2) | 0;
+		var _v1 = A3(
+			$elm$core$Tuple$mapBoth,
+			function (h) {
+				return h - 1;
+			},
+			function (w) {
+				return w - 1;
+			},
+			$author$project$Garden$Grid$Model$dimensionsOf(display.area));
+		var height = _v1.a;
+		var width = _v1.b;
+		var aboveCenter = (height / 2) | 0;
+		var belowCenter = ((height / 2) | 0) + (height % 2);
+		var leftOfCenter = (width / 2) | 0;
+		var rightOfCenter = ((width / 2) | 0) + (height % 2);
 		return {
-			bottomRight: _Utils_Tuple2(r + height, c + width),
-			topLeft: _Utils_Tuple2(r - height, c - width)
+			bottomRight: _Utils_Tuple2(r + belowCenter, c + rightOfCenter),
+			topLeft: _Utils_Tuple2(r - aboveCenter, c - leftOfCenter)
 		};
 	});
-var $author$project$Garden$Display$Model$centerOf = function (display) {
-	return _Utils_Tuple2(((display.rows - 1) / 2) | 0, ((display.columns - 1) / 2) | 0);
+var $author$project$Garden$Grid$Model$centerOf = function (area) {
+	var _v0 = $author$project$Garden$Grid$Model$dimensionsOf(area);
+	var rows = _v0.a;
+	var cols = _v0.b;
+	var _v1 = area.topLeft;
+	var r1 = _v1.a;
+	var c1 = _v1.b;
+	return _Utils_Tuple2(((rows / 2) | 0) + r1, ((cols / 2) | 0) + c1);
 };
 var $author$project$Garden$Grid$Update$defaultColumns = 20;
 var $author$project$Garden$Grid$Update$defaultRows = 20;
@@ -5545,14 +5581,18 @@ var $author$project$Garden$Update$generateRandomColors = F2(
 			A2($author$project$Garden$Display$Model$randomColors, r, c));
 	});
 var $author$project$Garden$Display$Model$initGardenDisplay = {
-	columns: $author$project$Garden$Grid$Update$defaultColumns,
-	plants: $elm$core$Array$fromList(_List_Nil),
-	rows: $author$project$Garden$Grid$Update$defaultRows
+	area: {
+		bottomRight: _Utils_Tuple2($author$project$Garden$Grid$Update$defaultRows - 1, $author$project$Garden$Grid$Update$defaultColumns - 1),
+		topLeft: _Utils_Tuple2(0, 0)
+	},
+	plants: $elm$core$Array$fromList(_List_Nil)
 };
 var $author$project$Garden$Display$Model$initNurseryDisplay = {
-	columns: ($author$project$Garden$Grid$Update$defaultColumns / 2) | 0,
-	plants: $elm$core$Array$fromList(_List_Nil),
-	rows: ($author$project$Garden$Grid$Update$defaultRows / 2) | 0
+	area: {
+		bottomRight: _Utils_Tuple2((($author$project$Garden$Grid$Update$defaultRows / 2) | 0) - 1, (($author$project$Garden$Grid$Update$defaultColumns / 2) | 0) - 1),
+		topLeft: _Utils_Tuple2(0, 0)
+	},
+	plants: $elm$core$Array$fromList(_List_Nil)
 };
 var $author$project$Garden$Update$init = function (_v0) {
 	return _Utils_Tuple2(
@@ -5565,7 +5605,7 @@ var $author$project$Garden$Update$init = function (_v0) {
 			nurseryTarget: A2(
 				$author$project$Garden$Display$Model$centerAt,
 				$author$project$Garden$Display$Model$initNurseryDisplay,
-				$author$project$Garden$Display$Model$centerOf($author$project$Garden$Display$Model$initGardenDisplay)),
+				$author$project$Garden$Grid$Model$centerOf($author$project$Garden$Display$Model$initGardenDisplay.area)),
 			timeInCycle: 0
 		},
 		$elm$core$Platform$Cmd$batch(
@@ -5880,10 +5920,10 @@ var $author$project$Garden$Grid$Model$addSubGrid = F2(
 	});
 var $author$project$Garden$Model$moveVisibleGrid = F3(
 	function (grid, oldDisplay, newDisplay) {
-		var _v0 = $author$project$Garden$Display$Model$centerOf(newDisplay);
+		var _v0 = $author$project$Garden$Grid$Model$centerOf(newDisplay.area);
 		var newR = _v0.a;
 		var newC = _v0.b;
-		var _v1 = $author$project$Garden$Display$Model$centerOf(oldDisplay);
+		var _v1 = $author$project$Garden$Grid$Model$centerOf(oldDisplay.area);
 		var currR = _v1.a;
 		var currC = _v1.b;
 		var _v2 = _Utils_Tuple2(newR - currR, newC - currC);
@@ -6284,14 +6324,82 @@ var $author$project$Garden$Update$incrementModel = function (model) {
 		timeInCycle: A2($elm$core$Maybe$withDefault, $author$project$Garden$Update$defaultTiming, model.animation)
 	};
 };
+var $elm$core$Tuple$mapFirst = F2(
+	function (func, _v0) {
+		var x = _v0.a;
+		var y = _v0.b;
+		return _Utils_Tuple2(
+			func(x),
+			y);
+	});
+var $elm$core$Tuple$mapSecond = F2(
+	function (func, _v0) {
+		var x = _v0.a;
+		var y = _v0.b;
+		return _Utils_Tuple2(
+			x,
+			func(y));
+	});
+var $author$project$Garden$Grid$Model$moveCoords = function (dir) {
+	switch (dir.$) {
+		case 'Up':
+			return $elm$core$Tuple$mapFirst(
+				function (r) {
+					return r - 1;
+				});
+		case 'Down':
+			return $elm$core$Tuple$mapFirst(
+				function (r) {
+					return r + 1;
+				});
+		case 'Left':
+			return $elm$core$Tuple$mapSecond(
+				function (c) {
+					return c - 1;
+				});
+		default:
+			return $elm$core$Tuple$mapSecond(
+				function (c) {
+					return c + 1;
+				});
+	}
+};
+var $author$project$Garden$Grid$Model$moveArea = F2(
+	function (dir, _v0) {
+		var topLeft = _v0.topLeft;
+		var bottomRight = _v0.bottomRight;
+		return {
+			bottomRight: A2($author$project$Garden$Grid$Model$moveCoords, dir, bottomRight),
+			topLeft: A2($author$project$Garden$Grid$Model$moveCoords, dir, topLeft)
+		};
+	});
+var $author$project$Garden$Display$Model$moveDisplay = F2(
+	function (display, dir) {
+		return {
+			area: A2($author$project$Garden$Grid$Model$moveArea, dir, display.area),
+			plants: display.plants
+		};
+	});
+var $author$project$Garden$Update$moveGarden = F2(
+	function (model, dir) {
+		return {
+			animation: model.animation,
+			garden: model.garden,
+			gardenDisplay: A2($author$project$Garden$Display$Model$moveDisplay, model.gardenDisplay, dir),
+			nursery: model.nursery,
+			nurseryDisplay: model.nurseryDisplay,
+			nurseryTarget: model.nurseryTarget,
+			timeInCycle: model.timeInCycle
+		};
+	});
 var $author$project$Garden$Update$setPlants = F2(
 	function (model, plants) {
 		return {
 			animation: model.animation,
 			garden: model.garden,
-			gardenDisplay: {columns: model.gardenDisplay.columns, plants: plants, rows: model.gardenDisplay.rows},
+			gardenDisplay: {area: model.gardenDisplay.area, plants: plants},
 			nursery: model.nursery,
-			nurseryDisplay: {columns: model.nurseryDisplay.columns, plants: plants, rows: model.nurseryDisplay.rows},
+			nurseryDisplay: {area: model.nurseryDisplay.area, plants: plants},
 			nurseryTarget: model.nurseryTarget,
 			timeInCycle: model.timeInCycle
 		};
@@ -6323,6 +6431,11 @@ var $author$project$Garden$Update$update = F2(
 			case 'AddNursery':
 				return _Utils_Tuple2(
 					$author$project$Garden$Update$addNursery(model),
+					$elm$core$Platform$Cmd$none);
+			case 'Move':
+				var dir = msg.a;
+				return _Utils_Tuple2(
+					A2($author$project$Garden$Update$moveGarden, model, dir),
 					$elm$core$Platform$Cmd$none);
 			case 'SetColors':
 				var plants = msg.a;
@@ -6394,6 +6507,13 @@ var $author$project$Garden$View$stopGoButton = function (model) {
 				]));
 	}
 };
+var $author$project$Garden$Grid$Model$Down = {$: 'Down'};
+var $author$project$Garden$Grid$Model$Left = {$: 'Left'};
+var $author$project$Garden$Model$Move = function (a) {
+	return {$: 'Move', a: a};
+};
+var $author$project$Garden$Grid$Model$Right = {$: 'Right'};
+var $author$project$Garden$Grid$Model$Up = {$: 'Up'};
 var $author$project$Garden$View$plantToText = function (plant) {
 	switch (plant.$) {
 		case 'Blue':
@@ -6425,7 +6545,7 @@ var $author$project$Garden$View$showGardenCell = F4(
 		var _v2 = _v0.b;
 		var r2 = _v2.a;
 		var c2 = _v2.b;
-		var inTarget = (_Utils_cmp(row, r1) > -1) && ((_Utils_cmp(row, r2 + 1) < 1) && ((_Utils_cmp(col, c1) > -1) && (_Utils_cmp(col, c2 + 1) < 1)));
+		var inTarget = (_Utils_cmp(row, r1 - 1) > -1) && ((_Utils_cmp(row, r2) < 0) && ((_Utils_cmp(col, c1 - 1) > -1) && (_Utils_cmp(col, c2) < 0)));
 		var targetClasses = inTarget ? 'targeted' : '';
 		return A2(
 			$elm$html$Html$td,
@@ -6510,6 +6630,12 @@ var $author$project$Garden$Display$Model$toDisplayCell = F4(
 	});
 var $author$project$Garden$Display$Model$listDisplay = F2(
 	function (grid, display) {
+		var _v0 = display.area.topLeft;
+		var minR = _v0.a;
+		var minC = _v0.b;
+		var _v1 = display.area.bottomRight;
+		var maxR = _v1.a;
+		var maxC = _v1.b;
 		return A3(
 			$elm$core$List$foldr,
 			F2(
@@ -6526,11 +6652,11 @@ var $author$project$Garden$Display$Model$listDisplay = F2(
 										cols);
 								}),
 							_List_Nil,
-							A2($elm$core$List$range, 0, display.columns - 1)),
+							A2($elm$core$List$range, minC, maxC)),
 						rows);
 				}),
 			_List_Nil,
-			A2($elm$core$List$range, 0, display.rows - 1));
+			A2($elm$core$List$range, minR, maxR));
 	});
 var $elm$html$Html$tr = _VirtualDom_node('tr');
 var $author$project$Garden$View$showRow = F3(
@@ -6714,6 +6840,59 @@ var $author$project$Garden$View$viewGarden = F3(
 					_List_fromArray(
 						[
 							$author$project$Garden$View$showGridData(grid)
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('gridcommands')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$button,
+							_List_fromArray(
+								[
+									$elm$html$Html$Events$onClick(
+									$author$project$Garden$Model$Move($author$project$Garden$Grid$Model$Left))
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('⭠')
+								])),
+							A2(
+							$elm$html$Html$button,
+							_List_fromArray(
+								[
+									$elm$html$Html$Events$onClick(
+									$author$project$Garden$Model$Move($author$project$Garden$Grid$Model$Up))
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('⭡')
+								])),
+							A2(
+							$elm$html$Html$button,
+							_List_fromArray(
+								[
+									$elm$html$Html$Events$onClick(
+									$author$project$Garden$Model$Move($author$project$Garden$Grid$Model$Down))
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('⭣')
+								])),
+							A2(
+							$elm$html$Html$button,
+							_List_fromArray(
+								[
+									$elm$html$Html$Events$onClick(
+									$author$project$Garden$Model$Move($author$project$Garden$Grid$Model$Right))
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('⭢')
+								]))
 						]))
 				]));
 	});
@@ -6805,7 +6984,7 @@ var $author$project$Garden$View$viewNursery = F2(
 										$author$project$Garden$Model$GridMsg,
 										$author$project$Garden$Model$Nursery,
 										$author$project$Garden$Grid$Update$MkNewGrid(
-											_Utils_Tuple2(display.rows, display.columns))))
+											$author$project$Garden$Grid$Model$dimensionsOf(display.area))))
 								]),
 							_List_fromArray(
 								[
