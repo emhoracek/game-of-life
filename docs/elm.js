@@ -5242,269 +5242,62 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$element = _Browser_element;
-var $author$project$Garden$Model$Blue = {$: 'Blue'};
-var $author$project$Garden$Model$GridMsg = F2(
-	function (a, b) {
-		return {$: 'GridMsg', a: a, b: b};
-	});
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
-var $author$project$Garden$Grid$Model$Dead = {$: 'Dead'};
-var $elm$core$List$filter = F2(
-	function (isGood, list) {
-		return A3(
-			$elm$core$List$foldr,
-			F2(
-				function (x, xs) {
-					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
-				}),
-			_List_Nil,
-			list);
-	});
-var $elm$core$Basics$negate = function (n) {
-	return -n;
-};
-var $author$project$Garden$Grid$Model$findNeighboringCoords = function (_v0) {
-	var row = _v0.a;
-	var col = _v0.b;
-	var arr = _List_fromArray(
-		[
-			_Utils_Tuple2(-1, -1),
-			_Utils_Tuple2(-1, 0),
-			_Utils_Tuple2(-1, 1),
-			_Utils_Tuple2(0, -1),
-			_Utils_Tuple2(0, 1),
-			_Utils_Tuple2(1, -1),
-			_Utils_Tuple2(1, 0),
-			_Utils_Tuple2(1, 1)
-		]);
-	return A3(
-		$elm$core$List$foldr,
-		F2(
-			function (_v1, acc) {
-				var rowOff = _v1.a;
-				var colOff = _v1.b;
-				return A2(
-					$elm$core$List$cons,
-					_Utils_Tuple2(row + rowOff, col + colOff),
-					acc);
-			}),
-		_List_Nil,
-		arr);
-};
-var $elm$core$Basics$ge = _Utils_ge;
-var $elm$core$Basics$compare = _Utils_compare;
-var $elm$core$Dict$get = F2(
-	function (targetKey, dict) {
-		get:
-		while (true) {
-			if (dict.$ === 'RBEmpty_elm_builtin') {
-				return $elm$core$Maybe$Nothing;
-			} else {
-				var key = dict.b;
-				var value = dict.c;
-				var left = dict.d;
-				var right = dict.e;
-				var _v1 = A2($elm$core$Basics$compare, targetKey, key);
-				switch (_v1.$) {
-					case 'LT':
-						var $temp$targetKey = targetKey,
-							$temp$dict = left;
-						targetKey = $temp$targetKey;
-						dict = $temp$dict;
-						continue get;
-					case 'EQ':
-						return $elm$core$Maybe$Just(value);
-					default:
-						var $temp$targetKey = targetKey,
-							$temp$dict = right;
-						targetKey = $temp$targetKey;
-						dict = $temp$dict;
-						continue get;
-				}
-			}
-		}
-	});
-var $elm$core$Dict$Black = {$: 'Black'};
-var $elm$core$Dict$RBNode_elm_builtin = F5(
-	function (a, b, c, d, e) {
-		return {$: 'RBNode_elm_builtin', a: a, b: b, c: c, d: d, e: e};
-	});
-var $elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
-var $elm$core$Dict$Red = {$: 'Red'};
-var $elm$core$Dict$balance = F5(
-	function (color, key, value, left, right) {
-		if ((right.$ === 'RBNode_elm_builtin') && (right.a.$ === 'Red')) {
-			var _v1 = right.a;
-			var rK = right.b;
-			var rV = right.c;
-			var rLeft = right.d;
-			var rRight = right.e;
-			if ((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) {
-				var _v3 = left.a;
-				var lK = left.b;
-				var lV = left.c;
-				var lLeft = left.d;
-				var lRight = left.e;
-				return A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					$elm$core$Dict$Red,
-					key,
-					value,
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, lK, lV, lLeft, lRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, rK, rV, rLeft, rRight));
-			} else {
-				return A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					color,
-					rK,
-					rV,
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, key, value, left, rLeft),
-					rRight);
-			}
-		} else {
-			if ((((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) && (left.d.$ === 'RBNode_elm_builtin')) && (left.d.a.$ === 'Red')) {
-				var _v5 = left.a;
-				var lK = left.b;
-				var lV = left.c;
-				var _v6 = left.d;
-				var _v7 = _v6.a;
-				var llK = _v6.b;
-				var llV = _v6.c;
-				var llLeft = _v6.d;
-				var llRight = _v6.e;
-				var lRight = left.e;
-				return A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					$elm$core$Dict$Red,
-					lK,
-					lV,
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, llK, llV, llLeft, llRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, key, value, lRight, right));
-			} else {
-				return A5($elm$core$Dict$RBNode_elm_builtin, color, key, value, left, right);
-			}
-		}
-	});
-var $elm$core$Dict$insertHelp = F3(
-	function (key, value, dict) {
-		if (dict.$ === 'RBEmpty_elm_builtin') {
-			return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, key, value, $elm$core$Dict$RBEmpty_elm_builtin, $elm$core$Dict$RBEmpty_elm_builtin);
-		} else {
-			var nColor = dict.a;
-			var nKey = dict.b;
-			var nValue = dict.c;
-			var nLeft = dict.d;
-			var nRight = dict.e;
-			var _v1 = A2($elm$core$Basics$compare, key, nKey);
-			switch (_v1.$) {
-				case 'LT':
-					return A5(
-						$elm$core$Dict$balance,
-						nColor,
-						nKey,
-						nValue,
-						A3($elm$core$Dict$insertHelp, key, value, nLeft),
-						nRight);
-				case 'EQ':
-					return A5($elm$core$Dict$RBNode_elm_builtin, nColor, nKey, value, nLeft, nRight);
-				default:
-					return A5(
-						$elm$core$Dict$balance,
-						nColor,
-						nKey,
-						nValue,
-						nLeft,
-						A3($elm$core$Dict$insertHelp, key, value, nRight));
-			}
-		}
-	});
-var $elm$core$Dict$insert = F3(
-	function (key, value, dict) {
-		var _v0 = A3($elm$core$Dict$insertHelp, key, value, dict);
-		if ((_v0.$ === 'RBNode_elm_builtin') && (_v0.a.$ === 'Red')) {
-			var _v1 = _v0.a;
-			var k = _v0.b;
-			var v = _v0.c;
-			var l = _v0.d;
-			var r = _v0.e;
-			return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, k, v, l, r);
-		} else {
-			var x = _v0;
-			return x;
-		}
-	});
-var $author$project$Garden$Grid$Model$createCellAndNeighbors = F4(
-	function (_v0, _v1, state, cells) {
+var $author$project$Garden$Display$Model$centerAt = F2(
+	function (display, _v0) {
 		var r = _v0.a;
 		var c = _v0.b;
-		var a = _v1.a;
-		var b = _v1.b;
-		return A3(
-			$elm$core$List$foldr,
-			F2(
-				function (_v2, acc) {
-					var a2 = _v2.a;
-					var b2 = _v2.b;
-					return ((_Utils_cmp(a2, r) < 0) && ((_Utils_cmp(b2, c) < 0) && ((a2 >= 0) && (b2 >= 0)))) ? A4(
-						$author$project$Garden$Grid$Model$createCellAndNeighbors,
-						_Utils_Tuple2(r, c),
-						_Utils_Tuple2(a2, b2),
-						state,
-						acc) : acc;
-				}),
-			A3(
-				$elm$core$Dict$insert,
-				_Utils_Tuple2(a, b),
-				state,
-				cells),
-			A2(
-				$elm$core$List$filter,
-				function (coords) {
-					return _Utils_eq(
-						A2($elm$core$Dict$get, coords, cells),
-						$elm$core$Maybe$Nothing);
-				},
-				$author$project$Garden$Grid$Model$findNeighboringCoords(
-					_Utils_Tuple2(a, b))));
+		var width = ((display.columns - 1) / 2) | 0;
+		var height = ((display.rows - 1) / 2) | 0;
+		return {
+			bottomRight: _Utils_Tuple2(r + height, c + width),
+			topLeft: _Utils_Tuple2(r - height, c - width)
+		};
 	});
-var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
-var $author$project$Garden$Grid$Model$toCenter = function (_v0) {
-	var rows = _v0.a;
-	var cols = _v0.b;
-	return _Utils_Tuple2(
-		$elm$core$Basics$floor(rows / 2),
-		$elm$core$Basics$floor(cols / 2));
+var $author$project$Garden$Display$Model$centerOf = function (display) {
+	return _Utils_Tuple2(((display.rows - 1) / 2) | 0, ((display.columns - 1) / 2) | 0);
 };
-var $author$project$Garden$Grid$Model$createGrid = F3(
-	function (r, c, state) {
-		return A4(
-			$author$project$Garden$Grid$Model$createCellAndNeighbors,
-			_Utils_Tuple2(r, c),
-			$author$project$Garden$Grid$Model$toCenter(
-				_Utils_Tuple2(r, c)),
-			state,
-			$elm$core$Dict$empty);
-	});
-var $author$project$Garden$Grid$Model$deadGrid = F2(
-	function (rows, cols) {
-		return A3($author$project$Garden$Grid$Model$createGrid, rows, cols, $author$project$Garden$Grid$Model$Dead);
-	});
 var $author$project$Garden$Grid$Update$defaultColumns = 20;
 var $author$project$Garden$Grid$Update$defaultRows = 20;
-var $elm$core$Dict$fromList = function (assocs) {
-	return A3(
-		$elm$core$List$foldl,
-		F2(
-			function (_v0, dict) {
-				var key = _v0.a;
-				var value = _v0.b;
-				return A3($elm$core$Dict$insert, key, value, dict);
-			}),
-		$elm$core$Dict$empty,
-		assocs);
-};
+var $elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
+var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
 var $author$project$Garden$Model$SetColors = function (a) {
 	return {$: 'SetColors', a: a};
+};
+var $elm$core$Array$fromListHelp = F3(
+	function (list, nodeList, nodeListSize) {
+		fromListHelp:
+		while (true) {
+			var _v0 = A2($elm$core$Elm$JsArray$initializeFromList, $elm$core$Array$branchFactor, list);
+			var jsArray = _v0.a;
+			var remainingItems = _v0.b;
+			if (_Utils_cmp(
+				$elm$core$Elm$JsArray$length(jsArray),
+				$elm$core$Array$branchFactor) < 0) {
+				return A2(
+					$elm$core$Array$builderToArray,
+					true,
+					{nodeList: nodeList, nodeListSize: nodeListSize, tail: jsArray});
+			} else {
+				var $temp$list = remainingItems,
+					$temp$nodeList = A2(
+					$elm$core$List$cons,
+					$elm$core$Array$Leaf(jsArray),
+					nodeList),
+					$temp$nodeListSize = nodeListSize + 1;
+				list = $temp$list;
+				nodeList = $temp$nodeList;
+				nodeListSize = $temp$nodeListSize;
+				continue fromListHelp;
+			}
+		}
+	});
+var $elm$core$Array$fromList = function (list) {
+	if (!list.b) {
+		return $elm$core$Array$empty;
+	} else {
+		return A3($elm$core$Array$fromListHelp, list, _List_Nil, 0);
+	}
 };
 var $elm$random$Random$Generate = function (a) {
 	return {$: 'Generate', a: a};
@@ -5613,9 +5406,10 @@ var $elm$random$Random$generate = F2(
 			$elm$random$Random$Generate(
 				A2($elm$random$Random$map, tagger, generator)));
 	});
-var $author$project$Garden$Model$Pink = {$: 'Pink'};
-var $author$project$Garden$Model$Purple = {$: 'Purple'};
-var $author$project$Garden$Model$Yellow = {$: 'Yellow'};
+var $author$project$Garden$Display$Model$Blue = {$: 'Blue'};
+var $author$project$Garden$Display$Model$Pink = {$: 'Pink'};
+var $author$project$Garden$Display$Model$Purple = {$: 'Purple'};
+var $author$project$Garden$Display$Model$Yellow = {$: 'Yellow'};
 var $elm$random$Random$listHelp = F4(
 	function (revList, n, gen, seed) {
 		listHelp:
@@ -5648,6 +5442,9 @@ var $elm$random$Random$list = F2(
 	});
 var $elm$random$Random$addOne = function (value) {
 	return _Utils_Tuple2(1, value);
+};
+var $elm$core$Basics$negate = function (n) {
+	return -n;
 };
 var $elm$core$Basics$abs = function (n) {
 	return (n < 0) ? (-n) : n;
@@ -5726,125 +5523,55 @@ var $elm$random$Random$uniform = F2(
 			$elm$random$Random$addOne(value),
 			A2($elm$core$List$map, $elm$random$Random$addOne, valueList));
 	});
-var $author$project$Garden$View$randomColors = F2(
+var $author$project$Garden$Display$Model$randomColors = F2(
 	function (r, c) {
 		return A2(
 			$elm$random$Random$list,
-			r,
+			r * c,
 			A2(
-				$elm$random$Random$list,
-				c,
-				A2(
-					$elm$random$Random$uniform,
-					$author$project$Garden$Model$Blue,
-					_List_fromArray(
-						[$author$project$Garden$Model$Pink, $author$project$Garden$Model$Purple, $author$project$Garden$Model$Yellow]))));
+				$elm$random$Random$uniform,
+				$author$project$Garden$Display$Model$Blue,
+				_List_fromArray(
+					[$author$project$Garden$Display$Model$Pink, $author$project$Garden$Display$Model$Purple, $author$project$Garden$Display$Model$Yellow])));
 	});
-var $author$project$Garden$View$generateRandomColors = F2(
+var $author$project$Garden$Update$generateRandomColors = F2(
 	function (r, c) {
 		return A2(
 			$elm$random$Random$generate,
 			function (colors) {
-				return $author$project$Garden$Model$SetColors(colors);
+				return $author$project$Garden$Model$SetColors(
+					$elm$core$Array$fromList(colors));
 			},
-			A2($author$project$Garden$View$randomColors, r, c));
+			A2($author$project$Garden$Display$Model$randomColors, r, c));
 	});
-var $author$project$Garden$Grid$Update$NewGrid = function (a) {
-	return {$: 'NewGrid', a: a};
+var $author$project$Garden$Display$Model$initGardenDisplay = {
+	columns: $author$project$Garden$Grid$Update$defaultColumns,
+	plants: $elm$core$Array$fromList(_List_Nil),
+	rows: $author$project$Garden$Grid$Update$defaultRows
 };
-var $elm$core$Basics$modBy = _Basics_modBy;
-var $author$project$Garden$Grid$Model$listToIndexedList = F2(
-	function (cols, cells) {
-		return A2(
-			$elm$core$List$indexedMap,
-			F2(
-				function (n, state) {
-					var row = (n / cols) | 0;
-					var col = A2($elm$core$Basics$modBy, cols, n);
-					var coords = _Utils_Tuple2(row, col);
-					return _Utils_Tuple2(coords, state);
-				}),
-			cells);
-	});
-var $author$project$Garden$Grid$Model$Alive = {$: 'Alive'};
-var $author$project$Garden$Grid$Model$usuallyAliveCell = A2(
-	$elm$random$Random$weighted,
-	_Utils_Tuple2(50, $author$project$Garden$Grid$Model$Alive),
-	_List_fromArray(
-		[
-			_Utils_Tuple2(50, $author$project$Garden$Grid$Model$Dead)
-		]));
-var $author$project$Garden$Grid$Model$usuallyAlive = function (_v0) {
-	var rows = _v0.a;
-	var columns = _v0.b;
-	return A2(
-		$elm$random$Random$map,
-		function (l) {
-			return $elm$core$Dict$fromList(
-				A2($author$project$Garden$Grid$Model$listToIndexedList, columns, l));
-		},
-		A2($elm$random$Random$list, rows * columns, $author$project$Garden$Grid$Model$usuallyAliveCell));
+var $author$project$Garden$Display$Model$initNurseryDisplay = {
+	columns: ($author$project$Garden$Grid$Update$defaultColumns / 2) | 0,
+	plants: $elm$core$Array$fromList(_List_Nil),
+	rows: ($author$project$Garden$Grid$Update$defaultRows / 2) | 0
 };
-var $author$project$Garden$Grid$Update$makeGrid = A2(
-	$elm$random$Random$generate,
-	$author$project$Garden$Grid$Update$NewGrid,
-	$author$project$Garden$Grid$Model$usuallyAlive(
-		_Utils_Tuple2($author$project$Garden$Grid$Update$defaultRows, $author$project$Garden$Grid$Update$defaultColumns)));
-var $elm$core$Platform$Cmd$map = _Platform_map;
-var $elm$core$List$repeatHelp = F3(
-	function (result, n, value) {
-		repeatHelp:
-		while (true) {
-			if (n <= 0) {
-				return result;
-			} else {
-				var $temp$result = A2($elm$core$List$cons, value, result),
-					$temp$n = n - 1,
-					$temp$value = value;
-				result = $temp$result;
-				n = $temp$n;
-				value = $temp$value;
-				continue repeatHelp;
-			}
-		}
-	});
-var $elm$core$List$repeat = F2(
-	function (n, value) {
-		return A3($elm$core$List$repeatHelp, _List_Nil, n, value);
-	});
 var $author$project$Garden$Update$init = function (_v0) {
 	return _Utils_Tuple2(
 		{
 			animation: $elm$core$Maybe$Nothing,
-			grids: $elm$core$Dict$fromList(
-				_List_fromArray(
-					[
-						_Utils_Tuple2(
-						'0',
-						A2($author$project$Garden$Grid$Model$deadGrid, $author$project$Garden$Grid$Update$defaultRows, $author$project$Garden$Grid$Update$defaultColumns)),
-						_Utils_Tuple2(
-						'1',
-						A2($author$project$Garden$Grid$Model$deadGrid, $author$project$Garden$Grid$Update$defaultRows, $author$project$Garden$Grid$Update$defaultColumns))
-					])),
-			plants: A2(
-				$elm$core$List$repeat,
-				$author$project$Garden$Grid$Update$defaultRows,
-				A2($elm$core$List$repeat, $author$project$Garden$Grid$Update$defaultColumns, $author$project$Garden$Model$Blue)),
-			settings: {columns: $author$project$Garden$Grid$Update$defaultColumns, rows: $author$project$Garden$Grid$Update$defaultRows},
+			garden: $elm$core$Dict$empty,
+			gardenDisplay: $author$project$Garden$Display$Model$initGardenDisplay,
+			nursery: $elm$core$Dict$empty,
+			nurseryDisplay: $author$project$Garden$Display$Model$initNurseryDisplay,
+			nurseryTarget: A2(
+				$author$project$Garden$Display$Model$centerAt,
+				$author$project$Garden$Display$Model$initNurseryDisplay,
+				$author$project$Garden$Display$Model$centerOf($author$project$Garden$Display$Model$initGardenDisplay)),
 			timeInCycle: 0
 		},
 		$elm$core$Platform$Cmd$batch(
 			_List_fromArray(
 				[
-					A2(
-					$elm$core$Platform$Cmd$map,
-					$author$project$Garden$Model$GridMsg('0'),
-					$author$project$Garden$Grid$Update$makeGrid),
-					A2(
-					$elm$core$Platform$Cmd$map,
-					$author$project$Garden$Model$GridMsg('1'),
-					$author$project$Garden$Grid$Update$makeGrid),
-					A2($author$project$Garden$View$generateRandomColors, $author$project$Garden$Grid$Update$defaultRows, $author$project$Garden$Grid$Update$defaultColumns)
+					A2($author$project$Garden$Update$generateRandomColors, $author$project$Garden$Grid$Update$defaultRows, $author$project$Garden$Grid$Update$defaultColumns)
 				])));
 };
 var $author$project$Garden$Model$Decrement = {$: 'Decrement'};
@@ -5988,19 +5715,285 @@ var $author$project$Garden$Update$subscriptions = function (model) {
 			return (!model.timeInCycle) ? $author$project$Garden$Model$Increment : $author$project$Garden$Model$Decrement;
 		}) : $elm$core$Platform$Sub$none;
 };
+var $author$project$Garden$Grid$Model$Alive = {$: 'Alive'};
+var $elm$core$Dict$foldl = F3(
+	function (func, acc, dict) {
+		foldl:
+		while (true) {
+			if (dict.$ === 'RBEmpty_elm_builtin') {
+				return acc;
+			} else {
+				var key = dict.b;
+				var value = dict.c;
+				var left = dict.d;
+				var right = dict.e;
+				var $temp$func = func,
+					$temp$acc = A3(
+					func,
+					key,
+					value,
+					A3($elm$core$Dict$foldl, func, acc, left)),
+					$temp$dict = right;
+				func = $temp$func;
+				acc = $temp$acc;
+				dict = $temp$dict;
+				continue foldl;
+			}
+		}
+	});
+var $elm$core$Dict$Black = {$: 'Black'};
+var $elm$core$Dict$RBNode_elm_builtin = F5(
+	function (a, b, c, d, e) {
+		return {$: 'RBNode_elm_builtin', a: a, b: b, c: c, d: d, e: e};
+	});
+var $elm$core$Dict$Red = {$: 'Red'};
+var $elm$core$Dict$balance = F5(
+	function (color, key, value, left, right) {
+		if ((right.$ === 'RBNode_elm_builtin') && (right.a.$ === 'Red')) {
+			var _v1 = right.a;
+			var rK = right.b;
+			var rV = right.c;
+			var rLeft = right.d;
+			var rRight = right.e;
+			if ((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) {
+				var _v3 = left.a;
+				var lK = left.b;
+				var lV = left.c;
+				var lLeft = left.d;
+				var lRight = left.e;
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Red,
+					key,
+					value,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, rK, rV, rLeft, rRight));
+			} else {
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					color,
+					rK,
+					rV,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, key, value, left, rLeft),
+					rRight);
+			}
+		} else {
+			if ((((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) && (left.d.$ === 'RBNode_elm_builtin')) && (left.d.a.$ === 'Red')) {
+				var _v5 = left.a;
+				var lK = left.b;
+				var lV = left.c;
+				var _v6 = left.d;
+				var _v7 = _v6.a;
+				var llK = _v6.b;
+				var llV = _v6.c;
+				var llLeft = _v6.d;
+				var llRight = _v6.e;
+				var lRight = left.e;
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Red,
+					lK,
+					lV,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, llK, llV, llLeft, llRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, key, value, lRight, right));
+			} else {
+				return A5($elm$core$Dict$RBNode_elm_builtin, color, key, value, left, right);
+			}
+		}
+	});
+var $elm$core$Basics$compare = _Utils_compare;
+var $elm$core$Dict$insertHelp = F3(
+	function (key, value, dict) {
+		if (dict.$ === 'RBEmpty_elm_builtin') {
+			return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, key, value, $elm$core$Dict$RBEmpty_elm_builtin, $elm$core$Dict$RBEmpty_elm_builtin);
+		} else {
+			var nColor = dict.a;
+			var nKey = dict.b;
+			var nValue = dict.c;
+			var nLeft = dict.d;
+			var nRight = dict.e;
+			var _v1 = A2($elm$core$Basics$compare, key, nKey);
+			switch (_v1.$) {
+				case 'LT':
+					return A5(
+						$elm$core$Dict$balance,
+						nColor,
+						nKey,
+						nValue,
+						A3($elm$core$Dict$insertHelp, key, value, nLeft),
+						nRight);
+				case 'EQ':
+					return A5($elm$core$Dict$RBNode_elm_builtin, nColor, nKey, value, nLeft, nRight);
+				default:
+					return A5(
+						$elm$core$Dict$balance,
+						nColor,
+						nKey,
+						nValue,
+						nLeft,
+						A3($elm$core$Dict$insertHelp, key, value, nRight));
+			}
+		}
+	});
+var $elm$core$Dict$insert = F3(
+	function (key, value, dict) {
+		var _v0 = A3($elm$core$Dict$insertHelp, key, value, dict);
+		if ((_v0.$ === 'RBNode_elm_builtin') && (_v0.a.$ === 'Red')) {
+			var _v1 = _v0.a;
+			var k = _v0.b;
+			var v = _v0.c;
+			var l = _v0.d;
+			var r = _v0.e;
+			return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, k, v, l, r);
+		} else {
+			var x = _v0;
+			return x;
+		}
+	});
+var $elm$core$Dict$filter = F2(
+	function (isGood, dict) {
+		return A3(
+			$elm$core$Dict$foldl,
+			F3(
+				function (k, v, d) {
+					return A2(isGood, k, v) ? A3($elm$core$Dict$insert, k, v, d) : d;
+				}),
+			$elm$core$Dict$empty,
+			dict);
+	});
+var $elm$core$Dict$union = F2(
+	function (t1, t2) {
+		return A3($elm$core$Dict$foldl, $elm$core$Dict$insert, t2, t1);
+	});
+var $author$project$Garden$Grid$Model$addSubGrid = F2(
+	function (main, toAdd) {
+		return A2(
+			$elm$core$Dict$union,
+			A2(
+				$elm$core$Dict$filter,
+				F2(
+					function (_v0, v) {
+						return _Utils_eq(v, $author$project$Garden$Grid$Model$Alive);
+					}),
+				main),
+			toAdd);
+	});
+var $author$project$Garden$Model$moveVisibleGrid = F3(
+	function (grid, oldDisplay, newDisplay) {
+		var _v0 = $author$project$Garden$Display$Model$centerOf(newDisplay);
+		var newR = _v0.a;
+		var newC = _v0.b;
+		var _v1 = $author$project$Garden$Display$Model$centerOf(oldDisplay);
+		var currR = _v1.a;
+		var currC = _v1.b;
+		var _v2 = _Utils_Tuple2(newR - currR, newC - currC);
+		var diffR = _v2.a;
+		var diffC = _v2.b;
+		return A3(
+			$elm$core$Dict$foldr,
+			F3(
+				function (_v3, v, acc) {
+					var r = _v3.a;
+					var c = _v3.b;
+					return A3(
+						$elm$core$Dict$insert,
+						_Utils_Tuple2(r + diffR, c + diffC),
+						v,
+						acc);
+				}),
+			$elm$core$Dict$empty,
+			grid);
+	});
+var $author$project$Garden$Update$addNursery = function (model) {
+	var newGrid = A3($author$project$Garden$Model$moveVisibleGrid, model.nursery, model.nurseryDisplay, model.gardenDisplay);
+	return {
+		animation: model.animation,
+		garden: A2($author$project$Garden$Grid$Model$addSubGrid, model.garden, newGrid),
+		gardenDisplay: model.gardenDisplay,
+		nursery: model.nursery,
+		nurseryDisplay: model.nurseryDisplay,
+		nurseryTarget: model.nurseryTarget,
+		timeInCycle: model.timeInCycle
+	};
+};
 var $author$project$Garden$Update$decrementModel = function (model) {
-	return {animation: model.animation, grids: model.grids, plants: model.plants, settings: model.settings, timeInCycle: model.timeInCycle - 1};
+	return {animation: model.animation, garden: model.garden, gardenDisplay: model.gardenDisplay, nursery: model.nursery, nurseryDisplay: model.nurseryDisplay, nurseryTarget: model.nurseryTarget, timeInCycle: model.timeInCycle - 1};
 };
 var $author$project$Garden$Update$defaultTiming = 100;
 var $author$project$Garden$Update$go = function (model) {
 	return {
 		animation: $elm$core$Maybe$Just($author$project$Garden$Update$defaultTiming),
-		grids: model.grids,
-		plants: model.plants,
-		settings: model.settings,
+		garden: model.garden,
+		gardenDisplay: model.gardenDisplay,
+		nursery: model.nursery,
+		nurseryDisplay: model.nurseryDisplay,
+		nurseryTarget: model.nurseryTarget,
 		timeInCycle: $author$project$Garden$Update$defaultTiming
 	};
 };
+var $author$project$Garden$Model$Garden = {$: 'Garden'};
+var $author$project$Garden$Model$GridMsg = F2(
+	function (a, b) {
+		return {$: 'GridMsg', a: a, b: b};
+	});
+var $author$project$Garden$Model$Nursery = {$: 'Nursery'};
+var $elm$core$Platform$Cmd$map = _Platform_map;
+var $author$project$Garden$Grid$Update$NewGrid = function (a) {
+	return {$: 'NewGrid', a: a};
+};
+var $elm$core$Dict$fromList = function (assocs) {
+	return A3(
+		$elm$core$List$foldl,
+		F2(
+			function (_v0, dict) {
+				var key = _v0.a;
+				var value = _v0.b;
+				return A3($elm$core$Dict$insert, key, value, dict);
+			}),
+		$elm$core$Dict$empty,
+		assocs);
+};
+var $elm$core$Basics$modBy = _Basics_modBy;
+var $author$project$Garden$Grid$Model$listToIndexedList = F2(
+	function (cols, cells) {
+		return A2(
+			$elm$core$List$indexedMap,
+			F2(
+				function (n, state) {
+					var row = (n / cols) | 0;
+					var col = A2($elm$core$Basics$modBy, cols, n);
+					var coords = _Utils_Tuple2(row, col);
+					return _Utils_Tuple2(coords, state);
+				}),
+			cells);
+	});
+var $author$project$Garden$Grid$Model$Dead = {$: 'Dead'};
+var $author$project$Garden$Grid$Model$usuallyDeadCell = A2(
+	$elm$random$Random$weighted,
+	_Utils_Tuple2(40, $author$project$Garden$Grid$Model$Alive),
+	_List_fromArray(
+		[
+			_Utils_Tuple2(60, $author$project$Garden$Grid$Model$Dead)
+		]));
+var $author$project$Garden$Grid$Model$usuallyAlive = function (_v0) {
+	var rows = _v0.a;
+	var columns = _v0.b;
+	return A2(
+		$elm$random$Random$map,
+		function (l) {
+			return $elm$core$Dict$fromList(
+				A2($author$project$Garden$Grid$Model$listToIndexedList, columns, l));
+		},
+		A2($elm$random$Random$list, rows * columns, $author$project$Garden$Grid$Model$usuallyDeadCell));
+};
+var $author$project$Garden$Grid$Update$makeGrid = F2(
+	function (rows, cols) {
+		return A2(
+			$elm$random$Random$generate,
+			$author$project$Garden$Grid$Update$NewGrid,
+			$author$project$Garden$Grid$Model$usuallyAlive(
+				_Utils_Tuple2(rows, cols)));
+	});
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Garden$Grid$Model$toggleState = function (state) {
 	return _Utils_eq(state, $author$project$Garden$Grid$Model$Alive) ? $author$project$Garden$Grid$Model$Dead : $author$project$Garden$Grid$Model$Alive;
@@ -6019,7 +6012,12 @@ var $author$project$Garden$Grid$Update$updateGrid = F2(
 			case 'NoOp':
 				return _Utils_Tuple2(grid, $elm$core$Platform$Cmd$none);
 			case 'MkNewGrid':
-				return _Utils_Tuple2(grid, $author$project$Garden$Grid$Update$makeGrid);
+				var _v1 = msg.a;
+				var rows = _v1.a;
+				var cols = _v1.b;
+				return _Utils_Tuple2(
+					grid,
+					A2($author$project$Garden$Grid$Update$makeGrid, rows, cols));
 			case 'NewGrid':
 				var newGrid = msg.a;
 				return _Utils_Tuple2(newGrid, $elm$core$Platform$Cmd$none);
@@ -6031,55 +6029,25 @@ var $author$project$Garden$Grid$Update$updateGrid = F2(
 					$elm$core$Platform$Cmd$none);
 		}
 	});
-var $elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
-	});
 var $author$project$Garden$Update$gridMsgToMsg = F3(
-	function (gridId, gridMsg, model) {
-		var grid = A2(
-			$elm$core$Maybe$withDefault,
-			A2($author$project$Garden$Grid$Model$deadGrid, $author$project$Garden$Grid$Update$defaultRows, $author$project$Garden$Grid$Update$defaultColumns),
-			A2($elm$core$Dict$get, gridId, model.grids));
-		var _v0 = A2($author$project$Garden$Grid$Update$updateGrid, gridMsg, grid);
+	function (gridName, gridMsg, model) {
+		var _v0 = _Utils_eq(gridName, $author$project$Garden$Model$Garden) ? A2($author$project$Garden$Grid$Update$updateGrid, gridMsg, model.garden) : A2($author$project$Garden$Grid$Update$updateGrid, gridMsg, model.nursery);
 		var newGrid = _v0.a;
 		var cmd = _v0.b;
 		return _Utils_Tuple2(
 			{
 				animation: model.animation,
-				grids: A3($elm$core$Dict$insert, gridId, newGrid, model.grids),
-				plants: model.plants,
-				settings: model.settings,
+				garden: _Utils_eq(gridName, $author$project$Garden$Model$Garden) ? newGrid : model.garden,
+				gardenDisplay: model.gardenDisplay,
+				nursery: _Utils_eq(gridName, $author$project$Garden$Model$Nursery) ? newGrid : model.nursery,
+				nurseryDisplay: model.nurseryDisplay,
+				nurseryTarget: model.nurseryTarget,
 				timeInCycle: model.timeInCycle
 			},
 			A2(
 				$elm$core$Platform$Cmd$map,
-				$author$project$Garden$Model$GridMsg(gridId),
+				$author$project$Garden$Model$GridMsg(gridName),
 				cmd));
-	});
-var $elm$core$Dict$map = F2(
-	function (func, dict) {
-		if (dict.$ === 'RBEmpty_elm_builtin') {
-			return $elm$core$Dict$RBEmpty_elm_builtin;
-		} else {
-			var color = dict.a;
-			var key = dict.b;
-			var value = dict.c;
-			var left = dict.d;
-			var right = dict.e;
-			return A5(
-				$elm$core$Dict$RBNode_elm_builtin,
-				color,
-				key,
-				A2(func, key, value),
-				A2($elm$core$Dict$map, func, left),
-				A2($elm$core$Dict$map, func, right));
-		}
 	});
 var $elm$core$List$append = F2(
 	function (xs, ys) {
@@ -6097,6 +6065,34 @@ var $elm$core$List$concatMap = F2(
 		return $elm$core$List$concat(
 			A2($elm$core$List$map, f, list));
 	});
+var $author$project$Garden$Grid$Model$findNeighboringCoords = function (_v0) {
+	var row = _v0.a;
+	var col = _v0.b;
+	var arr = _List_fromArray(
+		[
+			_Utils_Tuple2(-1, -1),
+			_Utils_Tuple2(-1, 0),
+			_Utils_Tuple2(-1, 1),
+			_Utils_Tuple2(0, -1),
+			_Utils_Tuple2(0, 1),
+			_Utils_Tuple2(1, -1),
+			_Utils_Tuple2(1, 0),
+			_Utils_Tuple2(1, 1)
+		]);
+	return A3(
+		$elm$core$List$foldr,
+		F2(
+			function (_v1, acc) {
+				var rowOff = _v1.a;
+				var colOff = _v1.b;
+				return A2(
+					$elm$core$List$cons,
+					_Utils_Tuple2(row + rowOff, col + colOff),
+					acc);
+			}),
+		_List_Nil,
+		arr);
+};
 var $elm$core$List$any = F2(
 	function (isOkay, list) {
 		any:
@@ -6156,6 +6152,17 @@ var $author$project$Garden$Grid$Model$maybeInsert = F3(
 			return dict;
 		}
 	});
+var $elm$core$List$filter = F2(
+	function (isGood, list) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, xs) {
+					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
+				}),
+			_List_Nil,
+			list);
+	});
 var $elm$core$List$maybeCons = F3(
 	function (f, mx, xs) {
 		var _v0 = f(mx);
@@ -6173,6 +6180,37 @@ var $elm$core$List$filterMap = F2(
 			$elm$core$List$maybeCons(f),
 			_List_Nil,
 			xs);
+	});
+var $elm$core$Dict$get = F2(
+	function (targetKey, dict) {
+		get:
+		while (true) {
+			if (dict.$ === 'RBEmpty_elm_builtin') {
+				return $elm$core$Maybe$Nothing;
+			} else {
+				var key = dict.b;
+				var value = dict.c;
+				var left = dict.d;
+				var right = dict.e;
+				var _v1 = A2($elm$core$Basics$compare, targetKey, key);
+				switch (_v1.$) {
+					case 'LT':
+						var $temp$targetKey = targetKey,
+							$temp$dict = left;
+						targetKey = $temp$targetKey;
+						dict = $temp$dict;
+						continue get;
+					case 'EQ':
+						return $elm$core$Maybe$Just(value);
+					default:
+						var $temp$targetKey = targetKey,
+							$temp$dict = right;
+						targetKey = $temp$targetKey;
+						dict = $temp$dict;
+						continue get;
+				}
+			}
+		}
 	});
 var $author$project$Garden$Grid$Model$getNeighbors = F2(
 	function (coords, grid) {
@@ -6226,26 +6264,40 @@ var $author$project$Garden$Grid$Model$stepGrid = function (grid) {
 	var cellsToUpdate = $author$project$Garden$Grid$Model$listOfCellsToUpdate(grid);
 	return A2($author$project$Garden$Grid$Model$updateCells, grid, cellsToUpdate);
 };
+var $elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
 var $author$project$Garden$Update$incrementModel = function (model) {
 	return {
 		animation: model.animation,
-		grids: A2(
-			$elm$core$Dict$map,
-			function (_v0) {
-				return $author$project$Garden$Grid$Model$stepGrid;
-			},
-			model.grids),
-		plants: model.plants,
-		settings: model.settings,
+		garden: $author$project$Garden$Grid$Model$stepGrid(model.garden),
+		gardenDisplay: model.gardenDisplay,
+		nursery: $author$project$Garden$Grid$Model$stepGrid(model.nursery),
+		nurseryDisplay: model.nurseryDisplay,
+		nurseryTarget: model.nurseryTarget,
 		timeInCycle: A2($elm$core$Maybe$withDefault, $author$project$Garden$Update$defaultTiming, model.animation)
 	};
 };
 var $author$project$Garden$Update$setPlants = F2(
 	function (model, plants) {
-		return {animation: model.animation, grids: model.grids, plants: plants, settings: model.settings, timeInCycle: model.timeInCycle};
+		return {
+			animation: model.animation,
+			garden: model.garden,
+			gardenDisplay: {columns: model.gardenDisplay.columns, plants: plants, rows: model.gardenDisplay.rows},
+			nursery: model.nursery,
+			nurseryDisplay: {columns: model.nurseryDisplay.columns, plants: plants, rows: model.nurseryDisplay.rows},
+			nurseryTarget: model.nurseryTarget,
+			timeInCycle: model.timeInCycle
+		};
 	});
 var $author$project$Garden$Update$stop = function (model) {
-	return {animation: $elm$core$Maybe$Nothing, grids: model.grids, plants: model.plants, settings: model.settings, timeInCycle: $author$project$Garden$Update$defaultTiming};
+	return {animation: $elm$core$Maybe$Nothing, garden: model.garden, gardenDisplay: model.gardenDisplay, nursery: model.nursery, nurseryDisplay: model.nurseryDisplay, nurseryTarget: model.nurseryTarget, timeInCycle: $author$project$Garden$Update$defaultTiming};
 };
 var $author$project$Garden$Update$update = F2(
 	function (msg, model) {
@@ -6268,19 +6320,22 @@ var $author$project$Garden$Update$update = F2(
 				return _Utils_Tuple2(
 					$author$project$Garden$Update$go(model),
 					$elm$core$Platform$Cmd$none);
+			case 'AddNursery':
+				return _Utils_Tuple2(
+					$author$project$Garden$Update$addNursery(model),
+					$elm$core$Platform$Cmd$none);
 			case 'SetColors':
 				var plants = msg.a;
 				return _Utils_Tuple2(
 					A2($author$project$Garden$Update$setPlants, model, plants),
 					$elm$core$Platform$Cmd$none);
 			default:
-				var gridId = msg.a;
+				var gridName = msg.a;
 				var gridMsg = msg.b;
-				return A3($author$project$Garden$Update$gridMsgToMsg, gridId, gridMsg, model);
+				return A3($author$project$Garden$Update$gridMsgToMsg, gridName, gridMsg, model);
 		}
 	});
-var $author$project$Garden$Model$Go = {$: 'Go'};
-var $author$project$Garden$Model$Stop = {$: 'Stop'};
+var $author$project$Garden$Model$AddNursery = {$: 'AddNursery'};
 var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
@@ -6309,40 +6364,35 @@ var $elm$html$Html$Events$onClick = function (msg) {
 		'click',
 		$elm$json$Json$Decode$succeed(msg));
 };
+var $author$project$Garden$Model$Go = {$: 'Go'};
+var $author$project$Garden$Model$Stop = {$: 'Stop'};
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $elm$core$Dict$values = function (dict) {
-	return A3(
-		$elm$core$Dict$foldr,
-		F3(
-			function (key, value, valueList) {
-				return A2($elm$core$List$cons, value, valueList);
-			}),
-		_List_Nil,
-		dict);
-};
-var $author$project$Garden$Grid$Update$MkNewGrid = {$: 'MkNewGrid'};
-var $author$project$Garden$Grid$Update$ToggleCell = F2(
-	function (a, b) {
-		return {$: 'ToggleCell', a: a, b: b};
-	});
-var $elm$core$Tuple$second = function (_v0) {
-	var y = _v0.b;
-	return y;
-};
-var $elm$html$Html$Attributes$classList = function (classes) {
-	return $elm$html$Html$Attributes$class(
-		A2(
-			$elm$core$String$join,
-			' ',
-			A2(
-				$elm$core$List$map,
-				$elm$core$Tuple$first,
-				A2($elm$core$List$filter, $elm$core$Tuple$second, classes))));
-};
-var $elm$html$Html$td = _VirtualDom_node('td');
-var $author$project$Garden$View$toLiveliness = function (cell) {
-	return _Utils_eq(cell, $author$project$Garden$Grid$Model$Alive) ? 'alive' : 'dead';
+var $author$project$Garden$View$stopGoButton = function (model) {
+	var _v0 = model.animation;
+	if (_v0.$ === 'Nothing') {
+		return A2(
+			$elm$html$Html$button,
+			_List_fromArray(
+				[
+					$elm$html$Html$Events$onClick($author$project$Garden$Model$Go)
+				]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text('Go')
+				]));
+	} else {
+		return A2(
+			$elm$html$Html$button,
+			_List_fromArray(
+				[
+					$elm$html$Html$Events$onClick($author$project$Garden$Model$Stop)
+				]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text('Pause')
+				]));
+	}
 };
 var $author$project$Garden$View$plantToText = function (plant) {
 	switch (plant.$) {
@@ -6356,14 +6406,327 @@ var $author$project$Garden$View$plantToText = function (plant) {
 			return 'yellow-plant';
 	}
 };
-var $author$project$Garden$View$toVisibility = F2(
-	function (cell, plant) {
-		return _Utils_eq(cell, $author$project$Garden$Grid$Model$Alive) ? $author$project$Garden$View$plantToText(plant) : 'hide-cell';
+var $author$project$Garden$View$cellClasses = function (mPlant) {
+	if (mPlant.$ === 'Nothing') {
+		return 'hide-cell dead';
+	} else {
+		var plant = mPlant.a;
+		return 'alive ' + $author$project$Garden$View$plantToText(plant);
+	}
+};
+var $elm$core$Basics$ge = _Utils_ge;
+var $elm$html$Html$td = _VirtualDom_node('td');
+var $author$project$Garden$View$showGardenCell = F4(
+	function (target, row, col, mPlant) {
+		var _v0 = _Utils_Tuple2(target.topLeft, target.bottomRight);
+		var _v1 = _v0.a;
+		var r1 = _v1.a;
+		var c1 = _v1.b;
+		var _v2 = _v0.b;
+		var r2 = _v2.a;
+		var c2 = _v2.b;
+		var inTarget = (_Utils_cmp(row, r1) > -1) && ((_Utils_cmp(row, r2 + 1) < 1) && ((_Utils_cmp(col, c1) > -1) && (_Utils_cmp(col, c2 + 1) < 1)));
+		var targetClasses = inTarget ? 'targeted' : '';
+		return A2(
+			$elm$html$Html$td,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('cell ' + targetClasses)
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class(
+							'cell-content ' + $author$project$Garden$View$cellClasses(mPlant))
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('✽')
+						]))
+				]));
 	});
-var $author$project$Garden$View$showCell = F4(
-	function (gridId, row, col, _v0) {
-		var cell = _v0.a;
-		var plant = _v0.b;
+var $elm$core$Array$bitMask = 4294967295 >>> (32 - $elm$core$Array$shiftStep);
+var $elm$core$Elm$JsArray$unsafeGet = _JsArray_unsafeGet;
+var $elm$core$Array$getHelp = F3(
+	function (shift, index, tree) {
+		getHelp:
+		while (true) {
+			var pos = $elm$core$Array$bitMask & (index >>> shift);
+			var _v0 = A2($elm$core$Elm$JsArray$unsafeGet, pos, tree);
+			if (_v0.$ === 'SubTree') {
+				var subTree = _v0.a;
+				var $temp$shift = shift - $elm$core$Array$shiftStep,
+					$temp$index = index,
+					$temp$tree = subTree;
+				shift = $temp$shift;
+				index = $temp$index;
+				tree = $temp$tree;
+				continue getHelp;
+			} else {
+				var values = _v0.a;
+				return A2($elm$core$Elm$JsArray$unsafeGet, $elm$core$Array$bitMask & index, values);
+			}
+		}
+	});
+var $elm$core$Bitwise$shiftLeftBy = _Bitwise_shiftLeftBy;
+var $elm$core$Array$tailIndex = function (len) {
+	return (len >>> 5) << 5;
+};
+var $elm$core$Array$get = F2(
+	function (index, _v0) {
+		var len = _v0.a;
+		var startShift = _v0.b;
+		var tree = _v0.c;
+		var tail = _v0.d;
+		return ((index < 0) || (_Utils_cmp(index, len) > -1)) ? $elm$core$Maybe$Nothing : ((_Utils_cmp(
+			index,
+			$elm$core$Array$tailIndex(len)) > -1) ? $elm$core$Maybe$Just(
+			A2($elm$core$Elm$JsArray$unsafeGet, $elm$core$Array$bitMask & index, tail)) : $elm$core$Maybe$Just(
+			A3($elm$core$Array$getHelp, startShift, index, tree)));
+	});
+var $author$project$Garden$Display$Model$getPlant = F3(
+	function (display, row, col) {
+		return A2(
+			$elm$core$Maybe$withDefault,
+			$author$project$Garden$Display$Model$Blue,
+			A2($elm$core$Array$get, (row * col) + col, display.plants));
+	});
+var $author$project$Garden$Display$Model$toDisplayCell = F4(
+	function (grid, display, row, col) {
+		var _v0 = A2(
+			$elm$core$Dict$get,
+			_Utils_Tuple2(row, col),
+			grid);
+		if ((_v0.$ === 'Just') && (_v0.a.$ === 'Alive')) {
+			var _v1 = _v0.a;
+			return $elm$core$Maybe$Just(
+				A3($author$project$Garden$Display$Model$getPlant, display, row, col));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $author$project$Garden$Display$Model$listDisplay = F2(
+	function (grid, display) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (r, rows) {
+					return A2(
+						$elm$core$List$cons,
+						A3(
+							$elm$core$List$foldr,
+							F2(
+								function (c, cols) {
+									return A2(
+										$elm$core$List$cons,
+										A4($author$project$Garden$Display$Model$toDisplayCell, grid, display, r, c),
+										cols);
+								}),
+							_List_Nil,
+							A2($elm$core$List$range, 0, display.columns - 1)),
+						rows);
+				}),
+			_List_Nil,
+			A2($elm$core$List$range, 0, display.rows - 1));
+	});
+var $elm$html$Html$tr = _VirtualDom_node('tr');
+var $author$project$Garden$View$showRow = F3(
+	function (showCell, n, row) {
+		return A2(
+			$elm$html$Html$tr,
+			_List_Nil,
+			A2(
+				$elm$core$List$indexedMap,
+				showCell(n),
+				row));
+	});
+var $author$project$Garden$View$showGrid = F3(
+	function (grid, showCell, display) {
+		return A2(
+			$elm$core$List$indexedMap,
+			$author$project$Garden$View$showRow(showCell),
+			A2($author$project$Garden$Display$Model$listDisplay, grid, display));
+	});
+var $author$project$Garden$Grid$Model$countLiving = A2(
+	$elm$core$Dict$foldl,
+	F3(
+		function (_v0, cell, acc) {
+			return $author$project$Garden$Grid$Model$isAlive(cell) ? (acc + 1) : acc;
+		}),
+	0);
+var $elm$html$Html$dd = _VirtualDom_node('dd');
+var $elm$html$Html$dl = _VirtualDom_node('dl');
+var $elm$html$Html$dt = _VirtualDom_node('dt');
+var $elm$core$List$head = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(x);
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $elm$core$Tuple$second = function (_v0) {
+	var y = _v0.b;
+	return y;
+};
+var $elm$core$List$sortBy = _List_sortBy;
+var $elm$core$List$sort = function (xs) {
+	return A2($elm$core$List$sortBy, $elm$core$Basics$identity, xs);
+};
+var $author$project$Garden$Grid$Model$getBounds = function (grid) {
+	var liveCoords = $elm$core$Dict$keys(
+		A2(
+			$elm$core$Dict$filter,
+			F2(
+				function (_v0, v) {
+					return _Utils_eq(v, $author$project$Garden$Grid$Model$Alive);
+				}),
+			grid));
+	var rowsLowToHigh = $elm$core$List$sort(
+		A2($elm$core$List$map, $elm$core$Tuple$first, liveCoords));
+	var maxRow = A2(
+		$elm$core$Maybe$withDefault,
+		0,
+		$elm$core$List$head(
+			$elm$core$List$reverse(rowsLowToHigh)));
+	var minRow = A2(
+		$elm$core$Maybe$withDefault,
+		0,
+		$elm$core$List$head(rowsLowToHigh));
+	var colsLowToHigh = $elm$core$List$sort(
+		A2($elm$core$List$map, $elm$core$Tuple$second, liveCoords));
+	var maxCol = A2(
+		$elm$core$Maybe$withDefault,
+		0,
+		$elm$core$List$head(
+			$elm$core$List$reverse(colsLowToHigh)));
+	var minCol = A2(
+		$elm$core$Maybe$withDefault,
+		0,
+		$elm$core$List$head(colsLowToHigh));
+	return {
+		bottomRight: _Utils_Tuple2(maxRow, maxCol),
+		topLeft: _Utils_Tuple2(minRow, minCol)
+	};
+};
+var $author$project$Garden$View$showGridData = function (grid) {
+	var liveCells = $author$project$Garden$Grid$Model$countLiving(grid);
+	var area = $author$project$Garden$Grid$Model$getBounds(grid);
+	var _v0 = area.topLeft;
+	var minY = _v0.a;
+	var minX = _v0.b;
+	var _v1 = area.bottomRight;
+	var maxY = _v1.a;
+	var maxX = _v1.b;
+	var boundsStrings = _List_fromArray(
+		[
+			'(',
+			$elm$core$String$fromInt(minX),
+			', ',
+			$elm$core$String$fromInt(minY),
+			') to (',
+			$elm$core$String$fromInt(maxX),
+			', ',
+			$elm$core$String$fromInt(maxY),
+			')'
+		]);
+	return A2(
+		$elm$html$Html$dl,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('grid-data')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('definition')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$dt,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Live cells')
+							])),
+						A2(
+						$elm$html$Html$dd,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text(
+								$elm$core$String$fromInt(liveCells))
+							]))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('definition')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$dt,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Live area')
+							])),
+						A2(
+						$elm$html$Html$dd,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text(
+								A2($elm$core$String$join, '', boundsStrings))
+							]))
+					]))
+			]));
+};
+var $elm$html$Html$table = _VirtualDom_node('table');
+var $author$project$Garden$View$viewGarden = F3(
+	function (grid, display, target) {
+		return A2(
+			$elm$html$Html$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$table,
+					_List_Nil,
+					A3(
+						$author$project$Garden$View$showGrid,
+						grid,
+						$author$project$Garden$View$showGardenCell(target),
+						display)),
+					A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$author$project$Garden$View$showGridData(grid)
+						]))
+				]));
+	});
+var $author$project$Garden$Grid$Update$MkNewGrid = function (a) {
+	return {$: 'MkNewGrid', a: a};
+};
+var $author$project$Garden$Grid$Update$ToggleCell = F2(
+	function (a, b) {
+		return {$: 'ToggleCell', a: a, b: b};
+	});
+var $author$project$Garden$View$showNurseryCell = F3(
+	function (row, col, mPlant) {
+		var cell = _Utils_eq(mPlant, $elm$core$Maybe$Nothing) ? $author$project$Garden$Grid$Model$Dead : $author$project$Garden$Grid$Model$Alive;
 		return A2(
 			$elm$html$Html$td,
 			_List_fromArray(
@@ -6372,7 +6735,7 @@ var $author$project$Garden$View$showCell = F4(
 					$elm$html$Html$Events$onClick(
 					A2(
 						$author$project$Garden$Model$GridMsg,
-						gridId,
+						$author$project$Garden$Model$Nursery,
 						A2(
 							$author$project$Garden$Grid$Update$ToggleCell,
 							_Utils_Tuple2(row, col),
@@ -6384,17 +6747,8 @@ var $author$project$Garden$View$showCell = F4(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$classList(
-							_List_fromArray(
-								[
-									_Utils_Tuple2('cell-content', true),
-									_Utils_Tuple2(
-									A2($author$project$Garden$View$toVisibility, cell, plant),
-									true),
-									_Utils_Tuple2(
-									$author$project$Garden$View$toLiveliness(cell),
-									true)
-								]))
+							$elm$html$Html$Attributes$class(
+							'cell-content ' + $author$project$Garden$View$cellClasses(mPlant))
 						]),
 					_List_fromArray(
 						[
@@ -6402,50 +6756,8 @@ var $author$project$Garden$View$showCell = F4(
 						]))
 				]));
 	});
-var $elm$html$Html$tr = _VirtualDom_node('tr');
-var $author$project$Garden$View$showRow = F3(
-	function (gridId, n, row) {
-		return A2(
-			$elm$html$Html$tr,
-			_List_Nil,
-			A2(
-				$elm$core$List$indexedMap,
-				A2($author$project$Garden$View$showCell, gridId, n),
-				row));
-	});
-var $author$project$Garden$View$toColumns = F3(
-	function (grid, row, plants) {
-		var cell = F2(
-			function (col, plant) {
-				return _Utils_Tuple2(
-					A2(
-						$elm$core$Maybe$withDefault,
-						$author$project$Garden$Grid$Model$Dead,
-						A2(
-							$elm$core$Dict$get,
-							_Utils_Tuple2(row, col),
-							grid)),
-					plant);
-			});
-		return A2($elm$core$List$indexedMap, cell, plants);
-	});
-var $author$project$Garden$View$toRows = F2(
-	function (grid, plants) {
-		return A2(
-			$elm$core$List$indexedMap,
-			$author$project$Garden$View$toColumns(grid),
-			plants);
-	});
-var $author$project$Garden$View$showGrid = F3(
-	function (model, gridId, grid) {
-		return A2(
-			$elm$core$List$indexedMap,
-			$author$project$Garden$View$showRow(gridId),
-			A2($author$project$Garden$View$toRows, grid, model.plants));
-	});
-var $elm$html$Html$table = _VirtualDom_node('table');
-var $author$project$Garden$View$viewGrid = F3(
-	function (model, gridId, grid) {
+var $author$project$Garden$View$viewNursery = F2(
+	function (grid, display) {
 		return A2(
 			$elm$html$Html$div,
 			_List_Nil,
@@ -6454,7 +6766,14 @@ var $author$project$Garden$View$viewGrid = F3(
 					A2(
 					$elm$html$Html$table,
 					_List_Nil,
-					A3($author$project$Garden$View$showGrid, model, gridId, grid)),
+					A3($author$project$Garden$View$showGrid, grid, $author$project$Garden$View$showNurseryCell, display)),
+					A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$author$project$Garden$View$showGridData(grid)
+						])),
 					A2(
 					$elm$html$Html$div,
 					_List_fromArray(
@@ -6470,9 +6789,8 @@ var $author$project$Garden$View$viewGrid = F3(
 									$elm$html$Html$Events$onClick(
 									A2(
 										$author$project$Garden$Model$GridMsg,
-										gridId,
-										$author$project$Garden$Grid$Update$NewGrid(
-											A2($author$project$Garden$Grid$Model$deadGrid, $author$project$Garden$Grid$Update$defaultRows, $author$project$Garden$Grid$Update$defaultColumns))))
+										$author$project$Garden$Model$Nursery,
+										$author$project$Garden$Grid$Update$NewGrid($elm$core$Dict$empty)))
 								]),
 							_List_fromArray(
 								[
@@ -6483,7 +6801,11 @@ var $author$project$Garden$View$viewGrid = F3(
 							_List_fromArray(
 								[
 									$elm$html$Html$Events$onClick(
-									A2($author$project$Garden$Model$GridMsg, gridId, $author$project$Garden$Grid$Update$MkNewGrid))
+									A2(
+										$author$project$Garden$Model$GridMsg,
+										$author$project$Garden$Model$Nursery,
+										$author$project$Garden$Grid$Update$MkNewGrid(
+											_Utils_Tuple2(display.rows, display.columns))))
 								]),
 							_List_fromArray(
 								[
@@ -6516,25 +6838,16 @@ var $author$project$Garden$View$view = function (model) {
 							[
 								$elm$html$Html$text('Step')
 							])),
+						$author$project$Garden$View$stopGoButton(model),
 						A2(
 						$elm$html$Html$button,
 						_List_fromArray(
 							[
-								$elm$html$Html$Events$onClick($author$project$Garden$Model$Go)
+								$elm$html$Html$Events$onClick($author$project$Garden$Model$AddNursery)
 							]),
 						_List_fromArray(
 							[
-								$elm$html$Html$text('Go')
-							])),
-						A2(
-						$elm$html$Html$button,
-						_List_fromArray(
-							[
-								$elm$html$Html$Events$onClick($author$project$Garden$Model$Stop)
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Stop')
+								$elm$html$Html$text('Add nursery plants')
 							]))
 					])),
 				A2(
@@ -6543,14 +6856,29 @@ var $author$project$Garden$View$view = function (model) {
 					[
 						$elm$html$Html$Attributes$class('grids')
 					]),
-				$elm$core$Dict$values(
-					A2(
-						$elm$core$Dict$map,
-						F2(
-							function (k, v) {
-								return A3($author$project$Garden$View$viewGrid, model, k, v);
-							}),
-						model.grids)))
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('nursery')
+							]),
+						_List_fromArray(
+							[
+								A2($author$project$Garden$View$viewNursery, model.nursery, model.nurseryDisplay)
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('garden')
+							]),
+						_List_fromArray(
+							[
+								A3($author$project$Garden$View$viewGarden, model.garden, model.gardenDisplay, model.nurseryTarget)
+							]))
+					]))
 			]));
 };
 var $author$project$Main$main = $elm$browser$Browser$element(
