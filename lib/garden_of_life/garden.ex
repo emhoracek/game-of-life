@@ -40,4 +40,12 @@ defmodule GardenOfLife.Garden do
     neighbors = MapSet.new(Enum.flat_map(grid, fn coords -> get_neighbor_coords(coords) end))
     MapSet.new(Enum.filter(neighbors, fn coords -> will_be_alive(grid, coords) end))
   end
+
+  def toggle_cell(grid, cell) do
+    if is_alive(grid, cell) do
+      MapSet.delete(grid, cell)
+    else
+      MapSet.put(grid, cell)
+    end
+  end
 end

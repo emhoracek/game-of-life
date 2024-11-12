@@ -174,4 +174,23 @@ defmodule GardenOfLife.GardenTest do
       assert step(grid) == result
     end
   end
+
+  describe "toggle_cell" do
+    test "empty grid, makes that cell alive" do
+      grid = MapSet.new()
+
+      assert toggle_cell(grid, {0, 0}) == MapSet.new([{0, 0}])
+    end
+    test "grid with that one element, kills it" do
+      grid = MapSet.new([{0, 0}])
+
+      assert toggle_cell(grid, {0, 0}) == MapSet.new()
+    end
+
+    test "kills given live element, but keeps others" do
+      grid = MapSet.new([{0, 0}, {1,1}])
+
+      assert toggle_cell(grid, {0, 0}) == MapSet.new([{1,1}])
+    end
+  end
 end
