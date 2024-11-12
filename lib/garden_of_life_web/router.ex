@@ -1,5 +1,6 @@
 defmodule GardenOfLifeWeb.Router do
   use GardenOfLifeWeb, :router
+  import Phoenix.LiveView.Router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -18,6 +19,7 @@ defmodule GardenOfLifeWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+    live "/garden", GardenLive
   end
 
   # Other scopes may use custom stacks.
