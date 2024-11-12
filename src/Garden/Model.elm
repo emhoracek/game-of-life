@@ -30,6 +30,7 @@ type Msg
     | Stop
     | Go
     | AddNursery
+    | MoveRight
     | SetColors (Array Plant)
     | GridMsg GridName GridMsg
 

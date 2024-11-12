@@ -29,6 +29,13 @@ type alias Area =
     , bottomRight : ( Int, Int )
     }
 
+moveRight : Area -> Area
+moveRight {topLeft, bottomRight} = 
+    let (r1, c1) = topLeft
+        (r2, c2) = bottomRight in
+    { topLeft = (r1, c1 + 1),
+        bottomRight = (r2, c2 + 1 ) }
+
 
 dimensionsOf : Area -> ( Int, Int )
 dimensionsOf area =

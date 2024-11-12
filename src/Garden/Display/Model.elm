@@ -5,6 +5,7 @@ import Dict
 import Garden.Grid.Model exposing (Area, CellState(..), Grid, dimensionsOf)
 import Garden.Grid.Update exposing (defaultColumns, defaultRows)
 import Random exposing (Generator)
+import Garden.Grid.Model exposing (moveRight)
 
 
 type Plant
@@ -91,3 +92,7 @@ initNurseryDisplay =
 randomColors : Int -> Int -> Generator (List Plant)
 randomColors r c =
     Random.list (r * c) (Random.uniform Blue [ Pink, Purple, Yellow ])
+
+moveDisplayRight : Display -> Display
+moveDisplayRight display = 
+    { area = moveRight display.area, plants = display.plants }

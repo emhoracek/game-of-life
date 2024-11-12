@@ -150,7 +150,7 @@ viewGarden grid display target =
                 []
                 [ text "⭣" ]
             , button
-                []
+                [ onClick MoveRight ]
                 [ text "⭢" ]
             ]
         ]

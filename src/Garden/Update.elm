@@ -8,6 +8,7 @@ import Garden.Grid.Model exposing (CellState(..), addSubGrid, centerOf, stepGrid
 import Garden.Grid.Update exposing (GridMsg, defaultColumns, defaultRows, updateGrid)
 import Garden.Model exposing (GridName(..), Model, Msg(..), moveVisibleGrid)
 import Random
+import Garden.Display.Model exposing (moveDisplayRight)
 
 
 defaultTiming : Int
@@ -112,6 +113,18 @@ setPlants model plants =
     }
 
 
+moveGardenRight : Model -> Model
+moveGardenRight model =
+    { garden = model.garden
+    , nursery = model.nursery
+    , gardenDisplay = moveDisplayRight (model.gardenDisplay)
+    , nurseryDisplay = model.nurseryDisplay
+    , nurseryTarget = model.nurseryTarget
+    , timeInCycle = model.timeInCycle
+    , animation = model.animation
+    }
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -132,6 +145,9 @@ update msg model =
 
         AddNursery ->
             ( addNursery model, Cmd.none )
+
+        MoveRight ->
+            ( moveGardenRight model, Cmd.none)
 
         SetColors plants ->
             ( setPlants model plants, Cmd.none )
