@@ -7,7 +7,7 @@ import Config
 # Run `mix help test` for more information.
 config :garden_of_life, GardenOfLife.Repo,
   username: "postgres",
-  password: "postgres",
+  password: "111",
   hostname: "localhost",
   database: "garden_of_life_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,
