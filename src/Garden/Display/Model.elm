@@ -2,7 +2,7 @@ module Garden.Display.Model exposing (..)
 
 import Array exposing (Array)
 import Dict
-import Garden.Grid.Model exposing (CellState(..), Grid, Area)
+import Garden.Grid.Model exposing (Area, CellState(..), Grid, dimensionsOf)
 import Garden.Grid.Update exposing (defaultColumns, defaultRows)
 import Random exposing (Generator)
 
@@ -15,42 +15,52 @@ type Plant
 
 
 type alias Display =
-    { rows : Int
-    , columns : Int
+    { area : Area
     , plants : Array Plant
     }
-
-
-centerOf : Display -> ( Int, Int )
-centerOf display =
-    ( (display.rows - 1) // 2, (display.columns - 1) // 2 )
 
 
 centerAt : Display -> ( Int, Int ) -> Area
 centerAt display ( r, c ) =
     let
-        height =
-            (display.rows - 1) // 2
+        ( height, width ) =
+            Tuple.mapBoth (\h -> h - 1) (\w -> w - 1) (dimensionsOf display.area)
 
-        width =
-            (display.columns - 1) // 2
+        aboveCenter =
+            height // 2
+
+        belowCenter =
+            (height // 2) + remainderBy 2 height
+
+        leftOfCenter =
+            width // 2
+
+        rightOfCenter =
+            width // 2 + remainderBy 2 height
     in
-    { topLeft = ( r - height, c - width )
-    , bottomRight = ( r + height, c + width )
+    { topLeft = ( r - aboveCenter, c - leftOfCenter )
+    , bottomRight = ( r + belowCenter, c + rightOfCenter )
     }
 
 
 listDisplay : Grid -> Display -> List (List (Maybe Plant))
 listDisplay grid display =
+    let
+        ( minR, minC ) =
+            display.area.topLeft
+
+        ( maxR, maxC ) =
+            display.area.bottomRight
+    in
     List.foldr
         (\r rows ->
             List.foldr (\c cols -> toDisplayCell grid display r c :: cols)
                 []
-                (List.range 0 (display.columns - 1))
+                (List.range minC maxC)
                 :: rows
         )
         []
-        (List.range 0 (display.rows - 1))
+        (List.range minR maxR)
 
 
 getPlant : Display -> Int -> Int -> Plant
@@ -70,12 +80,12 @@ toDisplayCell grid display row col =
 
 initGardenDisplay : Display
 initGardenDisplay =
-    { rows = defaultRows, columns = defaultColumns, plants = Array.fromList [] }
+    { area = { topLeft = ( 0, 0 ), bottomRight = ( defaultRows - 1, defaultColumns - 1 ) }, plants = Array.fromList [] }
 
 
 initNurseryDisplay : Display
 initNurseryDisplay =
-    { rows = defaultRows // 2, columns = defaultColumns // 2, plants = Array.fromList [] }
+    { area = { topLeft = ( 0, 0 ), bottomRight = ( (defaultRows // 2) - 1, (defaultColumns // 2) - 1 ) }, plants = Array.fromList [] }
 
 
 randomColors : Int -> Int -> Generator (List Plant)

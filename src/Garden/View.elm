@@ -2,7 +2,7 @@ module Garden.View exposing (..)
 
 import Dict
 import Garden.Display.Model exposing (Display, Plant(..), listDisplay)
-import Garden.Grid.Model exposing (Area, CellState(..), Grid, countLiving, getBounds)
+import Garden.Grid.Model exposing (Area, CellState(..), Grid, countLiving, dimensionsOf, getBounds)
 import Garden.Grid.Update exposing (GridMsg(..))
 import Garden.Model exposing (GridName(..), Model, Msg(..))
 import Html exposing (Html, button, dd, div, dl, dt, table, td, text, tr)
@@ -48,7 +48,7 @@ showGardenCell target row col mPlant =
             ( target.topLeft, target.bottomRight )
 
         inTarget =
-            row >= r1 && row <= r2 + 1 && col >= c1 && col <= c2 + 1
+            row >= r1 && row <= r2 && col >= c1 && col <= c2
 
         targetClasses =
             if inTarget then
@@ -98,9 +98,14 @@ showGrid grid showCell display =
 showGridData : Grid -> Html Msg
 showGridData grid =
     let
-        area = getBounds grid
-        (minY, minX ) = area.topLeft
-        ( maxY, maxX ) = area.bottomRight
+        area =
+            getBounds grid
+
+        ( minY, minX ) =
+            area.topLeft
+
+        ( maxY, maxX ) =
+            area.bottomRight
 
         boundsStrings =
             [ "("
@@ -134,6 +139,20 @@ viewGarden grid display target =
     div []
         [ table [] (showGrid grid (showGardenCell target) display)
         , div [] [ showGridData grid ]
+        , div [ class "gridcommands" ]
+            [ button
+                []
+                [ text "⭠" ]
+            , button
+                []
+                [ text "⭡" ]
+            , button
+                []
+                [ text "⭣" ]
+            , button
+                []
+                [ text "⭢" ]
+            ]
         ]
 
 
@@ -148,7 +167,7 @@ viewNursery grid display =
                     (GridMsg Nursery (NewGrid Dict.empty))
                 ]
                 [ text "Clear" ]
-            , button [ onClick (GridMsg Nursery (MkNewGrid ( display.rows, display.columns ))) ] [ text "Generate!" ]
+            , button [ onClick (GridMsg Nursery (MkNewGrid (dimensionsOf display.area))) ] [ text "Generate!" ]
             ]
         ]
 

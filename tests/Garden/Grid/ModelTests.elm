@@ -417,13 +417,11 @@ suite =
                 \_ ->
                     Expect.equal (getBounds sparseGrid) { topLeft = ( 0, 0 ), bottomRight = ( 2, 2 ) }
             ]
-        , describe "getCenter"
-            [ test "tiny" <|
-                \_ ->
-                    Expect.equal (getCenter ( 0, 0 ) ( 1, 0 )) ( 1, 0 )
-            , test "small" <|
-                \_ ->
-                    Expect.equal (getCenter ( 0, 0 ) ( 2, 1 )) ( 2, 1 )
+        , describe "dimensionsOf"
+            [ test "one cell" <|
+                \_ -> Expect.equal (dimensionsOf { topLeft = ( 0, 0 ), bottomRight = ( 0, 0 ) }) ( 1, 1 )
+            , test "many cells" <|
+                \_ -> Expect.equal (dimensionsOf { topLeft = ( 0, 0 ), bottomRight = ( 9, 9 ) }) ( 10, 10 )
             ]
         , describe "maybeUpdate"
             [ test "alive" <|

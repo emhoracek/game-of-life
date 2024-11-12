@@ -30,6 +30,30 @@ type alias Area =
     }
 
 
+dimensionsOf : Area -> ( Int, Int )
+dimensionsOf area =
+    let
+        ( r1, c1 ) =
+            area.topLeft
+
+        ( r2, c2 ) =
+            area.bottomRight
+    in
+    ( r2 - r1 + 1, c2 - c1 + 1 )
+
+
+centerOf : Area -> ( Int, Int )
+centerOf area =
+    let
+        ( rows, cols ) =
+            dimensionsOf area
+
+        ( r1, c1 ) =
+            area.topLeft
+    in
+    ( (rows // 2) + r1, (cols // 2) + c1 )
+
+
 toCenter : ( Int, Int ) -> CellCoords
 toCenter ( rows, cols ) =
     ( floor (toFloat rows / 2), floor (toFloat cols / 2) )
@@ -184,11 +208,6 @@ getBounds grid =
     { topLeft = ( minRow, minCol )
     , bottomRight = ( maxRow, maxCol )
     }
-
-
-getCenter : ( Int, Int ) -> ( Int, Int ) -> CellCoords
-getCenter ( row1, col1 ) ( row2, col2 ) =
-    ( row2 - row1 // 2, col2 - col1 // 2 )
 
 
 listOfCellsToUpdate : Grid -> List CellCoords
