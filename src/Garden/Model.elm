@@ -3,7 +3,7 @@ module Garden.Model exposing (..)
 import Array exposing (Array)
 import Dict
 import Garden.Display.Model exposing (Display, Plant)
-import Garden.Grid.Model exposing (Area, CellState(..), Grid, centerOf)
+import Garden.Grid.Model exposing (Area, CellState(..), Direction, Grid, centerOf)
 import Garden.Grid.Update exposing (GridMsg(..))
 
 
@@ -30,7 +30,7 @@ type Msg
     | Stop
     | Go
     | AddNursery
-    | MoveRight
+    | Move Direction
     | SetColors (Array Plant)
     | GridMsg GridName GridMsg
 

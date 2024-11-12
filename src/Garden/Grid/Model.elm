@@ -29,12 +29,35 @@ type alias Area =
     , bottomRight : ( Int, Int )
     }
 
-moveRight : Area -> Area
-moveRight {topLeft, bottomRight} = 
-    let (r1, c1) = topLeft
-        (r2, c2) = bottomRight in
-    { topLeft = (r1, c1 + 1),
-        bottomRight = (r2, c2 + 1 ) }
+
+type Direction
+    = Left
+    | Right
+    | Up
+    | Down
+
+
+moveCoords : Direction -> CellCoords -> CellCoords
+moveCoords dir =
+    case dir of
+        Up ->
+            Tuple.mapFirst (\r -> r - 1)
+
+        Down ->
+            Tuple.mapFirst (\r -> r + 1)
+
+        Left ->
+            Tuple.mapSecond (\c -> c - 1)
+
+        Right ->
+            Tuple.mapSecond (\c -> c + 1)
+
+
+moveArea : Direction -> Area -> Area
+moveArea dir { topLeft, bottomRight } =
+    { topLeft = moveCoords dir topLeft
+    , bottomRight = moveCoords dir bottomRight
+    }
 
 
 dimensionsOf : Area -> ( Int, Int )

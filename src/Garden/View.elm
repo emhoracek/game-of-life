@@ -2,7 +2,7 @@ module Garden.View exposing (..)
 
 import Dict
 import Garden.Display.Model exposing (Display, Plant(..), listDisplay)
-import Garden.Grid.Model exposing (Area, CellState(..), Grid, countLiving, dimensionsOf, getBounds)
+import Garden.Grid.Model exposing (Area, CellState(..), Direction(..), Grid, countLiving, dimensionsOf, getBounds)
 import Garden.Grid.Update exposing (GridMsg(..))
 import Garden.Model exposing (GridName(..), Model, Msg(..))
 import Html exposing (Html, button, dd, div, dl, dt, table, td, text, tr)
@@ -48,7 +48,7 @@ showGardenCell target row col mPlant =
             ( target.topLeft, target.bottomRight )
 
         inTarget =
-            row >= r1 && row <= r2 && col >= c1 && col <= c2
+            row >= r1 - 1 && row < r2 && col >= c1 - 1 && col < c2
 
         targetClasses =
             if inTarget then
@@ -141,16 +141,16 @@ viewGarden grid display target =
         , div [] [ showGridData grid ]
         , div [ class "gridcommands" ]
             [ button
-                []
+                [ onClick (Move Left) ]
                 [ text "⭠" ]
             , button
-                []
+                [ onClick (Move Up) ]
                 [ text "⭡" ]
             , button
-                []
+                [ onClick (Move Down) ]
                 [ text "⭣" ]
             , button
-                [ onClick MoveRight ]
+                [ onClick (Move Right) ]
                 [ text "⭢" ]
             ]
         ]

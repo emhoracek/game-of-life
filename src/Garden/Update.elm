@@ -3,12 +3,11 @@ module Garden.Update exposing (..)
 import Array exposing (Array)
 import Browser.Events
 import Dict
-import Garden.Display.Model exposing (Plant(..), centerAt, initGardenDisplay, initNurseryDisplay, randomColors)
-import Garden.Grid.Model exposing (CellState(..), addSubGrid, centerOf, stepGrid)
+import Garden.Display.Model exposing (Plant(..), centerAt, initGardenDisplay, initNurseryDisplay, moveDisplay, randomColors)
+import Garden.Grid.Model exposing (CellState(..), Direction(..), addSubGrid, centerOf, stepGrid)
 import Garden.Grid.Update exposing (GridMsg, defaultColumns, defaultRows, updateGrid)
 import Garden.Model exposing (GridName(..), Model, Msg(..), moveVisibleGrid)
 import Random
-import Garden.Display.Model exposing (moveDisplayRight)
 
 
 defaultTiming : Int
@@ -113,11 +112,11 @@ setPlants model plants =
     }
 
 
-moveGardenRight : Model -> Model
-moveGardenRight model =
+moveGarden : Model -> Direction -> Model
+moveGarden model dir =
     { garden = model.garden
     , nursery = model.nursery
-    , gardenDisplay = moveDisplayRight (model.gardenDisplay)
+    , gardenDisplay = moveDisplay model.gardenDisplay dir
     , nurseryDisplay = model.nurseryDisplay
     , nurseryTarget = model.nurseryTarget
     , timeInCycle = model.timeInCycle
@@ -146,8 +145,8 @@ update msg model =
         AddNursery ->
             ( addNursery model, Cmd.none )
 
-        MoveRight ->
-            ( moveGardenRight model, Cmd.none)
+        Move dir ->
+            ( moveGarden model dir, Cmd.none )
 
         SetColors plants ->
             ( setPlants model plants, Cmd.none )

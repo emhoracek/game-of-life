@@ -2,10 +2,9 @@ module Garden.Display.Model exposing (..)
 
 import Array exposing (Array)
 import Dict
-import Garden.Grid.Model exposing (Area, CellState(..), Grid, dimensionsOf)
+import Garden.Grid.Model exposing (Area, CellState(..), Direction, Grid, dimensionsOf, moveArea)
 import Garden.Grid.Update exposing (defaultColumns, defaultRows)
 import Random exposing (Generator)
-import Garden.Grid.Model exposing (moveRight)
 
 
 type Plant
@@ -93,6 +92,7 @@ randomColors : Int -> Int -> Generator (List Plant)
 randomColors r c =
     Random.list (r * c) (Random.uniform Blue [ Pink, Purple, Yellow ])
 
-moveDisplayRight : Display -> Display
-moveDisplayRight display = 
-    { area = moveRight display.area, plants = display.plants }
+
+moveDisplay : Display -> Direction -> Display
+moveDisplay display dir =
+    { area = moveArea dir display.area, plants = display.plants }
