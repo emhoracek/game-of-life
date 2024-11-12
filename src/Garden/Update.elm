@@ -3,8 +3,8 @@ module Garden.Update exposing (..)
 import Array exposing (Array)
 import Browser.Events
 import Dict
-import Garden.Display.Model exposing (Plant(..), centerAt, centerOf, initGardenDisplay, initNurseryDisplay, randomColors)
-import Garden.Grid.Model exposing (CellState(..), addSubGrid, stepGrid)
+import Garden.Display.Model exposing (Plant(..), centerAt, initGardenDisplay, initNurseryDisplay, moveDisplay, randomColors)
+import Garden.Grid.Model exposing (CellState(..), Direction(..), addSubGrid, centerOf, stepGrid)
 import Garden.Grid.Update exposing (GridMsg, defaultColumns, defaultRows, updateGrid)
 import Garden.Model exposing (GridName(..), Model, Msg(..), moveVisibleGrid)
 import Random
@@ -21,7 +21,7 @@ init _ =
       , nursery = Dict.empty
       , gardenDisplay = initGardenDisplay
       , nurseryDisplay = initNurseryDisplay
-      , nurseryTarget = centerAt initNurseryDisplay (centerOf initGardenDisplay)
+      , nurseryTarget = centerAt initNurseryDisplay (centerOf initGardenDisplay.area)
       , timeInCycle = 0
       , animation = Nothing
       }
@@ -99,15 +99,25 @@ setPlants model plants =
     { garden = model.garden
     , nursery = model.nursery
     , gardenDisplay =
-        { rows = model.gardenDisplay.rows
-        , columns = model.gardenDisplay.columns
+        { area = model.gardenDisplay.area
         , plants = plants
         }
     , nurseryDisplay =
-        { rows = model.nurseryDisplay.rows
-        , columns = model.nurseryDisplay.columns
+        { area = model.nurseryDisplay.area
         , plants = plants
         }
+    , nurseryTarget = model.nurseryTarget
+    , timeInCycle = model.timeInCycle
+    , animation = model.animation
+    }
+
+
+moveGarden : Model -> Direction -> Model
+moveGarden model dir =
+    { garden = model.garden
+    , nursery = model.nursery
+    , gardenDisplay = moveDisplay model.gardenDisplay dir
+    , nurseryDisplay = model.nurseryDisplay
     , nurseryTarget = model.nurseryTarget
     , timeInCycle = model.timeInCycle
     , animation = model.animation
@@ -134,6 +144,9 @@ update msg model =
 
         AddNursery ->
             ( addNursery model, Cmd.none )
+
+        Move dir ->
+            ( moveGarden model dir, Cmd.none )
 
         SetColors plants ->
             ( setPlants model plants, Cmd.none )

@@ -4,7 +4,7 @@ import Array
 import Dict
 import Expect
 import Garden.Display.Model exposing (..)
-import Garden.Grid.Model exposing (CellState(..), Grid)
+import Garden.Grid.Model exposing (CellState(..), Grid, centerOf)
 import Test exposing (Test, describe, test)
 
 
@@ -57,8 +57,7 @@ suite =
                 \_ ->
                     let
                         display =
-                            { rows = 2
-                            , columns = 3
+                            { area = { topLeft = ( 0, 0 ), bottomRight = ( 1, 2 ) }
                             , plants = Array.fromList [ Yellow, Purple, Pink, Blue ]
                             }
                     in
@@ -67,8 +66,7 @@ suite =
                 \_ ->
                     let
                         display =
-                            { rows = 2
-                            , columns = 3
+                            { area = { topLeft = ( 0, 0 ), bottomRight = ( 1, 2 ) }
                             , plants = Array.fromList [ Yellow, Purple, Pink, Pink ]
                             }
                     in
@@ -78,14 +76,14 @@ suite =
             [ test "shows display as rows of plants" <|
                 \_ ->
                     Expect.equal
-                        (listDisplay smallGrid { rows = 2, columns = 3, plants = Array.repeat 100 Blue })
+                        (listDisplay smallGrid { area = { topLeft = ( 0, 0 ), bottomRight = ( 1, 2 ) }, plants = Array.repeat 100 Blue })
                         [ [ Just Blue, Nothing, Nothing ]
                         , [ Just Blue, Just Blue, Nothing ]
                         ]
             , test "sparse grid" <|
                 \_ ->
                     Expect.equal
-                        (listDisplay sparseGrid { rows = 3, columns = 3, plants = Array.repeat 100 Blue })
+                        (listDisplay sparseGrid { area = { topLeft = ( 0, 0 ), bottomRight = ( 2, 2 ) }, plants = Array.repeat 100 Blue })
                         [ [ Just Blue, Nothing, Just Blue ]
                         , [ Just Blue, Nothing, Nothing ]
                         , [ Nothing, Nothing, Nothing ]
@@ -93,16 +91,22 @@ suite =
             ]
         , describe "centerOf"
             [ test "even grid" <|
-                \_ -> Expect.equal (centerOf { rows = 4, columns = 4, plants = Array.empty }) ( 1, 1 )
+                \_ -> Expect.equal (centerOf { topLeft = ( 0, 0 ), bottomRight = ( 2, 2 ) }) ( 1, 1 )
             , test "odd grid" <|
-                \_ -> Expect.equal (centerOf { rows = 3, columns = 4, plants = Array.empty }) ( 1, 1 )
+                \_ -> Expect.equal (centerOf { topLeft = ( 0, 0 ), bottomRight = ( 2, 3 ) }) ( 1, 2 )
             ]
         , describe "centerAt"
-            [ test "odd grid" <|
+            [ test "even number rows and columns" <|
                 \_ ->
-                    Expect.equal (centerAt { rows = 5, columns = 5, plants = Array.empty } ( 10, 10 ))
-                        { topLeft = ( 8, 8 )
-                        , bottomRight = ( 12, 12 )
+                    Expect.equal (centerAt { area = { topLeft = ( 10, 10 ), bottomRight = ( 13, 13 ) }, plants = Array.empty } ( 1, 1 ))
+                        { topLeft = ( 0, 0 )
+                        , bottomRight = ( 3, 3 )
+                        }
+            , test "odd number rows and columns" <|
+                \_ ->
+                    Expect.equal (centerAt { area = { topLeft = ( 10, 10 ), bottomRight = ( 12, 12 ) }, plants = Array.empty } ( 1, 1 ))
+                        { topLeft = ( 0, 0 )
+                        , bottomRight = ( 2, 2 )
                         }
             ]
         ]

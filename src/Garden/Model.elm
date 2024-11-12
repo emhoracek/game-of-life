@@ -2,8 +2,8 @@ module Garden.Model exposing (..)
 
 import Array exposing (Array)
 import Dict
-import Garden.Display.Model exposing (Display, Plant, centerOf)
-import Garden.Grid.Model exposing (Area, CellState(..), Grid)
+import Garden.Display.Model exposing (Display, Plant)
+import Garden.Grid.Model exposing (Area, CellState(..), Direction, Grid, centerOf)
 import Garden.Grid.Update exposing (GridMsg(..))
 
 
@@ -30,6 +30,7 @@ type Msg
     | Stop
     | Go
     | AddNursery
+    | Move Direction
     | SetColors (Array Plant)
     | GridMsg GridName GridMsg
 
@@ -38,10 +39,10 @@ moveVisibleGrid : Grid -> Display -> Display -> Grid
 moveVisibleGrid grid oldDisplay newDisplay =
     let
         ( currR, currC ) =
-            centerOf oldDisplay
+            centerOf oldDisplay.area
 
         ( newR, newC ) =
-            centerOf newDisplay
+            centerOf newDisplay.area
 
         ( diffR, diffC ) =
             ( newR - currR, newC - currC )

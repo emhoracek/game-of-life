@@ -11,8 +11,10 @@ import Test exposing (Test, describe, test)
 
 centeredAt : ( Int, Int ) -> Display
 centeredAt ( r, c ) =
-    { rows = r * 2 + 1
-    , columns = c * 2 + 1
+    { area =
+        { topLeft = ( 0, 0 )
+        , bottomRight = ( r * 2, c * 2 )
+        }
     , plants = Array.empty
     }
 
