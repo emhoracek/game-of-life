@@ -1,0 +1,9 @@
+<ul>
+    <%= for plot <- @plots do %>
+        <li>
+            <.link href={"/plots/#{plot.name}"}>
+                <%= plot.name %>
+            </.link>
+        </li>
+        <% end %>
+</ul>

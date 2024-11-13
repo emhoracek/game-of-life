@@ -20,6 +20,9 @@ defmodule GardenOfLifeWeb.Router do
 
     get "/", PageController, :home
     live "/garden", GardenLive
+    live "/garden/:plot", GardenLive
+
+    resources "/plots", PlotController
   end
 
   # Other scopes may use custom stacks.

@@ -181,6 +181,7 @@ defmodule GardenOfLife.GardenTest do
 
       assert toggle_cell(grid, {0, 0}) == MapSet.new([{0, 0}])
     end
+
     test "grid with that one element, kills it" do
       grid = MapSet.new([{0, 0}])
 
@@ -188,9 +189,29 @@ defmodule GardenOfLife.GardenTest do
     end
 
     test "kills given live element, but keeps others" do
-      grid = MapSet.new([{0, 0}, {1,1}])
+      grid = MapSet.new([{0, 0}, {1, 1}])
 
-      assert toggle_cell(grid, {0, 0}) == MapSet.new([{1,1}])
+      assert toggle_cell(grid, {0, 0}) == MapSet.new([{1, 1}])
+    end
+  end
+
+  describe "to_point" do
+    test "valid point" do
+      assert to_point("1,1") == {1, 1}
+    end
+
+    test "invalid point" do
+      assert to_point("apple") == nil
+    end
+  end
+
+  describe "from_plot" do
+    test "valid points" do
+      assert for_plot(["1,1"]) == MapSet.new([{1, 1}])
+    end
+
+    test "invalid points" do
+      assert for_plot(["apple"]) == MapSet.new()
     end
   end
 end

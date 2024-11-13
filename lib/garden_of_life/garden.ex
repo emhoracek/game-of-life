@@ -1,6 +1,24 @@
 defmodule GardenOfLife.Garden do
+
+  def for_plot(grid) do
+    list =
+      Enum.map(grid, fn s -> to_point(s) end)
+      |> Enum.filter(fn p -> p end)
+
+    MapSet.new(list)
+  end
+
   def demo_grid do
     MapSet.new([{5, 5}, {5, 6}, {5, 7}])
+  end
+
+  def to_point(str) do
+    res = Regex.run(~r/^(\d+),(\d+)$/, str)
+
+    if res && Kernel.length(res) == 3 do
+      [_, r, c] = Regex.run(~r/^(\d+),(\d+)$/, str)
+      {String.to_integer(r), String.to_integer(c)}
+    end
   end
 
   def is_alive(grid, point) do
