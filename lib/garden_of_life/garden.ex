@@ -71,4 +71,9 @@ defmodule GardenOfLife.Garden do
     remove = MapSet.difference(old, new)
     %{add: add, remove: remove}
   end
+
+  def apply_diff(grid, %{add: add, remove: remove}) do
+    with_additions = MapSet.union(grid, add)
+    MapSet.difference(with_additions, remove)
+  end
 end

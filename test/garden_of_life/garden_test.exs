@@ -241,4 +241,42 @@ defmodule GardenOfLife.GardenTest do
              }
     end
   end
+
+  describe "apply_diff" do
+    test "empty grid, empty diff" do
+      assert apply_diff(MapSet.new(), %{add: MapSet.new(), remove: MapSet.new()}) == MapSet.new()
+    end
+
+    test "non-empty grid, empty diff" do
+      assert apply_diff(MapSet.new([{0, 0}]), %{add: MapSet.new(), remove: MapSet.new()}) ==
+               MapSet.new([{0, 0}])
+    end
+
+    test "empty grid, diff with additions" do
+      assert apply_diff(MapSet.new(), %{add: MapSet.new([{0, 0}]), remove: MapSet.new()}) ==
+               MapSet.new([{0, 0}])
+    end
+
+    test "empty grid, diff with removals" do
+      assert apply_diff(MapSet.new(), %{add: MapSet.new(), remove: MapSet.new([{0, 0}])}) ==
+               MapSet.new()
+    end
+
+    test "non-empty grid, diff with removals" do
+      assert apply_diff(MapSet.new([{0, 0}]), %{add: MapSet.new(), remove: MapSet.new([{0, 0}])}) ==
+               MapSet.new()
+    end
+
+    test "non-empty grid, diff with additions" do
+      assert apply_diff(MapSet.new([{0, 0}]), %{add: MapSet.new([{1, 1}]), remove: MapSet.new()}) ==
+               MapSet.new([{0, 0}, {1, 1}])
+    end
+
+    test "non-empty grid, diff with both" do
+      assert apply_diff(MapSet.new([{0, 0}]), %{
+               add: MapSet.new([{1, 1}]),
+               remove: MapSet.new([{0, 0}])
+             }) == MapSet.new([{1, 1}])
+    end
+  end
 end
