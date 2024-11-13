@@ -1,0 +1,21 @@
+<table>
+    <%= for row <- 0..9 do %>
+      <tr>
+        <%= for column <- 0..9 do %>
+          <%= if GardenOfLife.Garden.is_alive(@grid, {row, column}) do%>
+            <td class="cell w-6 h-6 bg-slate-100 text-center p-0 m-0"
+                phx-click="toggle_cell"
+                phx-value-row={row}
+                phx-value-column={column}> 🌸 </td>
+          <% else %>
+            <td class="cell w-6 h-6 bg-slate-300 text-center p-0 m-0"
+              phx-click="toggle_cell"
+              phx-value-row={row}
+              phx-value-column={column}> &nbsp; </td>
+          <% end %>
+        <% end %>
+      </tr>
+    <% end %>
+  </table>
+
+  <button phx-click="step_grid">Step</button>
