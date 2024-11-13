@@ -214,4 +214,31 @@ defmodule GardenOfLife.GardenTest do
       assert for_plot(["apple"]) == MapSet.new()
     end
   end
+
+  describe "diff_grid" do
+    test "two empty grids" do
+      assert diff_grid(MapSet.new(), MapSet.new()) == %{add: MapSet.new(), remove: MapSet.new()}
+    end
+
+    test "grids are the same" do
+      assert diff_grid(MapSet.new([{1, 1}]), MapSet.new([{1, 1}])) == %{
+               add: MapSet.new(),
+               remove: MapSet.new()
+             }
+    end
+
+    test "grids are completely different, use the new one" do
+      assert diff_grid(MapSet.new([{1, 1}]), MapSet.new([{2, 2}])) == %{
+               add: MapSet.new([{2, 2}]),
+               remove: MapSet.new([{1, 1}])
+             }
+    end
+
+    test "grids are not completely different" do
+      assert diff_grid(MapSet.new([{0, 0}, {1, 1}]), MapSet.new([{0, 0}, {2, 2}])) == %{
+               add: MapSet.new([{2, 2}]),
+               remove: MapSet.new([{1, 1}])
+             }
+    end
+  end
 end

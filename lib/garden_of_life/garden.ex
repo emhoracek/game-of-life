@@ -1,5 +1,4 @@
 defmodule GardenOfLife.Garden do
-
   def for_plot(grid) do
     list =
       Enum.map(grid, fn s -> to_point(s) end)
@@ -65,5 +64,11 @@ defmodule GardenOfLife.Garden do
     else
       MapSet.put(grid, cell)
     end
+  end
+
+  def diff_grid(old, new) do
+    add = MapSet.difference(new, old)
+    remove = MapSet.difference(old, new)
+    %{add: add, remove: remove}
   end
 end
