@@ -7,6 +7,10 @@ defmodule GardenOfLife.GridTest do
     {{r, c}, true}
   end
 
+  def blue_cell(r, c) do
+    {{r, c}, %{color: "blue"}}
+  end
+
   describe "is_alive" do
     test "in an empty grid, all are false" do
       grid = MapSet.new()
@@ -336,6 +340,24 @@ defmodule GardenOfLife.GridTest do
 
     test "valid points" do
       assert to_plot(MapSet.new([alive_cell(1, 1)])) == ["1,1: true"]
+    end
+  end
+
+  describe "step_cell" do
+    test "empty grid" do
+      assert step_cell(MapSet.new(), {0,0}) == nil
+    end
+
+    test "alive cell with no neighbors" do
+      assert step_cell(MapSet.new([alive_cell(1, 1)]), {1,1}) == nil
+    end
+
+    test "alive cell with two neighbors" do
+      assert step_cell(MapSet.new([alive_cell(0, 0), alive_cell(0, 1),alive_cell(1, 1)]), {0,1}) == alive_cell(0,1)
+    end
+
+    test "dead cell with three neighbors" do
+      assert step_cell(MapSet.new([alive_cell(0, 0), alive_cell(0, 1),alive_cell(1, 1)]), {1,0}) == alive_cell(1,0)
     end
   end
 end

@@ -77,4 +77,10 @@ defmodule GardenOfLife.Grid do
     with_additions = MapSet.union(grid, add)
     MapSet.difference(with_additions, remove)
   end
+
+  def step_cell(grid, point) do
+    if will_be_alive(grid, {point, true}) do
+      { point, true }
+    end
+  end
 end
