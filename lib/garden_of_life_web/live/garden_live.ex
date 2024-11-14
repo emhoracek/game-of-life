@@ -138,7 +138,7 @@ defmodule GardenOfLifeWeb.GardenLive do
       coords = {String.to_integer(row), String.to_integer(column)}
 
       new =
-        GardenOfLife.Grid.toggle_cell(g, coords)
+        GardenOfLife.Grid.toggle_cell(g, {coords, true})
 
       set_grid(name, new)
     end

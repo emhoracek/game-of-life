@@ -23,17 +23,17 @@ defmodule GardenOfLife.GridTest do
   describe "is_alive" do
     test "in an empty grid, all are false" do
       grid = empty_grid()
-      assert is_alive(grid, alive_cell(0, 0)) == false
+      assert is_alive(grid, {0,0}) == false
     end
 
     test "in a grid with a point, that point is true" do
       grid = mkgrid([alive_cell(0, 0)])
-      assert is_alive(grid, alive_cell(0, 0)) == true
+      assert is_alive(grid, {0,0}) == true
     end
 
     test "in a grid with a point, other points are false" do
       grid = mkgrid([alive_cell(0, 0)])
-      assert is_alive(grid, alive_cell(1, 1)) == false
+      assert is_alive(grid, {1,1}) == false
     end
   end
 
@@ -250,11 +250,11 @@ defmodule GardenOfLife.GridTest do
 
   describe "to_point" do
     test "valid point" do
-      assert to_point("1,1 true") == alive_cell(1, 1)
+      assert to_coords("1,1 true") == alive_cell(1, 1)
     end
 
     test "invalid point" do
-      assert to_point("apple") == nil
+      assert to_coords("apple") == nil
     end
   end
 
