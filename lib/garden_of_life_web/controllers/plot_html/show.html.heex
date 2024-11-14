@@ -2,7 +2,8 @@
     <%= @plot.name %>
 </p>
 
-<p>
-    <.link href={"/garden/#{@plot.name}"}>Play <%= @plot.name %>
-    </.link>
-</p>
+    <form action={~p"/plots/#{@plot.name}/play"}>
+    <label>Your name:
+        <input type="text" name="player" /></label>
+        <button>Play</button>
+    </form>

@@ -38,7 +38,7 @@ defmodule GardenOfLifeWeb.PlotController do
 
       case res do
         :ok ->
-          redirect(conn, to: ~p"/garden/#{plot.name}")
+          redirect(conn, to: ~p"/plots/#{plot.name}")
 
         _ ->
           redirect(conn, to: ~p"/plots/new")
@@ -46,5 +46,9 @@ defmodule GardenOfLifeWeb.PlotController do
     else
       redirect(conn, to: ~p"/plots/new")
     end
+  end
+
+  def play(conn, %{"id" => id, "player" => player}) do
+    redirect(conn, to: ~p"/garden/#{id}?player=#{player}")
   end
 end

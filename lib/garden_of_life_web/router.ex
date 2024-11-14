@@ -23,6 +23,7 @@ defmodule GardenOfLifeWeb.Router do
     live "/garden/:plot", GardenLive
 
     resources "/plots", PlotController
+    get "/plots/:id/play", PlotController, :play
   end
 
   # Other scopes may use custom stacks.

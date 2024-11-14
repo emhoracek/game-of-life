@@ -5,14 +5,20 @@ defmodule GardenOfLifeWeb.GardenLive do
 
   alias Phoenix.PubSub
 
-  def mount(%{"plot" => name}, _session, socket) do
+  def mount(%{"plot" => name, "player" => player}, _session, socket) do
     PubSub.subscribe(GardenOfLife.PubSub, "grid:#{name}")
+    PubSub.broadcast(
+      GardenOfLife.PubSub,
+      "grid:#{name}",
+      {"chat", %{event: "Player joined: #{player}"}}
+    )
     plot = Repo.one(from p in Plot, where: p.name == ^name)
     grid = Plot.garden(plot)
 
     {:ok,
      assign(socket, :grid, grid)
      |> assign(:name, name)
+     |> assign(:player, player)
      |> assign(:chat, [])
      |> assign(:playing, false)}
   end
@@ -103,6 +109,7 @@ defmodule GardenOfLifeWeb.GardenLive do
 
   def handle_event("save", _params, socket) do
     name = socket.assigns.name
+    player = socket.assigns.player
     grid = socket.assigns.grid
     plot = Repo.one(from p in Plot, where: p.name == ^name)
     changeset = Plot.changeset(plot, %{grid: GardenOfLife.Garden.to_plot(grid)})
@@ -115,14 +122,14 @@ defmodule GardenOfLifeWeb.GardenLive do
           PubSub.broadcast(
             GardenOfLife.PubSub,
             "grid:#{name}",
-            {"chat", %{event: "Garden state saved."}}
+            {"chat", %{event: "#{player} has saved the current state of your garden plot."}}
           )
 
         _ ->
           PubSub.broadcast(
             GardenOfLife.PubSub,
             "grid:#{name}",
-            {"chat", %{event: "Failed to save garden state."}}
+            {"chat", %{event: "#{player} attempted to save the current state of your garden plot, but it failed to save."}}
           )
       end
     else
