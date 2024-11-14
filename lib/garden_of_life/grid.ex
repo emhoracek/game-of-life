@@ -21,8 +21,8 @@ defmodule GardenOfLife.Grid do
     end
   end
 
-  def is_alive(grid, {r,c}) do
-    Map.has_key?(grid, {r,c})
+  def is_alive(grid, {r, c}) do
+    Map.has_key?(grid, {r, c})
   end
 
   def get_neighbor_coords({r, c}) do
@@ -42,7 +42,7 @@ defmodule GardenOfLife.Grid do
   end
 
   def get_live_neighbors(grid, coords) do
-    neighboring_coords = get_neighbor_coords(coords) #MapSet
+    neighboring_coords = get_neighbor_coords(coords)
     alive_coords = MapSet.new(Map.keys(grid))
 
     live_neighbor_coords = MapSet.to_list(MapSet.intersection(alive_coords, neighboring_coords))
@@ -59,8 +59,18 @@ defmodule GardenOfLife.Grid do
   end
 
   def step(grid) do
-    coords_to_check = MapSet.new(Enum.flat_map(grid, fn {coords, _data} -> get_neighbor_coords(coords) end))
-    Map.new( for coords <- coords_to_check, will_be_alive(grid, {coords, true}), do: {coords, true})
+    coords_to_check =
+      for {coords, _data} <- grid, reduce: MapSet.new() do
+        acc -> MapSet.union(acc, get_neighbor_coords(coords))
+      end
+
+    cells =
+      for coords <- coords_to_check,
+          cell <- [step_cell(grid, coords)],
+          !is_nil(cell),
+          do: {coords, cell}
+
+    Map.new(cells)
   end
 
   def toggle_cell(grid, {coords, data}) do
@@ -71,9 +81,28 @@ defmodule GardenOfLife.Grid do
     end
   end
 
+  def make_child({a, b, c}) when a == b or a == c do
+    a
+  end
+
+  def make_child({_a, b, c}) when b == c do
+    b
+  end
+
+  def make_child({_a, _b, c}) do
+    c
+  end
+
   def step_cell(grid, coords) do
-    if will_be_alive(grid, {coords, true}) do
-      { coords, true }
+    cell = Map.get(grid, coords)
+    neighbors = get_live_neighbors(grid, coords)
+
+    if cell && (Kernel.map_size(neighbors) == 2 || Kernel.map_size(neighbors) == 3) do
+      cell
+    else
+      if Kernel.map_size(neighbors) == 3 do
+        make_child(List.to_tuple(Map.values(neighbors)))
+      end
     end
   end
 end

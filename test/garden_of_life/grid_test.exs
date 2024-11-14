@@ -3,7 +3,6 @@ defmodule GardenOfLife.GridTest do
 
   import GardenOfLife.Grid
 
-
   def empty_grid() do
     Map.new()
   end
@@ -20,20 +19,24 @@ defmodule GardenOfLife.GridTest do
     {{r, c}, %{color: "blue"}}
   end
 
+  def blue_data() do
+    %{color: "blue"}
+  end
+
   describe "is_alive" do
     test "in an empty grid, all are false" do
       grid = empty_grid()
-      assert is_alive(grid, {0,0}) == false
+      assert is_alive(grid, {0, 0}) == false
     end
 
     test "in a grid with a point, that point is true" do
       grid = mkgrid([alive_cell(0, 0)])
-      assert is_alive(grid, {0,0}) == true
+      assert is_alive(grid, {0, 0}) == true
     end
 
     test "in a grid with a point, other points are false" do
       grid = mkgrid([alive_cell(0, 0)])
-      assert is_alive(grid, {1,1}) == false
+      assert is_alive(grid, {1, 1}) == false
     end
   end
 
@@ -226,6 +229,36 @@ defmodule GardenOfLife.GridTest do
 
       assert step(grid) == result
     end
+
+    test "even larger with blue data" do
+      # - o - -  -> o o o -
+      # o o - o     o o - -
+      # - - o -     - - o -
+      # o o - -     - o - -
+      grid =
+        mkgrid([
+          blue_cell(0, 1),
+          blue_cell(1, 0),
+          blue_cell(1, 1),
+          blue_cell(1, 3),
+          blue_cell(2, 2),
+          blue_cell(3, 0),
+          blue_cell(3, 1)
+        ])
+
+      result =
+        mkgrid([
+          blue_cell(0, 0),
+          blue_cell(0, 1),
+          blue_cell(0, 2),
+          blue_cell(1, 0),
+          blue_cell(1, 1),
+          blue_cell(2, 2),
+          blue_cell(3, 1)
+        ])
+
+      assert step(grid) == result
+    end
   end
 
   describe "toggle_cell" do
@@ -289,12 +322,50 @@ defmodule GardenOfLife.GridTest do
 
     test "alive cell with two neighbors" do
       assert step_cell(mkgrid([alive_cell(0, 0), alive_cell(0, 1), alive_cell(1, 1)]), {0, 1}) ==
-               alive_cell(0, 1)
+               true
     end
 
     test "dead cell with three neighbors" do
       assert step_cell(mkgrid([alive_cell(0, 0), alive_cell(0, 1), alive_cell(1, 1)]), {1, 0}) ==
-               alive_cell(1, 0)
+               true
+    end
+  end
+
+  describe "step_cell - blue cells " do
+    test "empty grid" do
+      assert step_cell(empty_grid(), {0, 0}) == nil
+    end
+
+    test "alive cell with no neighbors" do
+      assert step_cell(mkgrid([blue_cell(1, 1)]), {1, 1}) == nil
+    end
+
+    test "alive cell with two neighbors" do
+      assert step_cell(mkgrid([blue_cell(0, 0), blue_cell(0, 1), blue_cell(1, 1)]), {0, 1}) ==
+               blue_data()
+    end
+
+    test "dead cell with three neighbors" do
+      assert step_cell(mkgrid([blue_cell(0, 0), blue_cell(0, 1), blue_cell(1, 1)]), {1, 0}) ==
+               blue_data()
+    end
+  end
+
+  describe "make_child" do
+    test "all the same" do
+      assert make_child({1, 1, 1}) == 1
+    end
+
+    test "two are the same" do
+      assert make_child({2, 1, 2}) == 2
+    end
+
+    test "all different" do
+      assert make_child({1, 2, 3}) == 3
+    end
+
+    test "all different, different numbers" do
+      assert make_child({3, 1, 2}) == 2
     end
   end
 end
