@@ -11,10 +11,6 @@ defmodule GardenOfLife.Grid do
     Enum.map(grid, fn {{r, c}, data} -> "#{r},#{c}: #{data}" end)
   end
 
-  def demo_grid do
-    MapSet.new([{5, 5}, {5, 6}, {5, 7}])
-  end
-
   def to_point(str) do
     regex = ~r/^(\d+),(\d+)/
     res = Regex.run(regex, str)
