@@ -1,7 +1,7 @@
-defmodule GardenOfLife.GardenTest do
+defmodule GardenOfLife.GridTest do
   use ExUnit.Case, async: true
 
-  import GardenOfLife.Garden
+  import GardenOfLife.Grid
 
   describe "is_alive" do
     test "in an empty grid, all are false" do

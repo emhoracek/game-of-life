@@ -17,7 +17,7 @@ defmodule GardenOfLife.Plot do
     |> validate_required([:name])
   end
 
-  def garden(plot) do
-    GardenOfLife.Garden.for_plot(plot.grid)
+  def grid(plot) do
+    GardenOfLife.Grid.for_plot(plot.grid)
   end
 end

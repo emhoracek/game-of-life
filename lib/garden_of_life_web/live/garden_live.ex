@@ -13,7 +13,7 @@ defmodule GardenOfLifeWeb.GardenLive do
       {"chat", %{event: "Player joined: #{player}"}}
     )
     plot = Repo.one(from p in Plot, where: p.name == ^name)
-    grid = Plot.garden(plot)
+    grid = Plot.grid(plot)
 
     {:ok,
      assign(socket, :grid, grid)
@@ -33,7 +33,7 @@ defmodule GardenOfLifeWeb.GardenLive do
 
   def handle_info({"apply_diff", %{diff: diff}}, socket) do
     gridFun = fn grid ->
-      GardenOfLife.Garden.apply_diff(grid, diff)
+      GardenOfLife.Grid.apply_diff(grid, diff)
     end
 
     {:noreply, update(socket, :grid, gridFun)}
@@ -45,7 +45,7 @@ defmodule GardenOfLifeWeb.GardenLive do
 
   def handle_info({"step", _params}, socket) do
     fun = fn g ->
-      GardenOfLife.Garden.step(g)
+      GardenOfLife.Grid.step(g)
     end
 
     {:noreply, update(socket, :grid, fun)}
@@ -58,7 +58,7 @@ defmodule GardenOfLifeWeb.GardenLive do
       name = socket.assigns.name
 
       fun = fn g ->
-        new = GardenOfLife.Garden.step(g)
+        new = GardenOfLife.Grid.step(g)
         set_grid(name, new)
       end
 
@@ -86,7 +86,7 @@ defmodule GardenOfLifeWeb.GardenLive do
     name = socket.assigns.name
 
     fun = fn g ->
-      new = GardenOfLife.Garden.step(g)
+      new = GardenOfLife.Grid.step(g)
       set_grid(name, new)
     end
 
@@ -112,7 +112,7 @@ defmodule GardenOfLifeWeb.GardenLive do
     player = socket.assigns.player
     grid = socket.assigns.grid
     plot = Repo.one(from p in Plot, where: p.name == ^name)
-    changeset = Plot.changeset(plot, %{grid: GardenOfLife.Garden.to_plot(grid)})
+    changeset = Plot.changeset(plot, %{grid: GardenOfLife.Grid.to_plot(grid)})
 
     if changeset.valid? do
       {res, _} = Repo.update(changeset)
@@ -146,7 +146,7 @@ defmodule GardenOfLifeWeb.GardenLive do
       coords = {String.to_integer(row), String.to_integer(column)}
 
       new =
-        GardenOfLife.Garden.toggle_cell(g, coords)
+        GardenOfLife.Grid.toggle_cell(g, coords)
 
       update_grid(name, g, new)
     end
@@ -161,7 +161,7 @@ defmodule GardenOfLifeWeb.GardenLive do
 
   def update_grid(name, old, new) do
     unless old == new do
-      diff = GardenOfLife.Garden.diff_grid(old, new)
+      diff = GardenOfLife.Grid.diff_grid(old, new)
       PubSub.broadcast(GardenOfLife.PubSub, "grid:#{name}", {"apply_diff", %{diff: diff}})
     end
 

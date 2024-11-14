@@ -1,4 +1,4 @@
-defmodule GardenOfLife.Garden do
+defmodule GardenOfLife.Grid do
   def for_plot(grid) do
     list =
       Enum.map(grid, fn s -> to_point(s) end)
@@ -17,7 +17,7 @@ defmodule GardenOfLife.Garden do
 
   def to_point(str) do
     res = Regex.run(~r/^(\d+),(\d+)$/, str)
-
+    
     if res && Kernel.length(res) == 3 do
       [_, r, c] = Regex.run(~r/^(\d+),(\d+)$/, str)
       {String.to_integer(r), String.to_integer(c)}
