@@ -5,11 +5,11 @@ defmodule GardenOfLife.GridTest do
 
 
   def empty_grid() do
-    MapSet.new()
+    Map.new()
   end
 
   def mkgrid(list) do
-    MapSet.new(list)
+    Map.new(list)
   end
 
   def alive_cell(r, c) do
@@ -185,7 +185,7 @@ defmodule GardenOfLife.GridTest do
       grid = mkgrid([alive_cell(0, 1), alive_cell(1, 0), alive_cell(1, 1), alive_cell(2, 2)])
 
       result =
-        MapSet.new([
+        mkgrid([
           alive_cell(0, 0),
           alive_cell(0, 1),
           alive_cell(1, 0),
@@ -203,7 +203,7 @@ defmodule GardenOfLife.GridTest do
       # - - o -     - - o -
       # o o - -     - o - -
       grid =
-        MapSet.new([
+        mkgrid([
           alive_cell(0, 1),
           alive_cell(1, 0),
           alive_cell(1, 1),
@@ -214,7 +214,7 @@ defmodule GardenOfLife.GridTest do
         ])
 
       result =
-        MapSet.new([
+        mkgrid([
           alive_cell(0, 0),
           alive_cell(0, 1),
           alive_cell(0, 2),
@@ -265,80 +265,6 @@ defmodule GardenOfLife.GridTest do
 
     test "invalid points" do
       assert for_plot(["apple"]) == empty_grid()
-    end
-  end
-
-  describe "diff_grid" do
-    test "two empty grids" do
-      assert diff_grid(empty_grid(), empty_grid()) == %{add: empty_grid(), remove: empty_grid()}
-    end
-
-    test "grids are the same" do
-      assert diff_grid(mkgrid([alive_cell(1, 1)]), mkgrid([alive_cell(1, 1)])) == %{
-               add: empty_grid(),
-               remove: empty_grid()
-             }
-    end
-
-    test "grids are completely different, use the new one" do
-      assert diff_grid(mkgrid([alive_cell(1, 1)]), mkgrid([alive_cell(2, 2)])) == %{
-               add: mkgrid([alive_cell(2, 2)]),
-               remove: mkgrid([alive_cell(1, 1)])
-             }
-    end
-
-    test "grids are not completely different" do
-      assert diff_grid(
-               mkgrid([alive_cell(0, 0), alive_cell(1, 1)]),
-               mkgrid([alive_cell(0, 0), alive_cell(2, 2)])
-             ) == %{
-               add: mkgrid([alive_cell(2, 2)]),
-               remove: mkgrid([alive_cell(1, 1)])
-             }
-    end
-  end
-
-  describe "apply_diff" do
-    test "empty grid, empty diff" do
-      assert apply_diff(empty_grid(), %{add: empty_grid(), remove: empty_grid()}) == empty_grid()
-    end
-
-    test "non-empty grid, empty diff" do
-      assert apply_diff(mkgrid([alive_cell(0, 0)]), %{add: empty_grid(), remove: empty_grid()}) ==
-               mkgrid([alive_cell(0, 0)])
-    end
-
-    test "empty grid, diff with additions" do
-      assert apply_diff(empty_grid(), %{add: mkgrid([alive_cell(0, 0)]), remove: empty_grid()}) ==
-               mkgrid([alive_cell(0, 0)])
-    end
-
-    test "empty grid, diff with removals" do
-      assert apply_diff(empty_grid(), %{add: empty_grid(), remove: mkgrid([alive_cell(0, 0)])}) ==
-               empty_grid()
-    end
-
-    test "non-empty grid, diff with removals" do
-      assert apply_diff(mkgrid([alive_cell(0, 0)]), %{
-               add: empty_grid(),
-               remove: mkgrid([alive_cell(0, 0)])
-             }) ==
-               empty_grid()
-    end
-
-    test "non-empty grid, diff with additions" do
-      assert apply_diff(mkgrid([alive_cell(0, 0)]), %{
-               add: mkgrid([alive_cell(1, 1)]),
-               remove: empty_grid()
-             }) ==
-               mkgrid([alive_cell(0, 0), alive_cell(1, 1)])
-    end
-
-    test "non-empty grid, diff with both" do
-      assert apply_diff(mkgrid([alive_cell(0, 0)]), %{
-               add: mkgrid([alive_cell(1, 1)]),
-               remove: mkgrid([alive_cell(0, 0)])
-             }) == mkgrid([alive_cell(1, 1)])
     end
   end
 

@@ -31,14 +31,6 @@ defmodule GardenOfLifeWeb.GardenLive do
     {:noreply, assign(socket, :playing, false)}
   end
 
-  def handle_info({"apply_diff", %{diff: diff}}, socket) do
-    gridFun = fn grid ->
-      GardenOfLife.Grid.apply_diff(grid, diff)
-    end
-
-    {:noreply, update(socket, :grid, gridFun)}
-  end
-
   def handle_info({"apply_grid", %{grid: grid}}, socket) do
     {:noreply, assign(socket, :grid, grid)}
   end
@@ -148,7 +140,7 @@ defmodule GardenOfLifeWeb.GardenLive do
       new =
         GardenOfLife.Grid.toggle_cell(g, coords)
 
-      update_grid(name, g, new)
+      set_grid(name, new)
     end
 
     {:noreply, update(socket, :grid, fun)}
@@ -157,15 +149,6 @@ defmodule GardenOfLifeWeb.GardenLive do
   def set_grid(name, newGrid) do
     PubSub.broadcast(GardenOfLife.PubSub, "grid:#{name}", {"apply_grid", %{grid: newGrid}})
     newGrid
-  end
-
-  def update_grid(name, old, new) do
-    unless old == new do
-      diff = GardenOfLife.Grid.diff_grid(old, new)
-      PubSub.broadcast(GardenOfLife.PubSub, "grid:#{name}", {"apply_diff", %{diff: diff}})
-    end
-
-    new
   end
 
   def schedule_work() do

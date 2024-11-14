@@ -4,7 +4,7 @@ defmodule GardenOfLife.Grid do
       Enum.map(grid, fn s -> to_point(s) end)
       |> Enum.filter(fn p -> p end)
 
-    MapSet.new(list)
+    Map.new(list)
   end
 
   def to_plot(grid) do
@@ -21,8 +21,12 @@ defmodule GardenOfLife.Grid do
     end
   end
 
-  def is_alive(grid, point) do
-    MapSet.member?(grid, point)
+  def is_alive(grid, {{r,c}, _data}) do
+    Map.has_key?(grid, {r,c})
+  end
+
+  def is_alive(grid, cell) do
+    MapSet.member?(grid, cell)
   end
 
   def get_neighbor_coords({r, c}) do
@@ -42,40 +46,33 @@ defmodule GardenOfLife.Grid do
   end
 
   def get_live_neighbors(grid, point) do
-    neighboring_coords = get_neighbor_coords(point)
-    MapSet.filter(grid, fn {p, _data} -> MapSet.member?(neighboring_coords, p) end)
+    neighboring_coords = get_neighbor_coords(point) #MapSet
+    alive_coords = MapSet.new(Map.keys(grid))
+
+    live_neighbor_coords = MapSet.to_list(MapSet.intersection(alive_coords, neighboring_coords))
+
+    Map.take(grid, live_neighbor_coords)
   end
 
   def will_be_alive(grid, point) do
     alive = is_alive(grid, point)
     neighbors = get_live_neighbors(grid, Kernel.elem(point, 0))
 
-    (alive && (MapSet.size(neighbors) == 2 || MapSet.size(neighbors) == 3)) ||
-      (not alive && MapSet.size(neighbors) == 3)
+    (alive && (Kernel.map_size(neighbors) == 2 || Kernel.map_size(neighbors) == 3)) ||
+      (not alive && Kernel.map_size(neighbors) == 3)
   end
 
   def step(grid) do
     coords_to_check = MapSet.new(Enum.flat_map(grid, fn {coords, _data} -> get_neighbor_coords(coords) end))
-    MapSet.new( for coord <- coords_to_check, will_be_alive(grid, {coord, true}), do: {coord, true})
+    Map.new( for coord <- coords_to_check, will_be_alive(grid, {coord, true}), do: {coord, true})
   end
 
-  def toggle_cell(grid, cell) do
-    if is_alive(grid, cell) do
-      MapSet.delete(grid, cell)
+  def toggle_cell(grid, {{r,c}, data}) do
+    if is_alive(grid, {{r,c}, data}) do
+      Map.delete(grid, {r,c})
     else
-      MapSet.put(grid, cell)
+      Map.put(grid, {r,c}, data)
     end
-  end
-
-  def diff_grid(old, new) do
-    add = MapSet.difference(new, old)
-    remove = MapSet.difference(old, new)
-    %{add: add, remove: remove}
-  end
-
-  def apply_diff(grid, %{add: add, remove: remove}) do
-    with_additions = MapSet.union(grid, add)
-    MapSet.difference(with_additions, remove)
   end
 
   def step_cell(grid, point) do
