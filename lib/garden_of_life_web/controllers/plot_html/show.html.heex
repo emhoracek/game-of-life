@@ -1,9 +1,33 @@
-<p>
-    <%= @plot.name %>
-</p>
+<h1 class="text-lg">
+  <%= @plot.name %>
+</h1>
 
-    <form action={~p"/plots/#{@plot.name}/play"}>
-    <label>Your name:
-        <input type="text" name="player" /></label>
-        <button>Play</button>
-    </form>
+<table>
+  <%= for row <- 0..19 do %>
+    <tr>
+      <%= for column <- 0..19 do %>
+        <%= if GardenOfLife.Garden.is_alive(@grid, {row, column}) do %>
+          <td
+            class="cell w-6 h-6 bg-slate-100 text-center p-0 m-0"
+            phx-click="toggle_cell"
+            phx-value-row={row}
+            phx-value-column={column}
+          >
+            🌸
+          </td>
+        <% else %>
+          <td
+            class="cell w-6 h-6 bg-slate-300 text-center p-0 m-0"
+          >
+            &nbsp;
+          </td>
+        <% end %>
+      <% end %>
+    </tr>
+  <% end %>
+</table>
+
+<form class="mt-2" action={~p"/plots/#{@plot.name}/play"}>
+  <label>Your name: <input type="text" name="player" /></label>
+  <button>Play</button>
+</form>

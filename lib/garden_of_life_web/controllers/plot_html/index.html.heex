@@ -1,4 +1,6 @@
-<ul>
+<h1 class="text-lg">All garden plots</h1>
+
+<ul class="mt-2 mb-2">
     <%= for plot <- @plots do %>
         <li>
             <.link href={"/plots/#{plot.name}"}>
@@ -7,3 +9,5 @@
         </li>
         <% end %>
 </ul>
+
+<p><a href={~p"/plots/new"}>Create a new garden plot</a></p>
