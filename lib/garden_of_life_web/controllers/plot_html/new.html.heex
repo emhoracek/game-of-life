@@ -1,0 +1,15 @@
+<%= if @changeset.errors do %>
+    <ul>
+        <%= for error <- @changeset.errors do %>
+            <li><%= inspect(error) %></li>
+        <% end %>
+    </ul>
+<% end %>
+<.form
+:let={form}
+for={@changeset}
+action={~p"/plots"}
+phx-change="validate" phx-submit="save">
+    <.input type="text" field={form[:name]} />
+    <button>Create</button>
+</.form>

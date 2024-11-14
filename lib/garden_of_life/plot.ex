@@ -13,6 +13,7 @@ defmodule GardenOfLife.Plot do
   def changeset(plot, attrs) do
     plot
     |> cast(attrs, [:name, :grid])
+    |> unique_constraint(:name, name: :plot_names_unique_index)
     |> validate_required([:name])
   end
 
