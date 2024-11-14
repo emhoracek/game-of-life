@@ -3,20 +3,24 @@ defmodule GardenOfLife.GridTest do
 
   import GardenOfLife.Grid
 
+  def alive_cell(r, c) do
+    {{r, c}, true}
+  end
+
   describe "is_alive" do
     test "in an empty grid, all are false" do
       grid = MapSet.new()
-      assert is_alive(grid, {0, 0}) == false
+      assert is_alive(grid, alive_cell(0, 0)) == false
     end
 
     test "in a grid with a point, that point is true" do
-      grid = MapSet.new([{0, 0}])
-      assert is_alive(grid, {0, 0}) == true
+      grid = MapSet.new([alive_cell(0, 0)])
+      assert is_alive(grid, alive_cell(0, 0)) == true
     end
 
     test "in a grid with a point, other points are false" do
-      grid = MapSet.new([{0, 0}])
-      assert is_alive(grid, {1, 1}) == false
+      grid = MapSet.new([alive_cell(0, 0)])
+      assert is_alive(grid, alive_cell(1, 1)) == false
     end
   end
 
@@ -58,27 +62,27 @@ defmodule GardenOfLife.GridTest do
     end
 
     test "for grid with only that point returns none" do
-      grid = MapSet.new([{0, 0}])
+      grid = MapSet.new([alive_cell(0, 0)])
 
       assert get_live_neighbors(grid, {0, 0}) == MapSet.new()
     end
 
     test "for grid with only non-neighboring point returns none" do
-      grid = MapSet.new([{0, 0}])
+      grid = MapSet.new([alive_cell(0, 0)])
 
-      assert get_live_neighbors(grid, {5, 5}) == MapSet.new()
+      assert get_live_neighbors(grid, {0, 0}) == MapSet.new()
     end
 
     test "for grid with a neighboring point returns it" do
-      grid = MapSet.new([{0, 0}])
+      grid = MapSet.new([alive_cell(0, 0)])
 
       assert get_live_neighbors(grid, {0, 1}) == grid
     end
 
     test "returns neighbors but not non-neighbors" do
-      grid = MapSet.new([{0, 0}, {5, 5}])
+      grid = MapSet.new([alive_cell(0, 0), alive_cell(5, 5)])
 
-      assert get_live_neighbors(grid, {0, 1}) == MapSet.new([{0, 0}])
+      assert get_live_neighbors(grid, {0, 1}) == MapSet.new([alive_cell(0, 0)])
     end
   end
 
@@ -86,49 +90,56 @@ defmodule GardenOfLife.GridTest do
     test "for cell in empty grid, returns false" do
       grid = MapSet.new()
 
-      assert will_be_alive(grid, {0, 0}) == false
+      assert will_be_alive(grid, alive_cell(0, 0)) == false
     end
 
     test "for cell in grid with one elem, returns false" do
-      grid = MapSet.new([{0, 0}])
+      grid = MapSet.new([alive_cell(0, 0)])
 
-      assert will_be_alive(grid, {0, 0}) == false
+      assert will_be_alive(grid, alive_cell(0, 0)) == false
     end
 
     test "for live cell in grid with two live neighbors, returns true" do
-      grid = MapSet.new([{0, 0}, {0, 1}, {1, 1}])
+      grid = MapSet.new([alive_cell(0, 0), alive_cell(0, 1), alive_cell(1, 1)])
 
-      assert will_be_alive(grid, {0, 1}) == true
+      assert will_be_alive(grid, alive_cell(0, 1)) == true
     end
 
     test "for live cell in grid with three live neighbors, returns true" do
-      grid = MapSet.new([{0, 0}, {0, 1}, {1, 1}, {-1, 1}])
+      grid = MapSet.new([alive_cell(0, 0), alive_cell(0, 1), alive_cell(1, 1), alive_cell(-1, 1)])
 
-      assert will_be_alive(grid, {0, 1}) == true
+      assert will_be_alive(grid, alive_cell(0, 1)) == true
     end
 
     test "for cell in grid with four live neighbors, returns false" do
-      grid = MapSet.new([{0, 0}, {0, 1}, {1, 1}, {-1, 1}, {1, 0}])
+      grid =
+        MapSet.new([
+          alive_cell(0, 0),
+          alive_cell(0, 1),
+          alive_cell(1, 1),
+          alive_cell(-1, 1),
+          alive_cell(1, 0)
+        ])
 
-      assert will_be_alive(grid, {0, 1}) == false
+      assert will_be_alive(grid, alive_cell(0, 1)) == false
     end
 
     test "for dead cell in grid with three live neighbors, returns true" do
-      grid = MapSet.new([{0, 0}, {1, 1}, {-1, 1}])
+      grid = MapSet.new([alive_cell(0, 0), alive_cell(1, 1), alive_cell(-1, 1)])
 
-      assert will_be_alive(grid, {0, 1}) == true
+      assert will_be_alive(grid, alive_cell(0, 1)) == true
     end
 
     test "for dead cell in grid with two live neighbors, returns false" do
-      grid = MapSet.new([{0, 0}, {1, 1}])
+      grid = MapSet.new([alive_cell(0, 0), alive_cell(1, 1)])
 
-      assert will_be_alive(grid, {0, 1}) == false
+      assert will_be_alive(grid, alive_cell(0, 1)) == false
     end
 
     test "for dead cell in grid with one live neighbor, returns false" do
-      grid = MapSet.new([{0, 0}])
+      grid = MapSet.new([alive_cell(0, 0)])
 
-      assert will_be_alive(grid, {0, 1}) == false
+      assert will_be_alive(grid, alive_cell(0, 1)) == false
     end
   end
 
@@ -140,7 +151,7 @@ defmodule GardenOfLife.GridTest do
     end
 
     test "for grid with one cell, empty grid" do
-      grid = MapSet.new([{0, 0}])
+      grid = MapSet.new([alive_cell(0, 0)])
 
       assert step(grid) == MapSet.new()
     end
@@ -148,17 +159,27 @@ defmodule GardenOfLife.GridTest do
     test "grid with three cells" do
       # - o  -> o o
       # o o     o o
-      grid = MapSet.new([{0, 1}, {1, 0}, {1, 1}])
+      grid = MapSet.new([alive_cell(0, 1), alive_cell(1, 0), alive_cell(1, 1)])
 
-      assert step(grid) == MapSet.new([{0, 0}, {0, 1}, {1, 0}, {1, 1}])
+      assert step(grid) ==
+               MapSet.new([alive_cell(0, 0), alive_cell(0, 1), alive_cell(1, 0), alive_cell(1, 1)])
     end
 
     test "grid with more rows" do
       # - o -  -> o o -
       # o o -     o o o
       # - - o     - o -
-      grid = MapSet.new([{0, 1}, {1, 0}, {1, 1}, {2, 2}])
-      result = MapSet.new([{0, 0}, {0, 1}, {1, 0}, {1, 1}, {1, 2}, {2, 1}])
+      grid = MapSet.new([alive_cell(0, 1), alive_cell(1, 0), alive_cell(1, 1), alive_cell(2, 2)])
+
+      result =
+        MapSet.new([
+          alive_cell(0, 0),
+          alive_cell(0, 1),
+          alive_cell(1, 0),
+          alive_cell(1, 1),
+          alive_cell(1, 2),
+          alive_cell(2, 1)
+        ])
 
       assert step(grid) == result
     end
@@ -168,8 +189,27 @@ defmodule GardenOfLife.GridTest do
       # o o - o     o o - -
       # - - o -     - - o -
       # o o - -     - o - -
-      grid = MapSet.new([{0, 1}, {1, 0}, {1, 1}, {1, 3}, {2, 2}, {3, 0}, {3, 1}])
-      result = MapSet.new([{0, 0}, {0, 1}, {0, 2}, {1, 0}, {1, 1}, {2, 2}, {3, 1}])
+      grid =
+        MapSet.new([
+          alive_cell(0, 1),
+          alive_cell(1, 0),
+          alive_cell(1, 1),
+          alive_cell(1, 3),
+          alive_cell(2, 2),
+          alive_cell(3, 0),
+          alive_cell(3, 1)
+        ])
+
+      result =
+        MapSet.new([
+          alive_cell(0, 0),
+          alive_cell(0, 1),
+          alive_cell(0, 2),
+          alive_cell(1, 0),
+          alive_cell(1, 1),
+          alive_cell(2, 2),
+          alive_cell(3, 1)
+        ])
 
       assert step(grid) == result
     end
@@ -179,25 +219,25 @@ defmodule GardenOfLife.GridTest do
     test "empty grid, makes that cell alive" do
       grid = MapSet.new()
 
-      assert toggle_cell(grid, {0, 0}) == MapSet.new([{0, 0}])
+      assert toggle_cell(grid, alive_cell(0, 0)) == MapSet.new([alive_cell(0, 0)])
     end
 
     test "grid with that one element, kills it" do
-      grid = MapSet.new([{0, 0}])
+      grid = MapSet.new([alive_cell(0, 0)])
 
-      assert toggle_cell(grid, {0, 0}) == MapSet.new()
+      assert toggle_cell(grid, alive_cell(0, 0)) == MapSet.new()
     end
 
     test "kills given live element, but keeps others" do
-      grid = MapSet.new([{0, 0}, {1, 1}])
+      grid = MapSet.new([alive_cell(0, 0), alive_cell(1, 1)])
 
-      assert toggle_cell(grid, {0, 0}) == MapSet.new([{1, 1}])
+      assert toggle_cell(grid, alive_cell(0, 0)) == MapSet.new([alive_cell(1, 1)])
     end
   end
 
   describe "to_point" do
     test "valid point" do
-      assert to_point("1,1") == {1, 1}
+      assert to_point("1,1 true") == alive_cell(1, 1)
     end
 
     test "invalid point" do
@@ -205,9 +245,9 @@ defmodule GardenOfLife.GridTest do
     end
   end
 
-  describe "from_plot" do
+  describe "for_plot" do
     test "valid points" do
-      assert for_plot(["1,1"]) == MapSet.new([{1, 1}])
+      assert for_plot(["1,1"]) == MapSet.new([alive_cell(1, 1)])
     end
 
     test "invalid points" do
@@ -221,23 +261,26 @@ defmodule GardenOfLife.GridTest do
     end
 
     test "grids are the same" do
-      assert diff_grid(MapSet.new([{1, 1}]), MapSet.new([{1, 1}])) == %{
+      assert diff_grid(MapSet.new([alive_cell(1, 1)]), MapSet.new([alive_cell(1, 1)])) == %{
                add: MapSet.new(),
                remove: MapSet.new()
              }
     end
 
     test "grids are completely different, use the new one" do
-      assert diff_grid(MapSet.new([{1, 1}]), MapSet.new([{2, 2}])) == %{
-               add: MapSet.new([{2, 2}]),
-               remove: MapSet.new([{1, 1}])
+      assert diff_grid(MapSet.new([alive_cell(1, 1)]), MapSet.new([alive_cell(2, 2)])) == %{
+               add: MapSet.new([alive_cell(2, 2)]),
+               remove: MapSet.new([alive_cell(1, 1)])
              }
     end
 
     test "grids are not completely different" do
-      assert diff_grid(MapSet.new([{0, 0}, {1, 1}]), MapSet.new([{0, 0}, {2, 2}])) == %{
-               add: MapSet.new([{2, 2}]),
-               remove: MapSet.new([{1, 1}])
+      assert diff_grid(
+               MapSet.new([alive_cell(0, 0), alive_cell(1, 1)]),
+               MapSet.new([alive_cell(0, 0), alive_cell(2, 2)])
+             ) == %{
+               add: MapSet.new([alive_cell(2, 2)]),
+               remove: MapSet.new([alive_cell(1, 1)])
              }
     end
   end
@@ -248,35 +291,41 @@ defmodule GardenOfLife.GridTest do
     end
 
     test "non-empty grid, empty diff" do
-      assert apply_diff(MapSet.new([{0, 0}]), %{add: MapSet.new(), remove: MapSet.new()}) ==
-               MapSet.new([{0, 0}])
+      assert apply_diff(MapSet.new([alive_cell(0, 0)]), %{add: MapSet.new(), remove: MapSet.new()}) ==
+               MapSet.new([alive_cell(0, 0)])
     end
 
     test "empty grid, diff with additions" do
-      assert apply_diff(MapSet.new(), %{add: MapSet.new([{0, 0}]), remove: MapSet.new()}) ==
-               MapSet.new([{0, 0}])
+      assert apply_diff(MapSet.new(), %{add: MapSet.new([alive_cell(0, 0)]), remove: MapSet.new()}) ==
+               MapSet.new([alive_cell(0, 0)])
     end
 
     test "empty grid, diff with removals" do
-      assert apply_diff(MapSet.new(), %{add: MapSet.new(), remove: MapSet.new([{0, 0}])}) ==
+      assert apply_diff(MapSet.new(), %{add: MapSet.new(), remove: MapSet.new([alive_cell(0, 0)])}) ==
                MapSet.new()
     end
 
     test "non-empty grid, diff with removals" do
-      assert apply_diff(MapSet.new([{0, 0}]), %{add: MapSet.new(), remove: MapSet.new([{0, 0}])}) ==
+      assert apply_diff(MapSet.new([alive_cell(0, 0)]), %{
+               add: MapSet.new(),
+               remove: MapSet.new([alive_cell(0, 0)])
+             }) ==
                MapSet.new()
     end
 
     test "non-empty grid, diff with additions" do
-      assert apply_diff(MapSet.new([{0, 0}]), %{add: MapSet.new([{1, 1}]), remove: MapSet.new()}) ==
-               MapSet.new([{0, 0}, {1, 1}])
+      assert apply_diff(MapSet.new([alive_cell(0, 0)]), %{
+               add: MapSet.new([alive_cell(1, 1)]),
+               remove: MapSet.new()
+             }) ==
+               MapSet.new([alive_cell(0, 0), alive_cell(1, 1)])
     end
 
     test "non-empty grid, diff with both" do
-      assert apply_diff(MapSet.new([{0, 0}]), %{
-               add: MapSet.new([{1, 1}]),
-               remove: MapSet.new([{0, 0}])
-             }) == MapSet.new([{1, 1}])
+      assert apply_diff(MapSet.new([alive_cell(0, 0)]), %{
+               add: MapSet.new([alive_cell(1, 1)]),
+               remove: MapSet.new([alive_cell(0, 0)])
+             }) == MapSet.new([alive_cell(1, 1)])
     end
   end
 
@@ -286,7 +335,7 @@ defmodule GardenOfLife.GridTest do
     end
 
     test "valid points" do
-      assert to_plot(MapSet.new([{1, 1}])) == ["1,1"]
+      assert to_plot(MapSet.new([alive_cell(1, 1)])) == ["1,1: true"]
     end
   end
 end

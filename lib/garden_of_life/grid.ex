@@ -8,7 +8,7 @@ defmodule GardenOfLife.Grid do
   end
 
   def to_plot(grid) do
-    Enum.map(grid, fn {r, c} -> "#{r},#{c}" end)
+    Enum.map(grid, fn {{r, c}, data} -> "#{r},#{c}: #{data}" end)
   end
 
   def demo_grid do
@@ -16,11 +16,12 @@ defmodule GardenOfLife.Grid do
   end
 
   def to_point(str) do
-    res = Regex.run(~r/^(\d+),(\d+)$/, str)
-    
+    regex = ~r/^(\d+),(\d+)/
+    res = Regex.run(regex, str)
+
     if res && Kernel.length(res) == 3 do
-      [_, r, c] = Regex.run(~r/^(\d+),(\d+)$/, str)
-      {String.to_integer(r), String.to_integer(c)}
+      [_, r, c] = Regex.run(regex, str)
+      {{String.to_integer(r), String.to_integer(c)}, true}
     end
   end
 
@@ -46,20 +47,20 @@ defmodule GardenOfLife.Grid do
 
   def get_live_neighbors(grid, point) do
     neighboring_coords = get_neighbor_coords(point)
-    MapSet.filter(grid, fn p -> MapSet.member?(neighboring_coords, p) end)
+    MapSet.filter(grid, fn {p, _data} -> MapSet.member?(neighboring_coords, p) end)
   end
 
   def will_be_alive(grid, point) do
     alive = is_alive(grid, point)
-    neighbors = get_live_neighbors(grid, point)
+    neighbors = get_live_neighbors(grid, Kernel.elem(point, 0))
 
     (alive && (MapSet.size(neighbors) == 2 || MapSet.size(neighbors) == 3)) ||
       (not alive && MapSet.size(neighbors) == 3)
   end
 
   def step(grid) do
-    neighbors = MapSet.new(Enum.flat_map(grid, fn coords -> get_neighbor_coords(coords) end))
-    MapSet.new(Enum.filter(neighbors, fn coords -> will_be_alive(grid, coords) end))
+    coords_to_check = MapSet.new(Enum.flat_map(grid, fn {coords, _data} -> get_neighbor_coords(coords) end))
+    MapSet.new( for coord <- coords_to_check, will_be_alive(grid, {coord, true}), do: {coord, true})
   end
 
   def toggle_cell(grid, cell) do
