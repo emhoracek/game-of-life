@@ -7,6 +7,10 @@ defmodule GardenOfLife.Garden do
     MapSet.new(list)
   end
 
+  def to_plot(grid) do
+    Enum.map(grid, fn {r, c} -> "#{r},#{c}" end)
+  end
+
   def demo_grid do
     MapSet.new([{5, 5}, {5, 6}, {5, 7}])
   end

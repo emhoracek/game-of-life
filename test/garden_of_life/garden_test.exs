@@ -279,4 +279,14 @@ defmodule GardenOfLife.GardenTest do
              }) == MapSet.new([{1, 1}])
     end
   end
+
+  describe "to_plot" do
+    test "empty grid" do
+      assert to_plot(MapSet.new()) == []
+    end
+
+    test "valid points" do
+      assert to_plot(MapSet.new([{1, 1}])) == ["1,1"]
+    end
+  end
 end
