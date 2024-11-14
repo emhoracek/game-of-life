@@ -2,7 +2,7 @@
     <%= for row <- 0..19 do %>
         <tr>
             <%= for column <- 0..19 do %>
-                <%= if GardenOfLife.Garden.is_alive(@grid, {row, column}) do%>
+                <%= if GardenOfLife.Garden.is_alive(@grid, {row, column}) do %>
                     <td class="cell w-6 h-6 bg-slate-100 text-center p-0 m-0" phx-click="toggle_cell"
                         phx-value-row={row} phx-value-column={column}> 🌸 </td>
                     <% else %>
@@ -14,6 +14,9 @@
         <% end %>
 </table>
 
-<button phx-click="step_grid">Step</button>
-<button phx-click="play">Play</button>
-<button phx-click="stop">Stop</button>
+<%= if @playing do %>
+    <button phx-click="stop">Stop</button>
+    <% else %>
+        <button phx-click="step_grid">Step</button>
+        <button phx-click="play">Play</button>
+        <% end %>

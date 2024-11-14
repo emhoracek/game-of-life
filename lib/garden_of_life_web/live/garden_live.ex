@@ -10,7 +10,8 @@ defmodule GardenOfLifeWeb.GardenLive do
     plot = Repo.one(from p in Plot, where: p.name == ^name)
     grid = Plot.garden(plot)
 
-    {:ok, assign(socket, :grid, grid)}
+    {:ok, assign(socket, :grid, grid)
+            |> assign(:playing, false)}
   end
 
   def mount(_params, _session, socket) do
