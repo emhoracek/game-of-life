@@ -45,7 +45,7 @@ defmodule GardenOfLifeWeb.GridComponents do
 
     case cell do
       false -> "#{cell_classes} bg-slate-300"
-      _ -> "#{cell_classes} bg-slate-100"
+      _ -> "#{cell_classes} text-blue-500 bg-slate-100"
     end
   end
 
@@ -60,7 +60,15 @@ defmodule GardenOfLifeWeb.GridComponents do
   def flower_for(cell) do
     case cell do
       false -> " "
-      _ -> "🌸"
+      data ->
+        case data do
+          %{"color" => "pink"} -> "🌸"
+          %{"color" => "red"} -> "🌹"
+          %{"color" => "blue"} -> "❀"
+          %{"color" => "yellow"} -> "🌻"
+          %{"color" => "purple"} -> "🪻"
+          _ -> "o"
+        end
     end
   end
 end
