@@ -92,6 +92,8 @@ defmodule GardenOfLifeWeb do
 
       # Routes generation with the ~p sigil
       unquote(verified_routes())
+
+      import GardenOfLifeWeb.GridComponents
     end
   end
 

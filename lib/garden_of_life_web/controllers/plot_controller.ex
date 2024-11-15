@@ -18,6 +18,7 @@ defmodule GardenOfLifeWeb.PlotController do
     conn
     |> assign(:plot, plot)
     |> assign(:grid, grid)
+    |> assign(:interactive, false)
     |> render(:show)
   end
 

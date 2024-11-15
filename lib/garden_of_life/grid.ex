@@ -29,6 +29,10 @@ defmodule GardenOfLife.Grid do
     end
   end
 
+  def cell_at(grid, {r, c}) do
+    Map.get(grid, {r, c}) || false
+  end
+
   def is_alive(grid, {r, c}) do
     Map.has_key?(grid, {r, c})
   end
@@ -102,7 +106,7 @@ defmodule GardenOfLife.Grid do
   end
 
   def step_cell(grid, coords) do
-    cell = Map.get(grid, coords)
+    cell = cell_at(grid, coords)
     neighbors = get_live_neighbors(grid, coords)
 
     if cell && (Kernel.map_size(neighbors) == 2 || Kernel.map_size(neighbors) == 3) do

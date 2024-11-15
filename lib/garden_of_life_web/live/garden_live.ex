@@ -17,6 +17,7 @@ defmodule GardenOfLifeWeb.GardenLive do
 
     {:ok,
      assign(socket, :grid, grid)
+     |> assign(:interactive, true)
      |> assign(:name, name)
      |> assign(:player, player)
      |> assign(:chat, [])

@@ -1,40 +1,14 @@
-<table>
-  <%= for row <- 0..19 do %>
-    <tr>
-      <%= for column <- 0..19 do %>
-        <%= if GardenOfLife.Grid.is_alive(@grid, {row, column}) do %>
-          <td
-            class="cell w-6 h-6 bg-slate-100 text-center p-0 m-0"
-            phx-click="toggle_cell"
-            phx-value-row={row}
-            phx-value-column={column}
-          >
-            🌸
-          </td>
-        <% else %>
-          <td
-            class="cell w-6 h-6 bg-slate-300 text-center p-0 m-0"
-            phx-click="toggle_cell"
-            phx-value-row={row}
-            phx-value-column={column}
-          >
-            &nbsp;
-          </td>
-        <% end %>
-      <% end %>
-    </tr>
-  <% end %>
-</table>
+<.grid grid={@grid} interactive={@interactive} />
 
 <%= if @playing do %>
-  <button phx-click="stop">Stop</button>
+  <.button phx-click="stop">Stop</.button>
 <% else %>
-  <button phx-click="step_grid">Step</button>
-  <button phx-click="play">Play</button>
-  <button phx-click="save">Save</button>
+  <.button phx-click="step_grid">Step</.button>
+  <.button phx-click="play">Play</.button>
+  <.button phx-click="save">Save</.button>
 <% end %>
 
-<ul>
+<ul class="mt-2">
   <%= for message <- @chat do %>
     <%= if message[:event] do %>
       <li><em><%= message[:event] %></em></li>
