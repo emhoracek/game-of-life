@@ -4,7 +4,7 @@ defmodule GardenOfLife.Plot do
 
   schema "plots" do
     field :name, :string
-    field :grid, {:array, :string}
+    field :grid, {:map, {:map, :string}}
 
     timestamps(type: :utc_datetime)
   end
@@ -18,6 +18,10 @@ defmodule GardenOfLife.Plot do
   end
 
   def grid(plot) do
-    GardenOfLife.Grid.for_plot(plot.grid)
+    if (plot.grid) do
+      GardenOfLife.Grid.for_plot(plot.grid)
+    else
+      Map.new()
+    end
   end
 end

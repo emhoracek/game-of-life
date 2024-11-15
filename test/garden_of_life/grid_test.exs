@@ -12,15 +12,15 @@ defmodule GardenOfLife.GridTest do
   end
 
   def alive_cell(r, c) do
-    {{r, c}, true}
+    {{r, c}, %{"foo" => "bar"}}
   end
 
   def blue_cell(r, c) do
-    {{r, c}, %{color: "blue"}}
+    {{r, c}, %{"color" => "blue"}}
   end
 
   def blue_data() do
-    %{color: "blue"}
+    %{"color" => "blue"}
   end
 
   describe "is_alive" do
@@ -283,7 +283,7 @@ defmodule GardenOfLife.GridTest do
 
   describe "to_point" do
     test "valid point" do
-      assert to_coords("1,1 true") == alive_cell(1, 1)
+      assert to_coords("1,1") == {1,1}
     end
 
     test "invalid point" do
@@ -293,21 +293,21 @@ defmodule GardenOfLife.GridTest do
 
   describe "for_plot" do
     test "valid points" do
-      assert for_plot(["1,1"]) == mkgrid([alive_cell(1, 1)])
+      assert for_plot(%{"1,1" => %{"foo" => "bar"}}) == mkgrid([alive_cell(1, 1)])
     end
 
     test "invalid points" do
-      assert for_plot(["apple"]) == empty_grid()
+      assert for_plot([{"apple", %{"foo" => "bar"}}]) == empty_grid()
     end
   end
 
-  describe "to_plot" do
+  describe "stringify_keys" do
     test "empty grid" do
-      assert to_plot(empty_grid()) == []
+      assert stringify_keys(empty_grid()) == Map.new()
     end
 
     test "valid points" do
-      assert to_plot(mkgrid([alive_cell(1, 1)])) == ["1,1: true"]
+      assert stringify_keys(mkgrid([alive_cell(1, 1)])) == %{"1,1" => %{"foo" => "bar"}}
     end
   end
 
@@ -322,12 +322,12 @@ defmodule GardenOfLife.GridTest do
 
     test "alive cell with two neighbors" do
       assert step_cell(mkgrid([alive_cell(0, 0), alive_cell(0, 1), alive_cell(1, 1)]), {0, 1}) ==
-               true
+               %{"foo" => "bar"}
     end
 
     test "dead cell with three neighbors" do
       assert step_cell(mkgrid([alive_cell(0, 0), alive_cell(0, 1), alive_cell(1, 1)]), {1, 0}) ==
-               true
+                %{"foo" => "bar"}
     end
   end
 

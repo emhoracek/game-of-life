@@ -13,7 +13,7 @@ defmodule GardenOfLifeWeb.PlotController do
 
   def show(conn, %{"id" => id}) do
     plot = Repo.one(from p in Plot, where: p.name == ^id)
-    grid = Plot.grid(plot)
+    grid = Plot.grid(plot) || Map.new()
 
     conn
     |> assign(:plot, plot)

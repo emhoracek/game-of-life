@@ -104,7 +104,7 @@ defmodule GardenOfLifeWeb.GardenLive do
     player = socket.assigns.player
     grid = socket.assigns.grid
     plot = Repo.one(from p in Plot, where: p.name == ^name)
-    changeset = Plot.changeset(plot, %{grid: GardenOfLife.Grid.to_plot(grid)})
+    changeset = Plot.changeset(plot, %{grid: GardenOfLife.Grid.stringify_keys(grid)})
 
     if changeset.valid? do
       {res, _} = Repo.update(changeset)
@@ -138,7 +138,7 @@ defmodule GardenOfLifeWeb.GardenLive do
       coords = {String.to_integer(row), String.to_integer(column)}
 
       new =
-        GardenOfLife.Grid.toggle_cell(g, {coords, true})
+        GardenOfLife.Grid.toggle_cell(g, {coords, %{"color" => "red"}})
 
       set_grid(name, new)
     end

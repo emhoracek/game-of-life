@@ -1,14 +1,22 @@
 defmodule GardenOfLife.Grid do
   def for_plot(grid) do
-    list =
-      Enum.map(grid, fn s -> to_coords(s) end)
-      |> Enum.filter(fn p -> p end)
-
-    Map.new(list)
+    for {str, data} <- grid,
+      reduce: %{} do
+        acc ->
+          case to_coords(str) do
+            nil -> acc
+            coords -> Map.put(acc, coords, data)
+          end
+      end
   end
 
-  def to_plot(grid) do
-    Enum.map(grid, fn {{r, c}, data} -> "#{r},#{c}: #{data}" end)
+  def stringify_keys(grid) do
+    Map.new(Enum.map(grid, fn blah ->
+      case blah do
+        {{r, c}, data} -> {"#{r},#{c}", data}
+        _ -> nil
+      end
+    end))
   end
 
   def to_coords(str) do
@@ -17,7 +25,7 @@ defmodule GardenOfLife.Grid do
 
     if res && Kernel.length(res) == 3 do
       [_, r, c] = Regex.run(regex, str)
-      {{String.to_integer(r), String.to_integer(c)}, true}
+      {String.to_integer(r), String.to_integer(c)}
     end
   end
 
