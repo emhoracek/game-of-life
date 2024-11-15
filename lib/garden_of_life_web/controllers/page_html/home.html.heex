@@ -1,12 +1,26 @@
 <.flash_group flash={@flash} />
 
-<div class="flex flex-col justify-center w-100 p-5">
-<.header>Welcome to the garden</.header>
+<div class="flex w-screen h-screen justify-center align-center">
+  <div class="flex flex-col justify-center text-center p-5">
+    <.header>Welcome to the garden</.header>
 
-<main>
-<p class="mt-2">Tend a living and evolving garden with your friends </p>
+    <main>
+      <p class="my-5">Tend a living and evolving garden with your friends</p>
 
-<a class="mt-2 inline-block p-2 bg-blue-300 rounded-5 border-solid border-black border" href="/plots/new">Create a new garden plot</a>
-</main>
+      <p class="mt-2" ><a
+        class="inline-block p-2 bg-blue-300 rounded border-solid border-black border"
+        href="/plots/new"
+      >
+        Create a new garden plot
+      </a></p>
 
+      <p class="mt-2">
+      <.link
+        href="/plots"
+      >
+        Check out other plots
+</.link>
+      </p>
+    </main>
+  </div>
 </div>
