@@ -7,17 +7,25 @@ defmodule GardenOfLifeWeb.GardenLive do
 
   def mount(%{"plot" => name, "player" => player}, _session, socket) do
     PubSub.subscribe(GardenOfLife.PubSub, "grid:#{name}")
+
     PubSub.broadcast(
       GardenOfLife.PubSub,
       "grid:#{name}",
       {"chat", %{event: "Player joined: #{player}"}}
     )
+
     plot = Repo.one(from p in Plot, where: p.name == ^name)
     grid = Plot.grid(plot)
+
+    colors = %{
+      "options" => [Blue: "blue", Red: "red", Yellow: "yellow", Pink: "pink", Purple: "purple"]
+    }
 
     {:ok,
      assign(socket, :grid, grid)
      |> assign(:interactive, true)
+     |> assign(:colors, colors)
+     |> assign(:color, "red")
      |> assign(:name, name)
      |> assign(:player, player)
      |> assign(:chat, [])
@@ -71,10 +79,6 @@ defmodule GardenOfLifeWeb.GardenLive do
     {:noreply, update(socket, :chat, fun)}
   end
 
-  def handle_info(_message, socket) do
-    {:noreply, socket}
-  end
-
   def handle_event("step_grid", _params, socket) do
     name = socket.assigns.name
 
@@ -122,7 +126,11 @@ defmodule GardenOfLifeWeb.GardenLive do
           PubSub.broadcast(
             GardenOfLife.PubSub,
             "grid:#{name}",
-            {"chat", %{event: "#{player} attempted to save the current state of your garden plot, but it failed to save."}}
+            {"chat",
+             %{
+               event:
+                 "#{player} attempted to save the current state of your garden plot, but it failed to save."
+             }}
           )
       end
     else
@@ -134,17 +142,22 @@ defmodule GardenOfLifeWeb.GardenLive do
 
   def handle_event("toggle_cell", %{"row" => row, "column" => column}, socket) do
     name = socket.assigns.name
+    color = socket.assigns.color
 
     fun = fn g ->
       coords = {String.to_integer(row), String.to_integer(column)}
 
       new =
-        GardenOfLife.Grid.toggle_cell(g, {coords, %{"color" => "red"}})
+        GardenOfLife.Grid.toggle_cell(g, {coords, %{"color" => color}})
 
       set_grid(name, new)
     end
 
     {:noreply, update(socket, :grid, fun)}
+  end
+
+  def handle_event("change_color", %{"color" => color}, socket) do
+    {:noreply, assign(socket, color: color)}
   end
 
   def set_grid(name, newGrid) do
@@ -153,7 +166,6 @@ defmodule GardenOfLifeWeb.GardenLive do
   end
 
   def schedule_work() do
-    # In 1 sec
     Process.send_after(self(), :work, 1_000)
   end
 end

@@ -41,7 +41,7 @@ defmodule GardenOfLifeWeb.GridComponents do
   end
 
   def classes(cell) do
-    cell_classes = "cell w-6 h-6 text-center p-0 m-1 border cursor-default"
+    cell_classes = "cell w-7 h-7 text-center p-0 m-1 border cursor-default"
 
     case cell do
       false -> "#{cell_classes} bg-slate-300"
@@ -59,7 +59,9 @@ defmodule GardenOfLifeWeb.GridComponents do
 
   def flower_for(cell) do
     case cell do
-      false -> " "
+      false ->
+        " "
+
       data ->
         case data do
           %{"color" => "pink"} -> "🌸"

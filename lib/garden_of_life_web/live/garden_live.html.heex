@@ -1,19 +1,36 @@
 <.grid grid={@grid} interactive={@interactive} />
 
-<%= if @playing do %>
-  <.button phx-click="stop">Stop</.button>
-<% else %>
-  <.button phx-click="step_grid">Step</.button>
-  <.button phx-click="play">Play</.button>
-  <.button phx-click="save">Save</.button>
-<% end %>
-
-<ul class="mt-2">
-  <%= for message <- @chat do %>
-    <%= if message[:event] do %>
-      <li><em><%= message[:event] %></em></li>
+<div class="flex justify-between align-center">
+  <div>
+    <%= if @playing do %>
+      <.button phx-click="stop">Stop</.button>
     <% else %>
-      <li><em><%= message[:player] %></em>: <%= message[:words] %></li>
+      <.button phx-click="step_grid">Step</.button>
+      <.button phx-click="play">Play</.button>
+      <.button phx-click="save">Save</.button>
     <% end %>
-  <% end %>
-</ul>
+  </div>
+  <div>
+    <.form for={@colors}>
+      <.input
+        phx-change="change_color"
+        name="color"
+        type="select"
+        options={@colors["options"]}
+        value={@color}
+      />
+    </.form>
+  </div>
+</div>
+
+<div>
+  <ul class="mt-2">
+    <%= for message <- @chat do %>
+      <%= if message[:event] do %>
+        <li><em><%= message[:event] %></em></li>
+      <% else %>
+        <li><em><%= message[:player] %></em>: <%= message[:words] %></li>
+      <% end %>
+    <% end %>
+  </ul>
+</div>
