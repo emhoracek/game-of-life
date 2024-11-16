@@ -21,7 +21,7 @@ defmodule GardenOfLife.Plot do
     if (plot.grid) do
       GardenOfLife.Grid.for_plot(plot.grid)
     else
-      Map.new()
+      GardenOfLife.Grid.new([])
     end
   end
 end

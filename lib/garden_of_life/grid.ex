@@ -1,4 +1,8 @@
 defmodule GardenOfLife.Grid do
+  def new(cells) do
+    Map.new(cells)
+  end
+
   def for_plot(grid) do
     for {str, data} <- grid,
       reduce: %{} do
@@ -11,12 +15,12 @@ defmodule GardenOfLife.Grid do
   end
 
   def stringify_keys(grid) do
-    Map.new(Enum.map(grid, fn blah ->
+    Map.new(grid, fn blah ->
       case blah do
         {{r, c}, data} -> {"#{r},#{c}", data}
         _ -> nil
       end
-    end))
+    end)
   end
 
   def to_coords(str) do
@@ -50,7 +54,7 @@ defmodule GardenOfLife.Grid do
         {1, 1}
       ])
 
-    MapSet.new(Enum.map(offsets, fn {offsetR, offsetC} -> {r + offsetR, c + offsetC} end))
+    MapSet.new(offsets, fn {offsetR, offsetC} -> {r + offsetR, c + offsetC} end)
   end
 
   def get_live_neighbors(grid, coords) do
@@ -82,7 +86,7 @@ defmodule GardenOfLife.Grid do
           !is_nil(cell),
           do: {coords, cell}
 
-    Map.new(cells)
+    new(cells)
   end
 
   def toggle_cell(grid, {coords, data}) do

@@ -4,11 +4,11 @@ defmodule GardenOfLife.GridTest do
   import GardenOfLife.Grid
 
   def empty_grid() do
-    Map.new()
+    new([])
   end
 
   def mkgrid(list) do
-    Map.new(list)
+    new(list)
   end
 
   def alive_cell(r, c) do
@@ -309,7 +309,7 @@ defmodule GardenOfLife.GridTest do
 
   describe "stringify_keys" do
     test "empty grid" do
-      assert stringify_keys(empty_grid()) == Map.new()
+      assert stringify_keys(empty_grid()) == %{}
     end
 
     test "valid points" do
