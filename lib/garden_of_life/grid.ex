@@ -86,7 +86,7 @@ defmodule GardenOfLife.Grid do
   end
 
   def toggle_cell(grid, {coords, data}) do
-    if is_alive(grid, coords) do
+    if cell_at(grid, coords) == data do
       Map.delete(grid, coords)
     else
       Map.put(grid, coords, data)

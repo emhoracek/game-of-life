@@ -279,6 +279,12 @@ defmodule GardenOfLife.GridTest do
 
       assert toggle_cell(grid, alive_cell(0, 0)) == mkgrid([alive_cell(1, 1)])
     end
+
+    test "if the live element is different, replace it" do
+      grid = mkgrid([alive_cell(0, 0), alive_cell(1, 1)])
+
+      assert toggle_cell(grid, blue_cell(0, 0)) == mkgrid([blue_cell(0,0), alive_cell(1, 1)])
+    end
   end
 
   describe "to_point" do
