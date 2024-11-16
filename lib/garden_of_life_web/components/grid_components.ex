@@ -8,7 +8,7 @@ defmodule GardenOfLifeWeb.GridComponents do
 
   def grid(assigns) do
     ~H"""
-    <table class="mt-2 mb-2">
+    <table class="mt-2 mb-2 bg-slate-300">
       <%= for row <- 0..19 do %>
         <tr>
           <%= for column <- 0..19 do %>
@@ -41,10 +41,10 @@ defmodule GardenOfLifeWeb.GridComponents do
   end
 
   def classes(cell) do
-    cell_classes = "cell w-7 h-7 text-center p-0 m-1 border cursor-default"
+    cell_classes = "transition-all duration-500 cell w-7 h-7 text-center p-0 m-1 border cursor-default"
 
     case cell do
-      false -> "#{cell_classes} bg-slate-300"
+      false -> "#{cell_classes} opacity-0"
       _ -> "#{cell_classes} text-blue-500 bg-slate-100"
     end
   end
