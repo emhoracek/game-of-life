@@ -1,15 +1,16 @@
 defmodule GardenOfLifeWeb.GardenLive do
   use GardenOfLifeWeb, :live_view
-  alias GardenOfLife.{Repo, Plot}
+  alias GardenOfLife.{Repo, Plot, Grid}
+  alias GardenOfLife.PubSub, as: GardenPS
   import Ecto.Query, except: [update: 3]
 
   alias Phoenix.PubSub
 
   def mount(%{"plot" => name, "player" => player}, _session, socket) do
-    PubSub.subscribe(GardenOfLife.PubSub, "grid:#{name}")
+    PubSub.subscribe(GardenPS, "grid:#{name}")
 
     PubSub.broadcast(
-      GardenOfLife.PubSub,
+      GardenPS,
       "grid:#{name}",
       {"chat", %{event: "Player joined: #{player}"}}
     )
@@ -45,54 +46,42 @@ defmodule GardenOfLifeWeb.GardenLive do
   end
 
   def handle_info({"step", _params}, socket) do
-    fun = fn g ->
-      GardenOfLife.Grid.step(g)
-    end
-
-    {:noreply, update(socket, :grid, fun)}
+    {:noreply, update(socket, :grid, &Grid.step/1)}
   end
 
   def handle_info(:work, socket) do
-    playing = socket.assigns.playing
-
-    if playing == true do
+    if socket.assigns.playing == true do
       name = socket.assigns.name
-
-      fun = fn g ->
-        new = GardenOfLife.Grid.step(g)
-        set_grid(name, new)
-      end
 
       schedule_work()
 
-      {:noreply, update(socket, :grid, fun)}
+      {:noreply,
+       update(socket, :grid, fn g ->
+         new = Grid.step(g)
+         broadcast_grid(name, new)
+       end)}
     else
       {:noreply, socket}
     end
   end
 
   def handle_info({"chat", message}, socket) do
-    fun = fn ms ->
-      [message | ms]
-    end
-
-    {:noreply, update(socket, :chat, fun)}
+    {:noreply, update(socket, :chat, &[message | &1])}
   end
 
   def handle_event("step_grid", _params, socket) do
     name = socket.assigns.name
 
-    fun = fn g ->
-      new = GardenOfLife.Grid.step(g)
-      set_grid(name, new)
-    end
-
-    {:noreply, update(socket, :grid, fun)}
+    {:noreply,
+     update(socket, :grid, fn g ->
+       new = Grid.step(g)
+       broadcast_grid(name, new)
+     end)}
   end
 
   def handle_event("play", _params, socket) do
     name = socket.assigns.name
-    PubSub.broadcast(GardenOfLife.PubSub, "grid:#{name}", {"play", {}})
+    PubSub.broadcast(GardenPS, "grid:#{name}", {"play", {}})
     schedule_work()
 
     {:noreply, assign(socket, :playing, true)}
@@ -100,7 +89,7 @@ defmodule GardenOfLifeWeb.GardenLive do
 
   def handle_event("stop", _params, socket) do
     name = socket.assigns.name
-    PubSub.broadcast(GardenOfLife.PubSub, "grid:#{name}", {"stop", {}})
+    PubSub.broadcast(GardenPS, "grid:#{name}", {"stop", {}})
     {:noreply, assign(socket, :playing, false)}
   end
 
@@ -109,7 +98,7 @@ defmodule GardenOfLifeWeb.GardenLive do
     player = socket.assigns.player
     grid = socket.assigns.grid
     plot = Repo.one(from p in Plot, where: p.name == ^name)
-    changeset = Plot.changeset(plot, %{grid: GardenOfLife.Grid.stringify_keys(grid)})
+    changeset = Plot.changeset(plot, %{grid: Grid.stringify_keys(grid)})
 
     if changeset.valid? do
       {res, _} = Repo.update(changeset)
@@ -117,14 +106,14 @@ defmodule GardenOfLifeWeb.GardenLive do
       case res do
         :ok ->
           PubSub.broadcast(
-            GardenOfLife.PubSub,
+            GardenPS,
             "grid:#{name}",
             {"chat", %{event: "#{player} has saved the current state of your garden plot."}}
           )
 
         _ ->
           PubSub.broadcast(
-            GardenOfLife.PubSub,
+            GardenPS,
             "grid:#{name}",
             {"chat",
              %{
@@ -148,9 +137,9 @@ defmodule GardenOfLifeWeb.GardenLive do
       coords = {String.to_integer(row), String.to_integer(column)}
 
       new =
-        GardenOfLife.Grid.toggle_cell(g, {coords, %{"color" => color}})
+        Grid.toggle_cell(g, {coords, %{"color" => color}})
 
-      set_grid(name, new)
+      broadcast_grid(name, new)
     end
 
     {:noreply, update(socket, :grid, fun)}
@@ -160,9 +149,9 @@ defmodule GardenOfLifeWeb.GardenLive do
     {:noreply, assign(socket, color: color)}
   end
 
-  def set_grid(name, newGrid) do
-    PubSub.broadcast(GardenOfLife.PubSub, "grid:#{name}", {"apply_grid", %{grid: newGrid}})
-    newGrid
+  def broadcast_grid(name, new_grid) do
+    PubSub.broadcast(GardenPS, "grid:#{name}", {"apply_grid", %{grid: new_grid}})
+    new_grid
   end
 
   def schedule_work() do

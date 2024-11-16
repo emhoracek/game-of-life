@@ -41,7 +41,8 @@ defmodule GardenOfLifeWeb.GridComponents do
   end
 
   def classes(cell) do
-    cell_classes = "transition-all duration-500 cell w-7 h-7 text-center p-0 m-1 border cursor-default"
+    cell_classes =
+      "transition-all duration-500 cell w-7 h-7 text-center p-0 m-1 border cursor-default"
 
     case cell do
       false -> "#{cell_classes} opacity-0"
@@ -59,18 +60,13 @@ defmodule GardenOfLifeWeb.GridComponents do
 
   def flower_for(cell) do
     case cell do
-      false ->
-        " "
-
-      data ->
-        case data do
-          %{"color" => "pink"} -> "🌸"
-          %{"color" => "red"} -> "🌹"
-          %{"color" => "blue"} -> "❀"
-          %{"color" => "yellow"} -> "🌻"
-          %{"color" => "purple"} -> "🪻"
-          _ -> "o"
-        end
+      false -> " "
+      %{"color" => "pink"} -> "🌸"
+      %{"color" => "red"} -> "🌹"
+      %{"color" => "blue"} -> "❀"
+      %{"color" => "yellow"} -> "🌻"
+      %{"color" => "purple"} -> "🪻"
+      _ -> "o"
     end
   end
 end
